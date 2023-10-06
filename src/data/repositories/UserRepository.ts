@@ -1,5 +1,5 @@
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { UseMutationResult, useMutation } from "react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "react-query";
 import ApiClient from "../../ApiClient";
 import { useRepo } from "../../contexts/RepoProvider";
 import { Token } from "../models/Token";
@@ -15,12 +15,8 @@ export class UserRepository {
   getSelf: () => UseQueryResult<User> = () =>
     useQuery({
       queryKey: ["self"],
-      queryFn: () => this.api.get("/user/self/"),
+      queryFn: () => this.api.get("/user/self/").then((res) => res.data),
     });
-  // TODO
-  // deleteSelf: () => UseMutationResult<> = () => useMutation({mutationFn: (userId: string) => {
-  //   return axios.post('/user', userId)
-  // }})
 
   getToken: (username: string, password: string) => UseMutationResult<Token> = (
     username: string,
@@ -29,19 +25,49 @@ export class UserRepository {
     useMutation({
       mutationKey: [`login ${username}:`],
       mutationFn: () =>
-        this.api.post(
-          "/token/",
-          {},
-          {
-            headers: {
-              Authorization: "Basic " + btoa(`${username}:${password}`),
-            },
-          }
-        ),
-      // TODO fix
-      onSuccess: (data: Token, variables, context) => {
-        // I will fire first
-        return data;
-      },
+        this.api
+          .post(
+            "/token/",
+            {},
+            {
+              headers: {
+                Authorization: "Basic " + btoa(`${username}:${password}`),
+              },
+            }
+          )
+          .then((res) => res.data),
+    });
+
+  revokeToken: () => UseMutationResult = () =>
+    useMutation({
+      mutationKey: [`logout`],
+      mutationFn: () => this.api.delete("/token/"),
+    });
+
+  createUser: (
+    email: string,
+    username: string,
+    password: string
+  ) => UseMutationResult<User> = (
+    email: string,
+    username: string,
+    password: string
+  ) =>
+    useMutation({
+      mutationKey: [`create user ${username}:`],
+      mutationFn: () =>
+        this.api
+          .post("/user/", {
+            username: username,
+            password: password,
+            email: email,
+          })
+          .then((res) => res.data),
+    });
+
+  deleteSelf: () => UseMutationResult = () =>
+    useMutation({
+      mutationKey: [`delete user`],
+      mutationFn: () => this.api.delete("/user/"),
     });
 }

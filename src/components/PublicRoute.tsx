@@ -1,7 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { useRepo } from "../contexts/RepoProvider";
+import React from "react";
 
-export default function PublicRoute({ children }: { children: JSX.Element }) {
+export default function PublicRoute({
+  children,
+}: {
+  children: React.ReactElement;
+}) {
   const { userRepo } = useRepo();
   const userResult = userRepo.getSelf();
 

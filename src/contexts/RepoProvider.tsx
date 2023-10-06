@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import React, { createContext, useContext } from "react";
 import { UserRepository } from "../data/repositories/UserRepository";
 import { HappinessRepository } from "../data/repositories/HappinessRepository";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -21,7 +21,11 @@ const repos = {
 // Provides context
 const RepoContext = createContext<Repositories>(repos);
 
-export default function RepoProvider({ children }: { children: JSX.Element }) {
+export default function RepoProvider({
+  children,
+}: {
+  children: React.ReactElement;
+}) {
   const queryClient = new QueryClient();
 
   return (

@@ -1,8 +1,13 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useRepo } from "../contexts/RepoProvider";
 import { UserRepository } from "../data/repositories/UserRepository";
+import React from "react";
 
-export default function PrivateRoute({ children }: { children: JSX.Element }) {
+export default function PrivateRoute({
+  children,
+}: {
+  children: React.ReactElement;
+}) {
   const { userRepo }: { userRepo: UserRepository } = useRepo();
   const userResult = userRepo.getSelf();
   const location = useLocation();
