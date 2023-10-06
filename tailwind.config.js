@@ -3,6 +3,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  content: ["node_modules/preline/dist/*.js"],
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "node_modules/preline/dist/*.js"],
   plugins: [require("preline/plugin")],
 };

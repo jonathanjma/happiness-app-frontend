@@ -1,35 +1,9 @@
-# template-vite-react-ts-tailwind-v3
+# Happiness App Frontend
 
-- **template of:** vite + react + typescript
-- **tailwindcss:** v3.x
+This is the second version of the Happiness App frontend. We have refactored the code base to use TypeScript and Vite, as well as follow the new design.
 
-## Started
+## Run steps:
 
-```bash
-yarn
-# or `npm install`
-```
-
----
-
-## Develop
-
-```bash
-yarn dev
-# or `npm run dev`
-```
-
----
-
-## Build
-
-```bash
-yarn build
-# or `npm run build`
-```
-
----
-
-<p align="center">
-<img src="./powered-by-vitawind-bright.png">
-</p>
+- Change directory of terminal to `happiness-frontend`.
+- Run `npm install`
+- To start the frontend, run `npm run dev`
