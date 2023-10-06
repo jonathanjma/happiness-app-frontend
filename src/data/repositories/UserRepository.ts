@@ -11,10 +11,8 @@ import { QueryClient } from "@tanstack/react-query";
 
 export class UserRepository {
   api: ApiClient;
-  queryClient: QueryClient;
-  constructor(api: ApiClient, queryClient: QueryClient) {
+  constructor(api: ApiClient) {
     this.api = api;
-    this.queryClient = queryClient;
   }
 
   getSelf: () => UseQueryResult<User> = () =>
