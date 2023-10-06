@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { HappinessRepository } from "../data/repositories/HappinessRepository";
-import { UserRepository } from "../data/repositories/UserRepository";
+import UserRepository from "../data/repositories/UserRepository";
 import ApiClient from "../ApiClient";
 
 // For TypeScript, update this everytime we add a repository
@@ -12,7 +12,7 @@ interface Repositories {
 // Initializes all repos
 const api = new ApiClient();
 const repos = {
-  userRepo: new UserRepository(api),
+  userRepo: UserRepository(api),
   happinessRepo: new HappinessRepository(api),
 };
 

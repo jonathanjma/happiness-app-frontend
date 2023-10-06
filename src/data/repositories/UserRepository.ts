@@ -7,28 +7,22 @@ import {
 import ApiClient from "../../ApiClient";
 import { Token } from "../models/Token";
 import { User } from "../models/User";
-import { QueryClient } from "@tanstack/react-query";
 
-export class UserRepository {
-  api: ApiClient;
-  constructor(api: ApiClient) {
-    this.api = api;
-  }
-
-  getSelf: () => UseQueryResult<User> = () =>
+export default function UserRepository(api: ApiClient) {
+  const getSelf: () => UseQueryResult<User> = () =>
     useQuery({
       queryKey: ["self"],
-      queryFn: () => this.api.get("/user/self/"),
+      queryFn: () => api.get("/user/self/"),
     });
 
-  getToken: (username: string, password: string) => UseMutationResult<Token> = (
+  const getToken: (
     username: string,
     password: string
-  ) =>
+  ) => UseMutationResult<Token> = (username: string, password: string) =>
     useMutation({
       mutationKey: [`login ${username}:`],
       mutationFn: () =>
-        this.api
+        api
           .post(
             "/token/",
             {},
@@ -44,16 +38,16 @@ export class UserRepository {
       },
     });
 
-  revokeToken: () => UseMutationResult = () =>
+  const revokeToken: () => UseMutationResult = () =>
     useMutation({
       mutationKey: [`logout`],
-      mutationFn: () => this.api.delete("/token/"),
+      mutationFn: () => api.delete("/token/"),
       onSuccess: () => {
         localStorage.removeItem(Constants.TOKEN);
       },
     });
 
-  createUser: (
+  const createUser: (
     email: string,
     username: string,
     password: string
@@ -65,7 +59,7 @@ export class UserRepository {
     useMutation({
       mutationKey: [`create user ${username}:`],
       mutationFn: () =>
-        this.api
+        api
           .post("/user/", {
             username: username,
             password: password,
@@ -74,12 +68,14 @@ export class UserRepository {
           .then((res) => res.data),
     });
 
-  deleteSelf: () => UseMutationResult = () =>
+  const deleteSelf: () => UseMutationResult = () =>
     useMutation({
       mutationKey: [`delete user`],
-      mutationFn: () => this.api.delete("/user/"),
+      mutationFn: () => api.delete("/user/"),
       onSuccess: () => {
         localStorage.removeItem(Constants.TOKEN);
       },
     });
+
+  return { getSelf, getToken, createUser, revokeToken, deleteSelf };
 }
