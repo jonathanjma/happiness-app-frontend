@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
+const BASE_API_URL = "https://happiness-app-backend.herokuapp.com";
 
 export default class ApiClient {
   async request(options: any) {

@@ -1,18 +1,26 @@
-import React, { createContext, useContext, useState } from "react";
-import { useRepo } from "./RepoProvider";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { UseMutationResult, UseQueryResult, useQuery } from "react-query";
 import { Token } from "../data/models/Token";
 import { User } from "../data/models/User";
+import { useRepo } from "./RepoProvider";
 
 interface ContextUser {
-  user: User;
+  user: UseQueryResult<User> | UseMutationResult<User>;
   login: (username: string, password: string) => void;
   logout: () => void;
-  userFromToken: () => void;
   createUser: (email: string, username: string, password: string) => void;
   deleteUser: () => void;
 }
 
-const UserContext = createContext<ContextUser>({});
+const UserContext = createContext<ContextUser>({
+  user: useQuery(["defaultState"], () => {
+    return { error: "An error occurred" };
+  }),
+  login: (_, __) => {},
+  logout: () => {},
+  createUser: (_, __, ___) => {},
+  deleteUser: () => {},
+});
 
 /**
  * The UserProvider context provides functionality for getting the user
@@ -27,48 +35,32 @@ export default function UserProvider({
 }: {
   children: React.ReactElement;
 }) {
-  const [user, setUser] = useState();
   const { userRepo } = useRepo();
+  const [user, setUser] = useState<
+    UseQueryResult<User> | UseMutationResult<User>
+  >(userRepo.getSelf());
+  let [tokenResult, setTokenResult] = useState<UseMutationResult<Token>>();
 
-  const login = async (username: string, password: string) => {
-    await userRepo
-      .getToken(username, password)
-      .mutateAsync("")
-      .then(async (res: Token) => {
-        localStorage.setItem(Constants.TOKEN, res.sessionToken);
-        await userFromToken();
-      })
-      .catch((err) => {
-        setUser(UserState.error());
-      });
+  // update user object once login token response returns
+  useEffect(() => {
+    if (tokenResult && tokenResult.isSuccess) {
+      setUser(userRepo.getSelf());
+    }
+  }, [tokenResult]);
+
+  const login = (username: string, password: string) => {
+    setTokenResult(userRepo.getToken(username, password));
   };
 
   const logout = async () => {
-    await userRepo
-      .revokeToken()
-      .mutateAsync("")
-      .then((res) => {
-        localStorage.setItem(Constants.TOKEN, null);
-        setUser(UserState.error());
-      });
-  };
-
-  const userFromToken = () => {
-    setUser(UserState.loading());
-    if (localStorage.getItem(Constants.TOKEN) !== null) {
-      userRepo
-        .getSelf()
-
-        .then((res: User) => {
-          setUser(UserState.success(res));
-          console.log("GetUserFromToken: User found");
-        })
-        .catch((err) => {
-          setUser(UserState.error());
-        });
-    } else {
-      setUser(UserState.error());
-    }
+    userRepo.revokeToken();
+    setUser(
+      // TODO abstract to util file if it works
+      useQuery(["error"], () => {
+        // You can hard code an error by returning an object with an 'error' property
+        return { error: "An error occurred" };
+      })
+    );
   };
 
   const createUser = async (
@@ -76,25 +68,18 @@ export default function UserProvider({
     username: string,
     password: string
   ) => {
-    await userRepo
-      .createUser(email, username, password)
-      .mutateAsync("")
-      .then(async (res: User) => {
-        await login(username, password);
-      })
-      .catch((err) => {
-        setUser(UserState.error());
-      });
+    setUser(userRepo.createUser(email, username, password));
   };
 
   const deleteUser = async () => {
-    await userRepo
-      .deleteSelf()
-      .mutateAsync("")
-      .then(() => {
-        setUser(UserState.error());
-        localStorage.setItem(Constants.TOKEN, null);
-      });
+    userRepo.deleteSelf();
+    setUser(
+      // TODO abstract to util file if it works
+      useQuery(["error"], () => {
+        // You can hard code an error by returning an object with an 'error' property
+        return { error: "An error occurred" };
+      })
+    );
   };
 
   return (
@@ -103,7 +88,6 @@ export default function UserProvider({
         user,
         login,
         logout,
-        userFromToken,
         createUser,
         deleteUser,
       }}

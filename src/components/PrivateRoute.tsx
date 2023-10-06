@@ -1,20 +1,19 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useRepo } from "../contexts/RepoProvider";
-import { UserRepository } from "../data/repositories/UserRepository";
-import React from "react";
+import { useUser } from "../contexts/UserProvider";
+import { PropsWithChildren, ReactNode } from "react";
 
 export default function PrivateRoute({
   children,
 }: {
   children: React.ReactElement;
 }) {
-  const { userRepo }: { userRepo: UserRepository } = useRepo();
-  const userResult = userRepo.getSelf();
+  const { user } = useUser();
   const location = useLocation();
 
-  if (userResult.isLoading) {
+  if (user.isLoading) {
     return null;
-  } else if (userResult.isSuccess) {
+  } else if (user.isSuccess) {
     return children;
   } else {
     const url = location.pathname + location.search + location.hash;

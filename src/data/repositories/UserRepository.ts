@@ -1,21 +1,26 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { useMutation, UseMutationResult } from "react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  UseQueryResult,
+} from "react-query";
 import ApiClient from "../../ApiClient";
-import { useRepo } from "../../contexts/RepoProvider";
 import { Token } from "../models/Token";
 import { User } from "../models/User";
+import { QueryClient } from "@tanstack/react-query";
 
 export class UserRepository {
   api: ApiClient;
-  constructor() {
-    const { api } = useRepo();
+  queryClient: QueryClient;
+  constructor(api: ApiClient, queryClient: QueryClient) {
     this.api = api;
+    this.queryClient = queryClient;
   }
 
   getSelf: () => UseQueryResult<User> = () =>
     useQuery({
       queryKey: ["self"],
-      queryFn: () => this.api.get("/user/self/").then((res) => res.data),
+      queryFn: () => this.api.get("/user/self/"),
     });
 
   getToken: (username: string, password: string) => UseMutationResult<Token> = (
@@ -36,12 +41,18 @@ export class UserRepository {
             }
           )
           .then((res) => res.data),
+      onSuccess: (token: Token) => {
+        localStorage.setItem(Constants.TOKEN, token.sessionToken);
+      },
     });
 
   revokeToken: () => UseMutationResult = () =>
     useMutation({
       mutationKey: [`logout`],
       mutationFn: () => this.api.delete("/token/"),
+      onSuccess: () => {
+        localStorage.removeItem(Constants.TOKEN);
+      },
     });
 
   createUser: (
@@ -69,5 +80,8 @@ export class UserRepository {
     useMutation({
       mutationKey: [`delete user`],
       mutationFn: () => this.api.delete("/user/"),
+      onSuccess: () => {
+        localStorage.removeItem(Constants.TOKEN);
+      },
     });
 }

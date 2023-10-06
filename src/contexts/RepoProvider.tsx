@@ -1,21 +1,19 @@
-import React, { createContext, useContext } from "react";
-import { UserRepository } from "../data/repositories/UserRepository";
+import { createContext, useContext } from "react";
 import { HappinessRepository } from "../data/repositories/HappinessRepository";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { UserRepository } from "../data/repositories/UserRepository";
 import ApiClient from "../ApiClient";
 
 // For TypeScript, update this everytime we add a repository
 interface Repositories {
-  api: ApiClient;
   userRepo: UserRepository;
   happinessRepo: HappinessRepository;
 }
 
 // Initializes all repos
+const api = new ApiClient();
 const repos = {
-  api: new ApiClient(),
-  userRepo: new UserRepository(),
-  happinessRepo: new HappinessRepository(),
+  userRepo: new UserRepository(api),
+  happinessRepo: new HappinessRepository(api),
 };
 
 // Provides context
@@ -26,13 +24,7 @@ export default function RepoProvider({
 }: {
   children: React.ReactElement;
 }) {
-  const queryClient = new QueryClient();
-
-  return (
-    <RepoContext.Provider value={repos}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </RepoContext.Provider>
-  );
+  return <RepoContext.Provider value={repos}>{children}</RepoContext.Provider>;
 }
 
 // Gives repos to children

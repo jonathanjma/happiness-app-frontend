@@ -1,18 +1,17 @@
 import { Navigate } from "react-router-dom";
 import { useRepo } from "../contexts/RepoProvider";
-import React from "react";
+import { useUser } from "../contexts/UserProvider";
 
 export default function PublicRoute({
   children,
 }: {
   children: React.ReactElement;
 }) {
-  const { userRepo } = useRepo();
-  const userResult = userRepo.getSelf();
+  const { user } = useUser();
 
-  if (userResult.isLoading) {
+  if (user.isLoading) {
     return null;
-  } else if (userResult.isSuccess) {
+  } else if (user.isSuccess) {
     return <Navigate to="/home" />;
   } else {
     return children;

@@ -1,88 +1,32 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HappinessRepositoryImpl } from "./data/repositories/HappinessRepository";
-import Entries from "./pages/Entries";
 import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import RepoProvider from "./contexts/RepoProvider";
+import UserProvider from "./contexts/UserProvider";
+import Entries from "./pages/Entries";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
+import SignIn from "./pages/SignIn";
 
 export default function App() {
-  const happinessRepository = new HappinessRepositoryImpl();
-  const queryClient = new QueryClient();
-
   useEffect(() => {
     // @ts-ignore
     import("preline");
   }, []);
 
-  const privateRoutes = (
-    <Routes>
-      <Route
-        path="/home"
-        element={USE_NEW_UI ? <ScrollableCalendar /> : <SubmitHappiness />}
-      />
-      <Route
-        path="/statistics"
-        element={
-          <div className={bgStyle}>
-            <Statistics />
-          </div>
-        }
-      />
-      <Route
-        path="/profile/:userID"
-        element={
-          <div className={bgStyle}>
-            <Profile />
-          </div>
-        }
-      />
-      <Route
-        path="/groups"
-        element={
-          <div className={bgStyle}>
-            {USE_NEW_UI ? <NewUserGroups /> : <UserGroups />}
-          </div>
-        }
-      />
-      <Route
-        path="/groups/:groupID"
-        element={
-          <div className={bgStyle}>{USE_NEW_UI ? <NewGroup /> : <Group />}</div>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <div className={bgStyle}>
-            <Settings />
-          </div>
-        }
-      />
-      <Route
-        path="/history/:userID"
-        element={
-          <div className={bgStyle}>
-            <History />
-          </div>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
-  );
-
   return (
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
+      <RepoProvider>
         <UserProvider>
           <Routes>
             <Route
               path="/"
               element={
                 <PublicRoute>
-                  <Welcome />
+                  <SignIn />
                 </PublicRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/reset-pass"
               element={
                 <PublicRoute>
@@ -97,27 +41,27 @@ export default function App() {
                   <ResetPassword newPassword={true} />
                 </PublicRoute>
               }
-            />
+            /> */}
             <Route
               path="*"
               element={
                 <PrivateRoute>
-                  <Sidebar element={privateRoutes} />
+                  <Routes>
+                    <Route path="/home" element={<Entries />} />
+                    {/* <Route path="/statistics" element={<Statistics />} /> */}
+                    {/* <Route path="/profile/:userID" element={<Profile />} /> */}
+                    {/* <Route path="/groups" element={<UserGroups />} /> */}
+                    {/* <Route path="/groups/:groupID" element={<Group />} /> */}
+                    {/* <Route path="/settings" element={<Settings />} /> */}
+                    {/* <Route path="/history/:userID" element={<History />} /> */}
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
                 </PrivateRoute>
               }
             />
           </Routes>
         </UserProvider>
-      </QueryClientProvider>
+      </RepoProvider>
     </BrowserRouter>
   );
-
-  // return (
-  //   <QueryClientProvider client={queryClient}>
-  //     <div className="h-screen w-full">
-  //       <Entries happinessRepository={happinessRepository} />
-  //       <p className="text-black">Hello world!</p>
-  //     </div>
-  //   </QueryClientProvider>
-  // );
 }
