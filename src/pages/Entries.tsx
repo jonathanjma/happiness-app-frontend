@@ -9,5 +9,5 @@ export default function Entries({
   happinessRepository: HappinessRepository;
 }) {
   const { data } = happinessRepository.getHappiness();
-  return <p className="text-white">Hello world!</p>;
+  return <p className="text-black">Hello world!</p>;
 }
