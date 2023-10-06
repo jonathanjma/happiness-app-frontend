@@ -1,7 +1,15 @@
-import { UseQueryResult } from "@tanstack/react-query";
-import { Happiness } from "../models/Happiness";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-export interface HappinessRepository {
-  getHappiness: () => UseQueryResult<Happiness, unknown>;
-  getHappinessByDay: (d: Date) => UseQueryResult<Happiness, unknown>;
+export class HappinessRepository {
+  getHappiness = () =>
+    useQuery({
+      queryKey: ["test"],
+      queryFn: () => axios.get("/user/self").then((res) => res.data), // TODO axios goes here
+    });
+  getHappinessByDay = () =>
+    useQuery({
+      queryKey: ["test"],
+      queryFn: () => axios.get("/users").then((res) => res.data), // TODO axios goes here
+    });
 }
