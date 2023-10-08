@@ -7,9 +7,11 @@ export default function PublicRoute({
   children: React.ReactElement;
 }) {
   const { user } = useUser();
-
+  console.log(`user: loading ${user.isLoading} error ${user.isError} success ${user.isSuccess}`);
   if (user.isLoading) {
-    return null;
+    return <div className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+      <span className="sr-only">Loading...</span>
+    </div>;
   } else if (user.isSuccess) {
     return <Navigate to="/home" />;
   } else {
