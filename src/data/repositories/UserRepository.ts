@@ -6,7 +6,6 @@ import { Token } from "../models/Token";
 import { User } from "../models/User";
 
 export default interface UserRepository {
-  user: UseQueryResult<User>;
   getSelf: () => UseQueryResult<User>;
   getToken: (username: string, password: string) => UseMutationResult<Token>;
   revokeToken: () => UseMutationResult;

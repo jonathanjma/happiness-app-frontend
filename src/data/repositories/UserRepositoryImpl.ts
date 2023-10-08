@@ -8,18 +8,17 @@ import { useApi } from "../../contexts/ApiProvider";
 import { Token } from "../models/Token";
 import { User } from "../models/User";
 import { Constants } from "../../constants/constants";
+import { useState } from "react";
+import UserRepository from "./UserRepository";
 
-export default function UserRepositoryImpl() {
+export default function UserRepositoryImpl(): UserRepository {
   const { api } = useApi();
   const getSelf: () => UseQueryResult<User> = () =>
     useQuery({
       queryKey: ["self"],
       queryFn: () => api.get("/user/self/"),
+      retry: 0
     });
-
-  // TODO get self is constantly being recalled, but we only want it to be called once.
-  console.log("user happening");
-  const user = getSelf();
 
   const getToken: (
     username: string,
@@ -83,5 +82,5 @@ export default function UserRepositoryImpl() {
       },
     });
 
-  return { user, getSelf, getToken, createUser, revokeToken, deleteSelf };
+  return { getSelf, getToken, createUser, revokeToken, deleteSelf };
 };
