@@ -1,4 +1,4 @@
-import { useUser } from "../contexts/UserProvider";
+import useUser from '../data/repositories/UserRepositoryImpl';
 
 export default function Entries() {
   const { user } = useUser();

@@ -1,6 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useRepo } from "../contexts/RepoProvider";
-import { useUser } from "../contexts/UserProvider";
+import useUser from "../data/repositories/UserRepositoryImpl";
 
 export default function PublicRoute({
   children,

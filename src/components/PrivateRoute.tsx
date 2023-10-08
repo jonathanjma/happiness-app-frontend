@@ -1,7 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useRepo } from "../contexts/RepoProvider";
-import { useUser } from "../contexts/UserProvider";
-import { PropsWithChildren, ReactNode } from "react";
+import useUser from "../data/repositories/UserRepositoryImpl";
 
 export default function PrivateRoute({
   children,

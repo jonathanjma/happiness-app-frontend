@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { useRepo } from '../../contexts/RepoProvider';
+import { useState } from 'react';
+import useUser from '../../data/repositories/UserRepositoryImpl';
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const {userRepo} = useRepo();
+  const { getToken } = useUser();
   return (
     <div>
-      <p>username</p>
+      <p className='text-black'>username</p>
       <input type='text' onChange={(e) => setUsername(e.target.value)} />
       <p>Password</p>
       <input type='text' onChange={(e) => setPassword(e.target.value)} />
-      <button  onClick={() => userRepo.getToken(username, password)}/>
+      <button onClick={() => getToken(username, password)} />
     </div>
-  )
+  );
 }

@@ -1,3 +1,3 @@
-enum Constants {
+export enum Constants {
   TOKEN = "token",
 }
