@@ -17,7 +17,8 @@ export default function UserRepositoryImpl(): UserRepository {
     useQuery({
       queryKey: ["self"],
       queryFn: () => api.get("/user/self/"),
-      retry: 0
+      retry: 0,
+      refetchOnWindowFocus: false
     });
 
   const getToken: (
