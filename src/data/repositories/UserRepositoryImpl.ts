@@ -17,6 +17,8 @@ export default function UserRepositoryImpl() {
       queryFn: () => api.get("/user/self/"),
     });
 
+  // TODO get self is constantly being recalled, but we only want it to be called once.
+  console.log("user happening");
   const user = getSelf();
 
   const getToken: (
