@@ -9,7 +9,6 @@ export default function PublicRoute({
   const { getSelf } = useUser();
   const user = getSelf();
 
-  console.log(`user: ${user.status}`);
   if (user.isLoading) {
     return <div className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
       <span className="sr-only">Loading...</span>
