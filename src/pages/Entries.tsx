@@ -1,14 +1,14 @@
-import useUser from '../data/repositories/UserRepositoryImpl';
+import { useUser } from "../contexts/UserProvider";
 
 export default function Entries() {
   const { user } = useUser();
 
   return (
     <div>
-      <p className="text-black">{user.data?.username}</p>
-      <p className="text-black">{user.data?.email}</p>
-      <p className="text-black">{user.data?.created.toDateString()}</p>
-      <img src={user.data?.profilePicture}></img>
+      <p className="text-black">{user!.username}</p>
+      <p className="text-black">{user!.email}</p>
+      <p className="text-black">{user!.created}</p>
+      <img src={user!.profilePicture}></img>
     </div>
   );
 }

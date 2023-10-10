@@ -5,6 +5,7 @@ import PublicRoute from "./components/PublicRoute";
 import Entries from "./pages/Entries";
 import SignIn from "./pages/SignIn";
 import ApiProvider from "./contexts/ApiProvider";
+import UserProvider from "./contexts/UserProvider";
 
 export default function App() {
   useEffect(() => {
@@ -15,16 +16,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <ApiProvider>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <PublicRoute>
-                <SignIn />
-              </PublicRoute>
-            }
-          />
-          {/* <Route
+        <UserProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PublicRoute>
+                  <SignIn />
+                </PublicRoute>
+              }
+            />
+            {/* <Route
               path="/reset-pass"
               element={
                 <PublicRoute>
@@ -40,26 +42,26 @@ export default function App() {
                 </PublicRoute>
               }
             /> */}
-          <Route
-            path="*"
-            element={
-              <PrivateRoute>
-                <Routes>
-                  <Route path="/home" element={<Entries />} />
-                  {/* <Route path="/statistics" element={<Statistics />} /> */}
-                  {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                  {/* <Route path="/groups" element={<UserGroups />} /> */}
-                  {/* <Route path="/groups/:groupID" element={<Group />} /> */}
-                  {/* <Route path="/settings" element={<Settings />} /> */}
-                  {/* <Route path="/history/:userID" element={<History />} /> */}
-                  <Route path="*" element={<Navigate to="/" />} />
-                </Routes>
-              </PrivateRoute>
-            }
-          />
-        </Routes>
+            <Route
+              path="*"
+              element={
+                <PrivateRoute>
+                  <Routes>
+                    <Route path="/home" element={<Entries />} />
+                    {/* <Route path="/statistics" element={<Statistics />} /> */}
+                    {/* <Route path="/profile/:userID" element={<Profile />} /> */}
+                    {/* <Route path="/groups" element={<UserGroups />} /> */}
+                    {/* <Route path="/groups/:groupID" element={<Group />} /> */}
+                    {/* <Route path="/settings" element={<Settings />} /> */}
+                    {/* <Route path="/history/:userID" element={<History />} /> */}
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </UserProvider>
       </ApiProvider>
-
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }

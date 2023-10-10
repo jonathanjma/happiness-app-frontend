@@ -10,7 +10,7 @@ export default class ApiClient {
       url: BASE_API_URL + "/api" + options.url,
       params: new URLSearchParams(options.query),
       headers: {
-        Authorization: "Bearer " + localStorage.getItem(Constants.TOKEN),
+        ...(localStorage.getItem(Constants.TOKEN) && { Authorization: "Bearer " + localStorage.getItem(Constants.TOKEN) }),
         ...options.headers,
       },
       data: options.body,

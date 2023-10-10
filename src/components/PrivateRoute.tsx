@@ -1,20 +1,18 @@
-import { Navigate, useLocation } from "react-router-dom";
-import useUser from "../data/repositories/UserRepositoryImpl";
+import { Navigate } from "react-router-dom";
+import { useUser } from "../contexts/UserProvider";
+import { User } from "../data/models/User";
 
 export default function PrivateRoute({
   children,
 }: {
   children: React.ReactElement;
 }) {
-  const { user } = useUser();
-  const location = useLocation();
+  let { user } = useUser();
 
-  if (user.isLoading) {
-    return null;
-  } else if (user.isSuccess) {
-    return children;
-  } else {
+  if (user === undefined) {
     const url = location.pathname + location.search + location.hash;
     return <Navigate to="/" state={{ next: url }} />;
+  } else {
+    return children;
   }
 }
