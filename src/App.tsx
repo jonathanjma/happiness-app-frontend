@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
-import Entries from "./pages/Entries";
-import SignIn from "./pages/SignIn";
+import Entries from "./pages/Entries/Entries";
+import SignIn from "./pages/SignIn/SignIn";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 
@@ -62,6 +62,6 @@ export default function App() {
           </Routes>
         </UserProvider>
       </ApiProvider>
-    </BrowserRouter >
+    </BrowserRouter>
   );
 }
