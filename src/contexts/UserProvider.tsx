@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useApi } from "./ApiProvider";
-import { useQuery } from "react-query";
 import { User } from "../data/models/User";
-import { Constants } from "../constants/constants";
+import { Constants } from "../constants";
 
 interface ContextUser {
   user: User | undefined;
@@ -14,10 +13,10 @@ interface ContextUser {
 
 const UserContext = createContext<ContextUser>({
   user: undefined,
-  createUser: (_: string, __: string) => { },
-  loginUser: (_: string, __: string) => { },
-  logoutUser: () => { },
-  deleteUser: () => { }
+  createUser: (_: string, __: string) => {},
+  loginUser: (_: string, __: string) => {},
+  logoutUser: () => {},
+  deleteUser: () => {},
 });
 
 /**
@@ -28,7 +27,11 @@ const UserContext = createContext<ContextUser>({
  * deleting the user, logging out, and registering a user.
  */
 
-export default function UserProvider({ children }: { children: React.ReactElement; }) {
+export default function UserProvider({
+  children,
+}: {
+  children: React.ReactElement;
+}) {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { api } = useApi();
 
@@ -42,31 +45,38 @@ export default function UserProvider({ children }: { children: React.ReactElemen
   }, [api]);
 
   const createUser = (username: string, email: string, password: string) => {
-    api.post("/user/", {
-      email: email,
-      password: password,
-      username: username
-    }).then((res) => {
-      if (res.status == 201) {
-        setUser(res.data);
-      }
-    });
+    api
+      .post("/user/", {
+        email: email,
+        password: password,
+        username: username,
+      })
+      .then((res) => {
+        if (res.status == 201) {
+          setUser(res.data);
+        }
+      });
   };
-
 
   const loginUser = (username: string, password: string) => {
     console.log("login called");
-    api.post("/token/", {}, {
-      headers: {
-        Authorization: "Basic " + btoa(`${username}:${password}`),
-      }
-    }).then(async (res) => {
-      if (res.status == 201) {
-        localStorage.setItem(Constants.TOKEN, res.data["session_token"]);
-        setUser(res.data);
-        await getUserFromToken();
-      }
-    });
+    api
+      .post(
+        "/token/",
+        {},
+        {
+          headers: {
+            Authorization: "Basic " + btoa(`${username}:${password}`),
+          },
+        },
+      )
+      .then(async (res) => {
+        if (res.status == 201) {
+          localStorage.setItem(Constants.TOKEN, res.data["session_token"]);
+          setUser(res.data);
+          await getUserFromToken();
+        }
+      });
   };
 
   const logoutUser = () => {
@@ -94,13 +104,13 @@ export default function UserProvider({ children }: { children: React.ReactElemen
         loginUser,
         logoutUser,
         createUser,
-        deleteUser
+        deleteUser,
       }}
     >
       {children}
     </UserContext.Provider>
   );
-};
+}
 
 export function useUser(): ContextUser {
   return useContext<ContextUser>(UserContext);
