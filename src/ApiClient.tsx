@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Constants } from "./constants/constants";
+import { Constants } from "./constants";
 
 const BASE_API_URL = "https://happiness-app-backend.herokuapp.com";
 
@@ -10,7 +10,9 @@ export default class ApiClient {
       url: BASE_API_URL + "/api" + options.url,
       params: new URLSearchParams(options.query),
       headers: {
-        ...(localStorage.getItem(Constants.TOKEN) && { Authorization: "Bearer " + localStorage.getItem(Constants.TOKEN) }),
+        ...(localStorage.getItem(Constants.TOKEN) && {
+          Authorization: "Bearer " + localStorage.getItem(Constants.TOKEN),
+        }),
         ...options.headers,
       },
       data: options.body,
