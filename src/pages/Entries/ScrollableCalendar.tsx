@@ -14,7 +14,13 @@ interface HappinessPagination {
   page: number;
 }
 
-export default function ScrollableCalendar() {
+export default function ScrollableCalendar({
+  selectedEntry,
+  setSelectedEntry,
+}: {
+  selectedEntry: Happiness | undefined;
+  setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+}) {
   const { api } = useApi();
 
   // use negative ids for days with no happiness entry
@@ -101,7 +107,7 @@ export default function ScrollableCalendar() {
   );
 
   return (
-    <div className="h-full w-[130px] overflow-auto ms-2">
+    <div className="h-full w-[130px] overflow-auto ms-2" id="scrollableDiv">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -114,13 +120,14 @@ export default function ScrollableCalendar() {
               next={() => fetchNextPage()}
               hasMore={!!hasNextPage}
               loader={loadingSpinner}
+              scrollableTarget="scrollableDiv"
             >
               {allEntries!.map((entry) => (
                 <HappinessCard
                   key={entry.id}
                   data={entry}
-                  selected={false}
-                  click={() => console.log(entry.id)}
+                  selected={selectedEntry?.id === entry.id}
+                  click={() => setSelectedEntry(entry)}
                 />
               ))}
             </InfiniteScroll>
