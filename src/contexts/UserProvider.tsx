@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useApi } from "./ApiProvider";
 import { User } from "../data/models/User";
 import { Constants } from "../constants";
+import { Token } from "../data/models/Token";
 
 interface ContextUser {
   user: User | undefined;
@@ -36,17 +37,19 @@ export default function UserProvider({
   const { api } = useApi();
 
   const getUserFromToken = async () => {
-    const res = await api.get("/user/self/");
+    const res = await api.get<User>("/user/self/");
     setUser(res.data);
   };
 
   useEffect(() => {
-    getUserFromToken();
+    (async () => {
+      await getUserFromToken();
+    })();
   }, [api]);
 
   const createUser = (username: string, email: string, password: string) => {
     api
-      .post("/user/", {
+      .post<User>("/user/", {
         email: email,
         password: password,
         username: username,
@@ -59,9 +62,8 @@ export default function UserProvider({
   };
 
   const loginUser = (username: string, password: string) => {
-    console.log("login called");
     api
-      .post(
+      .post<Token>(
         "/token/",
         {},
         {
@@ -72,15 +74,14 @@ export default function UserProvider({
       )
       .then(async (res) => {
         if (res.status == 201) {
-          localStorage.setItem(Constants.TOKEN, res.data["session_token"]);
-          setUser(res.data);
+          localStorage.setItem(Constants.TOKEN, res.data.sessionToken);
           await getUserFromToken();
         }
       });
   };
 
   const logoutUser = () => {
-    api.delete("/token/").then((res) => {
+    api.delete<void>("/token/").then((res) => {
       if (res.status == 204) {
         setUser(undefined);
         localStorage.removeItem(Constants.TOKEN);
@@ -89,7 +90,7 @@ export default function UserProvider({
   };
 
   const deleteUser = () => {
-    api.delete("/user/").then((res) => {
+    api.delete<void>("/user/").then((res) => {
       if (res.status == 204) {
         setUser(undefined);
         localStorage.removeItem(Constants.TOKEN);
