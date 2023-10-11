@@ -4,15 +4,23 @@ import { Happiness } from "../../data/models/Happiness";
 
 export default function HappinessCard({
   data,
+  selected,
   click,
 }: {
   data: Happiness;
+  selected: boolean;
   click: () => void;
 }) {
   const date = new Date(data.timestamp + "T00:00:00");
+  let classes = "";
+  if (date.toLocaleDateString("sv") === new Date().toLocaleDateString("sv")) {
+    classes = "bg-light_yellow";
+  } else if (selected) {
+    classes = "border-0 bg-yellow shadow-[0_2px_20px_0_rgba(0,0,0,0.15)]";
+  }
 
   return (
-    <Card className="my-2">
+    <Card className={"my-2 " + classes}>
       <div className="p-2" onClick={click}>
         <p className="text-sm text-dark_gray mb-6">
           {date.toLocaleString("en-us", { weekday: "long" })}

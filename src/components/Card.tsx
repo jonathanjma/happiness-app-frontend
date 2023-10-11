@@ -10,7 +10,7 @@ export default function Card({
   return (
     <div
       className={
-        "flex flex-col bg-white border rounded-2xl border-dark_gray " +
+        "flex flex-col bg-white border rounded-2xl border-light_gray " +
         className
       }
     >
