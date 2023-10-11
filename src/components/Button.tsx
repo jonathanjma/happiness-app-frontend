@@ -1,5 +1,7 @@
+import Row from "./layout/Row";
+
 export default function Button({
-  icon = <></>,
+  icon,
   label,
 }: {
   icon?: React.ReactElement;
@@ -16,6 +18,7 @@ export default function Button({
           <div className="w-2.5" />
         </>
       )}
+      {/* TODO label is not clickable */}
       <label className=" text-secondary font-semibold">{label}</label>
     </button>
   );
