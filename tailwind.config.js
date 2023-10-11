@@ -17,6 +17,15 @@ module.exports = {
       light_yellow: "#F6F0E0",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
+      secondary: "#664810",
+    },
+    extend: {
+      padding: {
+        4.5: "18px",
+      },
+      width: {
+        2.5: "10px",
+      },
     },
   },
   content: ["./src/**/*.{js,ts,jsx,tsx}", "node_modules/preline/dist/*.js"],
