@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Happiness } from "../../data/models/Happiness";
 import Spinner from "../../components/Spinner";
 
+// The entries page: contains scrollable calendar and widget for viewing the details of each happiness entry
 export default function Entries() {
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
 

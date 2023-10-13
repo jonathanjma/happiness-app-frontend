@@ -5,15 +5,10 @@ import HappinessCard from "./HappinessCard";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
-import { Happiness } from "../../data/models/Happiness";
+import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 
-// type of the paginated happiness data structure used for infinite scroll
-interface HappinessPagination {
-  data: Happiness[];
-  page: number;
-}
-
+// Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
   setSelectedEntry,
@@ -92,18 +87,11 @@ export default function ScrollableCalendar({
   // combine all entries in React Query pages object
   const allEntries = useMemo(
     () =>
-      data?.pages.reduce((acc: Happiness[], page) => {
-        return [...acc, ...page.data];
-      }, []),
+      data?.pages.reduce(
+        (acc: Happiness[], page) => [...acc, ...page.data],
+        [],
+      ),
     [data],
-  );
-
-  // used when InfiniteScroll component is loading
-  const loadingSpinner = (
-    <div className="m-3">
-      <Spinner />
-      <p className="mt-2">Loading entries...</p>
-    </div>
   );
 
   return (
@@ -119,7 +107,7 @@ export default function ScrollableCalendar({
               dataLength={allEntries ? allEntries.length : 0}
               next={() => fetchNextPage()}
               hasMore={!!hasNextPage}
-              loader={loadingSpinner}
+              loader={<Spinner className="m-3" text="Loading entries..." />}
               scrollableTarget="scrollableDiv"
             >
               {allEntries!.map((entry) => (

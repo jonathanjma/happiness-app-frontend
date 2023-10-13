@@ -2,6 +2,7 @@ import * as React from "react";
 import Card from "../../components/Card";
 import { Happiness } from "../../data/models/Happiness";
 
+// Shows the data and score of a happiness entry in the scrollable calendar
 export default function HappinessCard({
   data,
   selected,

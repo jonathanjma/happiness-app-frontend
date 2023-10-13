@@ -6,3 +6,9 @@ export interface Happiness {
   timestamp: string;
   // author: User;
 }
+
+// type of the paginated happiness data structure used for infinite scroll
+export interface HappinessPagination {
+  data: Happiness[];
+  page: number;
+}

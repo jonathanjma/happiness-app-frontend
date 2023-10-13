@@ -1,5 +1,6 @@
 import React from "react";
 
+// Simple card
 export default function Card({
   className,
   children,
