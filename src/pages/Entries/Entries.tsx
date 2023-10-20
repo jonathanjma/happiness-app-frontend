@@ -2,6 +2,9 @@ import Column from "../../components/layout/Column";
 import { useUser } from "../../contexts/UserProvider";
 import EntryCard from "./EntryCard";
 
+/**
+ * The page for displaying entries with the scrollable calendar
+ */
 export default function Entries() {
   const { user } = useUser();
 

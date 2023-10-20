@@ -2,6 +2,12 @@ import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { Comment } from "../../data/models/Comment";
 
+/**
+ * The type of comment card to display on the big entry card. Text styles are
+ * not in-place yet since we are waiting on a fix from design.
+ * @param comment the comment to display in the card
+ * @returns
+ */
 export default function CommentCard({ comment }: { comment: Comment }) {
   return (
     <Row className="py-4 px-6">
