@@ -1,5 +1,3 @@
-import Row from "./layout/Row";
-
 export default function Button({
   icon,
   label,

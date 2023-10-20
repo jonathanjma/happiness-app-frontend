@@ -1,3 +1,4 @@
+import Column from "../../components/layout/Column";
 import { useUser } from "../../contexts/UserProvider";
 import EntryCard from "./EntryCard";
 
@@ -5,12 +6,25 @@ export default function Entries() {
   const { user } = useUser();
 
   return (
-    <div>
-      <p className="text-black">{user!.username}</p>
-      <p className="text-black">{user!.email}</p>
-      <p className="text-black">{user!.created}</p>
-      <img src={user!.profilePicture}></img>
-      <EntryCard />
-    </div>
+    <Column className="h-screen">
+      <div className=" py-4 px-8 h-full">
+        <EntryCard
+          happiness={{
+            score: 1,
+            comment: "hello",
+            author: {
+              id: 1,
+              username: "Fiddle01",
+              email: "zachary.seidner@gmail.com",
+              created: "",
+              profilePicture:
+                "https://s3.amazonaws.com/polleverywhere-images/f2f946dad2caa071aba28de1c5da8360d237e7a4af3b622dc2ece8a7f2726700.png",
+              settings: [],
+            },
+          }}
+          className="max-h-[100%]"
+        />
+      </div>
+    </Column>
   );
 }

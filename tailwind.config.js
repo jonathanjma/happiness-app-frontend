@@ -14,6 +14,7 @@ module.exports = {
       black: "#212121",
       dark_gray: "#575F68",
       light_gray: "#808080",
+      "gray-200": "#E4E0E0",
       light_yellow: "#F6F0E0",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
@@ -25,6 +26,19 @@ module.exports = {
       },
       width: {
         2.5: "10px",
+      },
+      height: {
+        0.25: "1px",
+        50: "200px",
+      },
+      borderWidth: {
+        1: "1px",
+      },
+      gap: {
+        0.25: "1px",
+      },
+      margin: {
+        0.25: "1px",
       },
     },
   },
