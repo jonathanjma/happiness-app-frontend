@@ -13,8 +13,10 @@ export default function Entries() {
       <div className=" py-4 px-8 h-full">
         <EntryCard
           happiness={{
-            score: 1,
+            id: 1,
+            value: 1,
             comment: "hello",
+            timestamp: Date.now().toString(),
             author: {
               id: 1,
               username: "Fiddle01",

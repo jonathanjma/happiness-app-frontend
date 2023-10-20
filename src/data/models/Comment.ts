@@ -1,4 +1,4 @@
-import { SimpleUser } from "./SimpleUser";
+import { SimpleUser } from "./User";
 
 export interface Comment {
   id: number;

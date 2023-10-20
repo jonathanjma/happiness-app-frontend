@@ -8,3 +8,9 @@ export interface User {
   profilePicture: string;
   settings: Setting[];
 }
+
+export interface SimpleUser {
+  id: number;
+  username: string;
+  profilePicture: string;
+}
