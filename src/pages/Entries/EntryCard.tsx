@@ -109,6 +109,7 @@ export default function EntryCard({
                   id: 1,
                   happinessId: 2,
                   author: {
+                    id: 1,
                     username: "Test",
                     profilePicture:
                       "https://daily.jstor.org/wp-content/uploads/2015/05/standardizedtests.jpg",
