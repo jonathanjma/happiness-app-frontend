@@ -103,7 +103,7 @@ export default function EntryCard({
         <div className="overflow-auto" ref={commentsContainer}>
           {Array(5)
             .fill(0)
-            .map((_, i) => (
+            .map((_, __) => (
               <CommentCard
                 comment={{
                   id: 1,

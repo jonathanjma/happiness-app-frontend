@@ -97,7 +97,7 @@ export default function ScrollableCalendar({
   );
 
   return (
-    <div className="h-full w-[130px] overflow-auto ms-2" id="scrollableDiv">
+    <div className="h-full w-[130px] overflow-auto" id="scrollableDiv">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (

@@ -20,7 +20,7 @@ export default function HappinessCard({
   }
 
   return (
-    <Card className={"my-2 " + classes}>
+    <Card className={"my-2 min-w-[130px] " + classes}>
       <div className="p-2" onClick={click}>
         <p className="text-sm text-dark_gray mb-6">
           {date.toLocaleString("en-us", { weekday: "long" })}
