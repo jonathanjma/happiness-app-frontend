@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Row from "../../components/layout/Row";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
@@ -9,14 +9,13 @@ import ScrollableCalendar from "./ScrollableCalendar";
  * The page for displaying entries with the scrollable calendar
  */
 export default function Entries() {
-  const { user } = useUser();
   const [selectedEntry, setSelectedEntry] = useState<Happiness | undefined>(
     undefined,
   );
 
   return (
     <Row className="h-screen">
-      <div className="w-[130px] ms-8">
+      <div className="min-w-[162px] w-[162px]">
         <ScrollableCalendar
           selectedEntry={selectedEntry}
           setSelectedEntry={setSelectedEntry}
@@ -27,8 +26,8 @@ export default function Entries() {
           happiness={
             selectedEntry ?? {
               id: 1,
-              value: 1,
-              comment: "hello",
+              value: -1,
+              comment: "",
               timestamp: Date.now().toString(),
               author: {
                 id: 1,

@@ -67,7 +67,7 @@ export default function EntryCard({
         <Column>
           <h4>Public Entry</h4>
           <h5 className=" text-dark_gray">
-            {new Date().toLocaleDateString(undefined, {
+            {new Date(happiness.timestamp).toLocaleDateString(undefined, {
               month: "long",
               day: "numeric",
               year: "numeric",
@@ -79,14 +79,12 @@ export default function EntryCard({
       </Row>
       {/* Entry and score */}
       <Row className="mt-6 w-full h-1/4 ">
-        <Column className="w-20 h-20 items-center justify-center flex ">
-          <h1 className="score-text">{7.5}</h1>
+        <Column className=" min-w-[80px] h-20 items-center justify-center flex ">
+          <h1 className="score-text">{happiness.value}</h1>
         </Column>
         <div className="ml-6  h-full overflow-auto">
-          <p className=" h-50 overflow-auto">
-            {
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.Lorem ipsum dolor sit amet."
-            }
+          <p className=" h-50 overflow-auto  font-normal ">
+            {happiness.comment}
           </p>
         </div>
       </Row>

@@ -43,8 +43,6 @@ export default function ScrollableCalendar({
       end: formatDate(end),
     });
 
-    console.log("Data from " + formatDate(start) + " fetched");
-
     let itr = new Date(start);
     while (itr <= end) {
       // create empty happiness entry for submitted days
@@ -97,7 +95,7 @@ export default function ScrollableCalendar({
   );
 
   return (
-    <div className="h-full w-[130px] overflow-auto" id="scrollableDiv">
+    <div className="h-full w-[194px] overflow-auto " id="scrollableDiv">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -111,6 +109,7 @@ export default function ScrollableCalendar({
               hasMore={!!hasNextPage}
               loader={<Spinner className="m-3" text="Loading entries..." />}
               scrollableTarget="scrollableDiv"
+              className="px-8"
             >
               {allEntries!.map((entry) => (
                 <HappinessCard
