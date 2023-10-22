@@ -21,6 +21,8 @@ export default function EntryCard({
 }) {
   const commentsContainer = createRef<HTMLDivElement>();
   const [dividerOpacity, setDividerOpacity] = useState(100);
+  console.log(happiness.timestamp);
+  const dateOfHappiness = new Date(happiness.timestamp);
 
   // When the user scrolls we want the divider to fade out:
   useEffect(() => {
@@ -67,10 +69,11 @@ export default function EntryCard({
         <Column>
           <h4>Public Entry</h4>
           <h5 className=" text-dark_gray">
-            {new Date(happiness.timestamp).toLocaleDateString(undefined, {
+            {dateOfHappiness.toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
               year: "numeric",
+              timeZone: "UTC",
             })}
           </h5>
         </Column>
@@ -80,12 +83,22 @@ export default function EntryCard({
       {/* Entry and score */}
       <Row className="mt-6 w-full h-1/4 ">
         <Column className=" min-w-[80px] h-20 items-center justify-center flex ">
-          <h1 className="score-text">{happiness.value}</h1>
+          <h1 className="score-text">
+            {happiness.value === -1 ? "--" : happiness.value}
+          </h1>
         </Column>
-        <div className="ml-6  h-full overflow-auto">
-          <p className=" h-50 overflow-auto  font-normal ">
-            {happiness.comment}
-          </p>
+        <div className="ml-6  h-full overflow-auto w-full">
+          {happiness.comment === "" ? (
+            <textarea
+              placeholder="Write about your day"
+              className=" p-5 bg-gray-50 focus:outline-none rounded-lg w-full h-[225px] resize-none"
+              disabled
+            />
+          ) : (
+            <p className=" h-50 overflow-auto  font-normal ">
+              {happiness.comment}
+            </p>
+          )}
         </div>
       </Row>
       <div className="h-8" />

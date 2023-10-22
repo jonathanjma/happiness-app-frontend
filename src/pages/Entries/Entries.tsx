@@ -13,6 +13,10 @@ export default function Entries() {
     undefined,
   );
 
+  useEffect(() => {
+    console.log(selectedEntry?.timestamp);
+  }, [selectedEntry]);
+
   return (
     <Row className="h-screen">
       <div className="min-w-[162px] w-[162px]">
