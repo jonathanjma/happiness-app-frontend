@@ -1,10 +1,13 @@
-import { createRef, useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import EditIcon from "../../assets/EditIcon";
 import Button from "../../components/Button";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import { useApi } from "../../contexts/ApiProvider";
+import { Comment } from "../../data/models/Comment";
 import { Happiness } from "../../data/models/Happiness";
-import CommentCard from "./CommentCard";
+import Comments from "./Comments";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -19,28 +22,21 @@ export default function EntryCard({
   happiness: Happiness;
   className?: string;
 }) {
-  const commentsContainer = createRef<HTMLDivElement>();
+  const { api } = useApi();
   const [dividerOpacity, setDividerOpacity] = useState(100);
-  console.log(happiness.timestamp);
-  const dateOfHappiness = new Date(happiness.timestamp);
 
-  // When the user scrolls we want the divider to fade out:
-  useEffect(() => {
-    const comments = commentsContainer.current;
-    if (comments != null) {
-      const handleScroll = () => {
-        if (comments.scrollTop === 0) {
-          setDividerOpacity(100);
-        } else {
-          setDividerOpacity(0);
-        }
-      };
-      comments.addEventListener("scroll", handleScroll);
-      return () => {
-        comments.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, [commentsContainer]);
+  // Fetch comments
+  const commentsResult = useQuery<Comment[]>(
+    [`happinessComments ${happiness.id}`],
+    () => {
+      if (happiness.id >= 0) {
+        return api
+          .get<Comment[]>(`/happiness/${happiness.id}/comments`)
+          .then((res) => res.data);
+      }
+      return [];
+    },
+  );
 
   return (
     <Column
@@ -69,7 +65,7 @@ export default function EntryCard({
         <Column>
           <h4>Public Entry</h4>
           <h5 className=" text-dark_gray">
-            {dateOfHappiness.toLocaleDateString("en-US", {
+            {new Date(happiness.timestamp).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
               year: "numeric",
@@ -104,35 +100,7 @@ export default function EntryCard({
       <div className="h-8" />
       {/* Comments */}
       <Column className=" flex-1 h-0 w-full items-stretch">
-        <h5 className=" my-0.25 ">Comments (4)</h5>
-        <div
-          className={
-            "h-0.25 w-full bg-gray-200 duration-500 transition-opacity opacity-" +
-            dividerOpacity
-          }
-        />
-        <div className="overflow-auto" ref={commentsContainer}>
-          {Array(5)
-            .fill(0)
-            .map((_, __) => (
-              <CommentCard
-                comment={{
-                  id: 1,
-                  happinessId: 2,
-                  author: {
-                    id: 1,
-                    username: "Test",
-                    profilePicture:
-                      "https://daily.jstor.org/wp-content/uploads/2015/05/standardizedtests.jpg",
-                  },
-                  text: "This is such a good story haha! Every single bit about it was exactly what I had expected, and I don’t want it to change!",
-                  timestamp: new Date()
-                    .setHours(new Date().getHours() - 2)
-                    .toString(),
-                }}
-              />
-            ))}
-        </div>
+        <Comments commentsResult={commentsResult} />
       </Column>
     </Column>
   );

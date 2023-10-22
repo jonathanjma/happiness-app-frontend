@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Row from "../../components/layout/Row";
-import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
@@ -12,10 +11,6 @@ export default function Entries() {
   const [selectedEntry, setSelectedEntry] = useState<Happiness | undefined>(
     undefined,
   );
-
-  useEffect(() => {
-    console.log(selectedEntry?.timestamp);
-  }, [selectedEntry]);
 
   return (
     <Row className="h-screen">
