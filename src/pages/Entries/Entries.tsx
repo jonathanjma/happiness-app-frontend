@@ -20,7 +20,7 @@ export default function Entries() {
           setSelectedEntry={setSelectedEntry}
         />
       </div>
-      <div className=" px-8 pt-8 pb-4 h-full w-full">
+      <div className="px-8 pt-8 pb-4 h-full w-full">
         <EntryCard
           happiness={
             selectedEntry ?? {

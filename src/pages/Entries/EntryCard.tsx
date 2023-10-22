@@ -23,7 +23,6 @@ export default function EntryCard({
   className?: string;
 }) {
   const { api } = useApi();
-  const [dividerOpacity, setDividerOpacity] = useState(100);
 
   // Fetch comments
   const commentsResult = useQuery<Comment[]>(
