@@ -31,3 +31,7 @@
         @apply text-sm font-medium;
     }
 }
+/* CSS class for hiding the scrollbar */
+.scroll-hidden::-webkit-scrollbar {
+    display: none;
+}

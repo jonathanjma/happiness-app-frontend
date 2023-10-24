@@ -13,10 +13,12 @@ export default function HappinessCard({
 }) {
   const date = new Date(data.timestamp + "T00:00:00");
   let classes = "";
-  if (date.toLocaleDateString("sv") === new Date().toLocaleDateString("sv")) {
-    classes = "bg-light_yellow";
-  } else if (selected) {
+  const isToday =
+    date.toLocaleDateString("sv") === new Date().toLocaleDateString("sv");
+  if (selected) {
     classes = "border-0 bg-yellow shadow-[0_2px_20px_0_rgba(0,0,0,0.15)]";
+  } else if (isToday) {
+    classes = "bg-light_yellow";
   }
 
   return (
@@ -25,7 +27,11 @@ export default function HappinessCard({
         <p className="text-sm text-dark_gray mb-6">
           {date.toLocaleString("en-us", { weekday: "long" })}
           <br />
-          {date.toLocaleString("en-us", { month: "short", day: "numeric" })}
+          {isToday ? (
+            <span className="  text-secondary font-semibold">Today</span>
+          ) : (
+            date.toLocaleString("en-us", { month: "short", day: "numeric" })
+          )}
         </p>
         <p className="text-sm text-dark_gray">Score</p>
         <h1 className="text-dark_gray">

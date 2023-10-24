@@ -24,7 +24,7 @@ export default function Entries() {
         <EntryCard
           happiness={
             selectedEntry ?? {
-              id: 1,
+              id: -1,
               value: -1,
               comment: "",
               timestamp: Date.now().toString(),
@@ -39,7 +39,7 @@ export default function Entries() {
               },
             }
           }
-          className="max-h-[100%]"
+          className="h-full"
         />
       </div>
     </Row>

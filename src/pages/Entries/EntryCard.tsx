@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "react-query";
 import EditIcon from "../../assets/EditIcon";
 import Button from "../../components/Button";
@@ -8,6 +7,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
 import { Happiness } from "../../data/models/Happiness";
 import Comments from "./Comments";
+import { useEffect, useState } from "react";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -23,6 +23,7 @@ export default function EntryCard({
   className?: string;
 }) {
   const { api } = useApi();
+  const [editing, setEditing] = useState(false);
 
   // Fetch comments
   const commentsResult = useQuery<Comment[]>(
@@ -37,6 +38,10 @@ export default function EntryCard({
     },
   );
 
+  useEffect(() => {
+    console.log(`editing = ${editing}`);
+  }, [editing]);
+
   return (
     <Column
       className={
@@ -50,7 +55,7 @@ export default function EntryCard({
         <p
           className="clickable-text underline leading-4 hover:cursor-pointer text-secondary font-semibold"
           onClick={() => {
-            console.log("TODO navigate to journal");
+            setEditing((e) => !e);
           }}
         >
           Create a Private Entry
@@ -82,19 +87,20 @@ export default function EntryCard({
             {happiness.value === -1 ? "--" : happiness.value}
           </h1>
         </Column>
-        <div className="ml-6  h-full overflow-auto w-full">
-          {happiness.comment === "" ? (
-            <textarea
-              placeholder="Write about your day"
-              className=" p-5 bg-gray-50 focus:outline-none rounded-lg w-full h-[225px] resize-none"
-              disabled
-            />
-          ) : (
+
+        {happiness.comment === "" ? (
+          <textarea
+            placeholder="Write about your day"
+            className=" p-5 bg-gray-50 focus:outline-none rounded-lg w-full h-[225px] resize-none"
+            disabled={!editing}
+          />
+        ) : (
+          <div className="ml-6  h-full overflow-auto w-full">
             <p className=" h-50 overflow-auto  font-normal ">
               {happiness.comment}
             </p>
-          )}
-        </div>
+          </div>
+        )}
       </Row>
       <div className="h-8" />
       {/* Comments */}

@@ -81,6 +81,7 @@ export default function ScrollableCalendar({
           // return false if last page
           return lastPage.page + 1; // increment page number to fetch
         },
+        refetchOnWindowFocus: false,
       },
     );
 
@@ -94,8 +95,17 @@ export default function ScrollableCalendar({
     [data],
   );
 
+  React.useEffect(() => {
+    if (allEntries && allEntries.length > 0 && selectedEntry == null) {
+      setSelectedEntry(allEntries[0]);
+    }
+  }, [allEntries]);
+
   return (
-    <div className="h-full w-[194px] overflow-auto " id="scrollableDiv">
+    <div
+      className="h-full w-[194px] overflow-auto scroll-hidden"
+      id="scrollableDiv"
+    >
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
