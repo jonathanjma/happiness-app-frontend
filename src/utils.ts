@@ -4,3 +4,12 @@ export function formatDate(date: Date) {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+export function validateHappiness(happiness: number | undefined) {
+  return (
+    happiness !== undefined &&
+    happiness % 0.5 === 0 &&
+    happiness >= 0 &&
+    happiness <= 10
+  );
+}

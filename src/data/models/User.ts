@@ -5,11 +5,11 @@ export interface User {
   username: string;
   email: string;
   created: string;
-  profilePicture: string;
+  profile_picture: string;
   settings: Setting[];
 }
 
 export interface SimpleUser {
   username: string;
-  profilePicture: string;
+  profile_picture: string;
 }

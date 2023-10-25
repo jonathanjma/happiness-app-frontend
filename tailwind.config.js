@@ -2,6 +2,7 @@ module.exports = {
   theme: {
     fontSize: {
       /* default design font sizes and line heights */
+      xs: ["0.75rem", "1rem"] /* xs */,
       sm: ["0.875rem", "1.5rem"] /* label */,
       base: ["1rem", "1.5rem"] /* body */,
       lg: ["1.25rem", "1.5rem"] /* h5 */,
@@ -18,6 +19,8 @@ module.exports = {
       light_yellow: "#F6F0E0",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
+      brown: "#664810",
+      white: "#FFF",
     },
   },
   content: ["./src/**/*.{js,ts,jsx,tsx}", "node_modules/preline/dist/*.js"],

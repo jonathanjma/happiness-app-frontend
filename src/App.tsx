@@ -4,6 +4,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import Entries from "./pages/Entries/Entries";
 import SignIn from "./pages/SignIn/SignIn";
+import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 
@@ -47,7 +48,10 @@ export default function App() {
               element={
                 <PrivateRoute>
                   <Routes>
-                    <Route path="/home" element={<Entries />} />
+                    <Route
+                      path="/home"
+                      element={<Sidebar element={<Entries />} />}
+                    />
                     {/* <Route path="/statistics" element={<Statistics />} /> */}
                     {/* <Route path="/profile/:userID" element={<Profile />} /> */}
                     {/* <Route path="/groups" element={<UserGroups />} /> */}
