@@ -74,7 +74,7 @@ export default function UserProvider({
       )
       .then(async (res) => {
         if (res.status == 201) {
-          localStorage.setItem(Constants.TOKEN, res.data.sessionToken);
+          localStorage.setItem(Constants.TOKEN, res.data.session_token);
           await getUserFromToken();
         }
       });
