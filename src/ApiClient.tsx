@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Constants } from "./constants";
 
-const BASE_API_URL = "https://happiness-app-backend.herokuapp.com";
+const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
 
 export default class ApiClient {
   async request<T>(options: any) {
