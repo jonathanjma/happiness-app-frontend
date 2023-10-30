@@ -13,8 +13,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
-    "react-router-dom": "^6.16.0",
-    "vite-plugin-svgr": "^4.1.0"
+    "react-router-dom": "^6.16.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
@@ -22,9 +21,10 @@
     "@types/react-query": "^1.2.9",
     "@vitejs/plugin-react": "^4.1.0",
     "prettier": "^3.0.3",
-    "prettier-plugin-tailwindcss": "^0.5.5",
+    "prettier-plugin-tailwindcss": "^0.5.6",
     "typescript": "^5.2.2",
     "vitawind": "^2.2.4",
-    "vite": "^4.4.11"
+    "vite": "^4.4.11",
+    "vite-plugin-svgr": "^4.1.0"
   }
 }

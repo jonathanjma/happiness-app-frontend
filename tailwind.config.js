@@ -21,6 +21,7 @@ module.exports = {
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
       secondary: "#664810",
+      transparent: "rgba(255,255,255,0)",
     },
     extend: {
       padding: {

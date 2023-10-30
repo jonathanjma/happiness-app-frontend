@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
@@ -11,16 +11,31 @@ export default function Entries() {
   const [selectedEntry, setSelectedEntry] = useState<Happiness | undefined>(
     undefined,
   );
+  const [editing, setEditing] = useState(false);
+  const prevSelectedEntryId = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (
+      selectedEntry &&
+      prevSelectedEntryId &&
+      prevSelectedEntryId.current !== selectedEntry?.id
+    ) {
+      setEditing(false);
+    }
+    if (selectedEntry) {
+      prevSelectedEntryId.current = selectedEntry.id;
+    }
+  }, [selectedEntry]);
 
   return (
-    <Row className="h-screen">
-      <div className="min-w-[162px] w-[162px]">
+    <Row className="h-screen bg-[#FAFAFA]">
+      <div className="w-[162px] min-w-[162px]">
         <ScrollableCalendar
           selectedEntry={selectedEntry}
           setSelectedEntry={setSelectedEntry}
         />
       </div>
-      <div className="px-8 pt-8 pb-4 h-full w-full">
+      <div className="h-full w-full px-8 pb-4 pt-8">
         <EntryCard
           happiness={
             selectedEntry ?? {
@@ -40,6 +55,18 @@ export default function Entries() {
             }
           }
           className="h-full"
+          editing={editing}
+          onChangeHappinessNumber={(value) => {
+            setSelectedEntry((selected) => {
+              return selected ? { ...selected, value: value } : undefined;
+            });
+          }}
+          onChangeCommentText={(comment) => {
+            setSelectedEntry((selected) => {
+              return selected ? { ...selected, comment: comment } : undefined;
+            });
+          }}
+          setEditing={setEditing}
         />
       </div>
     </Row>

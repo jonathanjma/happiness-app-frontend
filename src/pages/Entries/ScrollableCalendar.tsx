@@ -103,7 +103,7 @@ export default function ScrollableCalendar({
 
   return (
     <div
-      className="h-full w-[194px] overflow-auto scroll-hidden"
+      className="scroll-hidden h-full w-[194px] overflow-auto"
       id="scrollableDiv"
     >
       {isLoading ? (
@@ -121,14 +121,23 @@ export default function ScrollableCalendar({
               scrollableTarget="scrollableDiv"
               className="px-8"
             >
-              {allEntries!.map((entry) => (
-                <HappinessCard
-                  key={entry.id}
-                  data={entry}
-                  selected={selectedEntry?.id === entry.id}
-                  click={() => setSelectedEntry(entry)}
-                />
-              ))}
+              {allEntries!.map((entry) =>
+                selectedEntry && entry.id === selectedEntry.id ? (
+                  <HappinessCard
+                    key={selectedEntry?.id}
+                    data={selectedEntry}
+                    click={() => {}}
+                    selected={true}
+                  />
+                ) : (
+                  <HappinessCard
+                    key={entry.id}
+                    data={entry}
+                    selected={selectedEntry?.id === entry.id}
+                    click={() => setSelectedEntry(entry)}
+                  />
+                ),
+              )}
             </InfiniteScroll>
           )}
         </>

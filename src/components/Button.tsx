@@ -1,14 +1,17 @@
 export default function Button({
   icon,
   label,
+  onClick,
 }: {
   icon?: React.ReactElement;
   label: string;
+  onClick?: () => void;
 }) {
   return (
     <button
       type="button"
-      className="self-start py-3 pl-3 pr-4.5 bg-[#F7EFD7] flex flex-row rounded-xl shadow-lg"
+      className="flex flex-row self-start rounded-xl bg-[#F7EFD7] py-3 pl-3 pr-4.5 shadow-lg"
+      onClick={onClick}
     >
       {icon && (
         <>
@@ -17,7 +20,9 @@ export default function Button({
         </>
       )}
       {/* TODO label is not clickable */}
-      <label className=" text-secondary font-semibold">{label}</label>
+      <label className=" font-semibold text-secondary hover:cursor-pointer">
+        {label}
+      </label>
     </button>
   );
 }
