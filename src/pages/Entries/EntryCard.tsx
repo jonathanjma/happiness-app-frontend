@@ -113,24 +113,10 @@ export default function EntryCard({
           }
           value={happiness.comment}
           disabled={!editing}
+          onChange={(e) => {
+            onChangeCommentText(e.target.value);
+          }}
         />
-        {/* {happiness.comment === "" ? (
-          <textarea
-            placeholder="Write about your day"
-            className=" h-full w-full resize-none rounded-lg bg-gray-50 p-5 focus:outline-none"
-            disabled={!editing}
-            value={happiness.comment}
-            onChange={(e) => {
-              onChangeCommentText(e.target.value);
-            }}
-          />
-        ) : (
-          <div className="h-full w-full overflow-auto">
-            <p className=" h-50 overflow-auto  font-normal ">
-              {happiness.comment}
-            </p>
-          </div>
-        )} */}
       </Row>
       <div className="h-8" />
       {/* Comments */}
