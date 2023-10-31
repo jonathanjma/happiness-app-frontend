@@ -46,6 +46,9 @@ export default function EntryCard({
       return [];
     },
   );
+  useEffect(() => {
+    console.log(`happiness id is ${happiness.id}`);
+  }, [happiness]);
 
   return (
     <Column
@@ -106,7 +109,7 @@ export default function EntryCard({
           className={
             "h-full w-full resize-none rounded-lg bg-transparent focus:outline-none " +
             (happiness.value === -1
-              ? "bg-gray-50 p-5"
+              ? "bg-gray-200 p-5"
               : editing
               ? "border-1 border-solid border-gray-200 p-5"
               : "")

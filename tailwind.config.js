@@ -16,12 +16,14 @@ module.exports = {
       light_gray: "#808080",
       light_yellow: "#F6F0E0",
       "gray-50": "#F5F5F5",
+      "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
       "gray-400": "#808080",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
       secondary: "#664810",
       transparent: "rgba(255,255,255,0)",
+      white: "#FFFFFF",
     },
     extend: {
       padding: {
