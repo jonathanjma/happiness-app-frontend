@@ -69,7 +69,7 @@ export default function HappinessNumber({
       <div className=" h-3" />
       <input
         type="text"
-        value={currentHappiness === -1 ? "--" : currentHappiness}
+        value={currentHappiness === -1 ? "--" : currentHappiness.toFixed(1)}
         className="h-auto max-w-[80px] resize-none border-0 border-gray-400 bg-transparent p-0 text-center text-4xl font-medium focus:border-b-1 focus:outline-none"
         onChange={(e) => {
           if (e) {

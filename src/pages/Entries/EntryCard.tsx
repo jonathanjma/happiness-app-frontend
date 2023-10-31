@@ -53,7 +53,7 @@ export default function EntryCard({
   return (
     <Column
       className={
-        "bg-white flex-1 items-stretch rounded-2xl p-6 shadow-2xl " + className
+        "flex-1 items-stretch rounded-2xl bg-white p-6 shadow-2xl " + className
       }
     >
       {/* Header text */}
