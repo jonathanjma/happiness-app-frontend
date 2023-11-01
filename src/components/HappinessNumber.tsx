@@ -61,6 +61,7 @@ export default function HappinessNumber({
 
   useEffect(() => {
     setCurrentHappiness(value);
+    setHappinessDisplay(value === -1 ? "--" : value.toFixed(1));
   }, [value]);
 
   const Changer = ({ change }: { change: number }) => (
@@ -72,6 +73,7 @@ export default function HappinessNumber({
             let newHappiness = current + change;
             newHappiness = Math.max(newHappiness, 0);
             newHappiness = Math.min(newHappiness, 10);
+            setHappinessDisplay(newHappiness.toFixed(1));
             return newHappiness;
           });
         }
