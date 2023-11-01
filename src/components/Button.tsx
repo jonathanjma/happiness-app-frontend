@@ -19,7 +19,6 @@ export default function Button({
           <div className="w-2.5" />
         </>
       )}
-      {/* TODO label is not clickable */}
       <label className=" font-semibold text-secondary hover:cursor-pointer">
         {label}
       </label>

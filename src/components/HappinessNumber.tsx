@@ -20,6 +20,7 @@ export default function HappinessNumber({
   onChangeValue: (n: number) => void;
   editable: boolean;
 }) {
+  // The current happiness value which is displayed to the user.
   const [currentHappiness, setCurrentHappiness] = useState(value);
 
   const updateHappinessTimeout = useRef<number | undefined>(undefined);
@@ -30,13 +31,24 @@ export default function HappinessNumber({
    * the happiness validator validates the input
    *
    * Precondition: `currentHappiness` is in the range from 0 to 10 inclusive
+   * This is always satisfied because the user's input will never reach
+   * `currentHappiness` if it is not in the bounds.
    */
   const updateHappiness = () => {
     const validHappiness = Math.round(currentHappiness * 2) / 2;
+    /*
+    onChangeValue is what allows the current happiness to propogate up the 
+    components, but this is only called on happiness rounded to the nearest 0.5
+    */
     onChangeValue(validHappiness);
     setCurrentHappiness(validHappiness);
   };
 
+  /**
+   * Whenever the happiness value that the user interacts with changes, we start
+   * a timer to validate and format their happiness after .2 seconds.
+   * This allows the input to be responsive but still validates the happiness.
+   */
   useEffect(() => {
     clearTimeout(updateHappinessTimeout.current);
     updateHappinessTimeout.current = setTimeout(updateHappiness, 200);
@@ -85,7 +97,8 @@ export default function HappinessNumber({
                 happinessNum /= 10;
               }
             }
-
+            // We don't change the current happiness until we know for sure
+            // it's a valid range
             setCurrentHappiness(happinessNum);
           }
         }}

@@ -46,9 +46,6 @@ export default function EntryCard({
       return [];
     },
   );
-  useEffect(() => {
-    console.log(`happiness id is ${happiness.id}`);
-  }, [happiness]);
 
   return (
     <Column

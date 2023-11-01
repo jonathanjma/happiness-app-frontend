@@ -24,11 +24,11 @@ export default function HappinessCard({
   return (
     <Card className={"my-2 min-w-[130px] " + classes}>
       <div className="p-2" onClick={click}>
-        <p className="text-sm text-dark_gray mb-6">
+        <p className="mb-6 text-sm text-dark_gray">
           {date.toLocaleString("en-us", { weekday: "long" })}
           <br />
           {isToday ? (
-            <span className="  text-secondary font-semibold">Today</span>
+            <span className="  font-semibold text-secondary">Today</span>
           ) : (
             date.toLocaleString("en-us", { month: "short", day: "numeric" })
           )}
