@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import EditIcon from "../../assets/EditIcon";
+import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
 import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
@@ -8,7 +8,6 @@ import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
 import { Happiness } from "../../data/models/Happiness";
 import Comments from "./Comments";
-import { useEffect } from "react";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -85,7 +84,7 @@ export default function EntryCard({
         <div className="flex-1" />
         <Button
           label="Edit Entry"
-          icon={<EditIcon />}
+          icon={<img src={EditIcon as any} />}
           onClick={() => {
             setEditing((e) => !e);
           }}

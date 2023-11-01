@@ -1,5 +1,5 @@
-import ArrowDownIcon from "../assets/ArrowDownIcon";
-import ArrowUpIcon from "../assets/ArrowUpIcon";
+import ArrowDownIcon from "../assets/arrow_down.svg";
+import ArrowUpIcon from "../assets/arrow_up.svg";
 import Column from "./layout/Column";
 import { useEffect, useRef, useState } from "react";
 
@@ -72,7 +72,7 @@ export default function HappinessNumber({
         }
       }}
     >
-      {change > 0 ? <ArrowUpIcon /> : <ArrowDownIcon />}
+      <img src={(change > 0 ? ArrowUpIcon : ArrowDownIcon) as any} />
     </div>
   );
   return (
