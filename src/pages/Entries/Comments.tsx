@@ -17,9 +17,9 @@ export default function Comments({
     if (comments != null) {
       const handleScroll = () => {
         if (comments.scrollTop === 0) {
-          setDividerOpacity(100);
-        } else {
           setDividerOpacity(0);
+        } else {
+          setDividerOpacity(100);
         }
       };
       comments.addEventListener("scroll", handleScroll);
@@ -50,7 +50,7 @@ export default function Comments({
       </h5>
       <div
         className={
-          "h-0.25 w-full bg-gray-200 duration-500 transition-opacity opacity-" +
+          "opacity- h-0.25 w-full bg-gray-200 transition-opacity duration-500" +
           dividerOpacity
         }
       />
