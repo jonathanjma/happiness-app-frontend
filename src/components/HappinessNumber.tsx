@@ -20,8 +20,10 @@ export default function HappinessNumber({
   onChangeValue: (n: number) => void;
   editable: boolean;
 }) {
-  // The current happiness value which is displayed to the user.
-  const [currentHappiness, setCurrentHappiness] = useState(value);
+  // The current happiness value.
+  const [currentHappiness, setCurrentHappiness] = useState<number>(value);
+  // The happiness string displayed to the user
+  const [happinessDisplay, setHappinessDisplay] = useState<string>("--");
 
   const updateHappinessTimeout = useRef<number | undefined>(undefined);
   /**
@@ -42,6 +44,9 @@ export default function HappinessNumber({
     */
     onChangeValue(validHappiness);
     setCurrentHappiness(validHappiness);
+    setHappinessDisplay(
+      validHappiness === -1 ? "--" : validHappiness.toFixed(1),
+    );
   };
 
   /**
@@ -51,7 +56,7 @@ export default function HappinessNumber({
    */
   useEffect(() => {
     clearTimeout(updateHappinessTimeout.current);
-    updateHappinessTimeout.current = setTimeout(updateHappiness, 200);
+    updateHappinessTimeout.current = setTimeout(updateHappiness, 500);
   }, [currentHappiness]);
 
   useEffect(() => {
@@ -81,26 +86,27 @@ export default function HappinessNumber({
       <div className=" h-3" />
       <input
         type="text"
-        value={currentHappiness === -1 ? "--" : currentHappiness.toFixed(1)}
+        value={happinessDisplay}
         className="h-auto max-w-[80px] resize-none border-0 border-gray-400 bg-transparent p-0 text-center text-4xl font-medium focus:border-b-1 focus:outline-none"
         onChange={(e) => {
-          if (e) {
-            clearTimeout(updateHappinessTimeout.current);
-            let happinessNum = 0;
-            if (e.target.value !== "") {
-              happinessNum = parseFloat(e.target.value);
-              if (happinessNum < 0) {
-                happinessNum *= -1;
-              }
-              // While loop is unncessary but does make absolutley sure it is in range
-              while (happinessNum > 10) {
-                happinessNum /= 10;
-              }
+          clearTimeout(updateHappinessTimeout.current);
+          let happinessNum = 0;
+          if (e.target.value !== "") {
+            happinessNum = parseFloat(
+              e.target.value.substring(e.target.value.indexOf("-") + 1),
+            );
+            if (happinessNum < 0) {
+              happinessNum *= -1;
             }
-            // We don't change the current happiness until we know for sure
-            // it's a valid range
-            setCurrentHappiness(happinessNum);
+            // While loop is unncessary but does make absolutley sure it is in range
+            while (happinessNum > 10) {
+              happinessNum /= 10;
+            }
           }
+          // We don't change the current happiness until we know for sure
+          // it's a valid range
+          setCurrentHappiness(happinessNum);
+          setHappinessDisplay(happinessNum.toString());
         }}
         disabled={!editable}
       />

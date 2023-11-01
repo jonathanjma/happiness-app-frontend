@@ -104,11 +104,7 @@ export default function EntryCard({
           placeholder="Write about your day"
           className={
             "h-full w-full resize-none rounded-lg bg-transparent focus:outline-none " +
-            (happiness.value === -1
-              ? "bg-gray-200 p-5"
-              : editing
-              ? "border-1 border-solid border-gray-200 p-5"
-              : "")
+            (editing ? "border-1 border-solid border-gray-200 p-5" : "")
           }
           value={happiness.comment}
           disabled={!editing}
