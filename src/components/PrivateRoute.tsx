@@ -1,6 +1,5 @@
 import { Navigate } from "react-router-dom";
 import { useUser } from "../contexts/UserProvider";
-import { User } from "../data/models/User";
 
 export default function PrivateRoute({
   children,

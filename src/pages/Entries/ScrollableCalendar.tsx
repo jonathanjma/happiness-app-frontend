@@ -7,6 +7,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
+import { useUser } from "../../contexts/UserProvider";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
@@ -17,6 +18,7 @@ export default function ScrollableCalendar({
   setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
 }) {
   const { api } = useApi();
+  const { user } = useUser();
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -41,15 +43,13 @@ export default function ScrollableCalendar({
       end: formatDate(end),
     });
 
-    console.log("Data from " + formatDate(start) + " fetched");
-
     let itr = new Date(start);
     while (itr <= end) {
       // create empty happiness entry for submitted days
       if (res.data.findIndex((x) => x.timestamp === formatDate(itr)) === -1) {
         res.data.push({
           id: counter.current,
-          user_id: -1,
+          author: user!,
           value: -1,
           comment: "",
           timestamp: formatDate(itr),
@@ -81,6 +81,7 @@ export default function ScrollableCalendar({
           // return false if last page
           return lastPage.page + 1; // increment page number to fetch
         },
+        refetchOnWindowFocus: false,
       },
     );
 
@@ -94,8 +95,17 @@ export default function ScrollableCalendar({
     [data],
   );
 
+  React.useEffect(() => {
+    if (allEntries && allEntries.length > 0 && selectedEntry == null) {
+      setSelectedEntry(allEntries[0]);
+    }
+  }, [allEntries]);
+
   return (
-    <div className="h-full w-[130px] overflow-auto ms-2" id="scrollableDiv">
+    <div
+      className="scroll-hidden h-full w-[194px] overflow-auto"
+      id="scrollableDiv"
+    >
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -109,15 +119,25 @@ export default function ScrollableCalendar({
               hasMore={!!hasNextPage}
               loader={<Spinner className="m-3" text="Loading entries..." />}
               scrollableTarget="scrollableDiv"
+              className="px-8"
             >
-              {allEntries!.map((entry) => (
-                <HappinessCard
-                  key={entry.id}
-                  data={entry}
-                  selected={selectedEntry?.id === entry.id}
-                  click={() => setSelectedEntry(entry)}
-                />
-              ))}
+              {allEntries!.map((entry) =>
+                selectedEntry && entry.id === selectedEntry.id ? (
+                  <HappinessCard
+                    key={selectedEntry?.id}
+                    data={selectedEntry}
+                    click={() => {}}
+                    selected={true}
+                  />
+                ) : (
+                  <HappinessCard
+                    key={entry.id}
+                    data={entry}
+                    selected={selectedEntry?.id === entry.id}
+                    click={() => setSelectedEntry(entry)}
+                  />
+                ),
+              )}
             </InfiniteScroll>
           )}
         </>

@@ -1,24 +1,68 @@
-import ScrollableCalendar from "./ScrollableCalendar";
-import EntryWidget from "./EntryWidget";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
-import Spinner from "../../components/Spinner";
+import EntryCard from "./EntryCard";
+import ScrollableCalendar from "./ScrollableCalendar";
+import { useUser } from "../../contexts/UserProvider";
 
-// The entries page: contains scrollable calendar and widget for viewing the details of each happiness entry
+/**
+ * The page for displaying entries with the scrollable calendar
+ */
 export default function Entries() {
-  const [selectedEntry, setSelectedEntry] = useState<Happiness>();
+  const [selectedEntry, setSelectedEntry] = useState<Happiness | undefined>(
+    undefined,
+  );
+  const [editing, setEditing] = useState(false);
+  const prevSelectedEntryId = useRef<number | undefined>(undefined);
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (
+      selectedEntry &&
+      prevSelectedEntryId &&
+      prevSelectedEntryId.current !== selectedEntry?.id
+    ) {
+      setEditing(false);
+    }
+    if (selectedEntry) {
+      prevSelectedEntryId.current = selectedEntry.id;
+    }
+  }, [selectedEntry]);
 
   return (
-    <div className="flex flex-row h-screen overflow-hidden ">
-      <ScrollableCalendar
-        selectedEntry={selectedEntry}
-        setSelectedEntry={setSelectedEntry}
-      />
-      {selectedEntry === undefined ? (
-        <Spinner />
-      ) : (
-        <EntryWidget entryData={selectedEntry} />
-      )}
-    </div>
+    <Row className="h-screen bg-[#FAFAFA]">
+      <div className="w-[162px] min-w-[162px]">
+        <ScrollableCalendar
+          selectedEntry={selectedEntry}
+          setSelectedEntry={setSelectedEntry}
+        />
+      </div>
+      <div className="h-full w-full px-8 pb-4 pt-8">
+        <EntryCard
+          happiness={
+            selectedEntry ?? {
+              id: -1,
+              value: -1,
+              comment: "",
+              timestamp: Date.now().toString(),
+              author: user!,
+            }
+          }
+          className="h-full"
+          editing={editing}
+          onChangeHappinessNumber={(value) => {
+            setSelectedEntry((selected) => {
+              return selected ? { ...selected, value: value } : undefined;
+            });
+          }}
+          onChangeCommentText={(comment) => {
+            setSelectedEntry((selected) => {
+              return selected ? { ...selected, comment: comment } : undefined;
+            });
+          }}
+          setEditing={setEditing}
+        />
+      </div>
+    </Row>
   );
 }
