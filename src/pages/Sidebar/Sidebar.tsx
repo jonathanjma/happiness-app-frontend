@@ -9,6 +9,7 @@ import GroupsIcon from "../../assets/groups.svg";
 import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
 import HappinessForm from "./HappinessForm";
+import { useWindowDimensions } from "../../utils";
 
 export default function Sidebar({ element }: { element: React.ReactElement }) {
   const { user } = useUser();
@@ -22,6 +23,8 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
   ];
 
   const [select, setSelect] = useState("Entries");
+
+  const { height } = useWindowDimensions();
 
   return (
     <>
@@ -69,7 +72,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </button>
                   </div>
                 </a>
-                <HappinessForm />
+                <HappinessForm height={height} />
                 <div className="flex flex-col grow">
                   <nav className="w-full grow relative">
                     {navConfig.map((entry, index) => {
@@ -83,9 +86,9 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                             className={
                               "mt-2 hover:bg-medium_yellow " +
                               (select === entry.title
-                                ? "bg-medium_yellow"
-                                : "bg-light_yellow") +
-                              (entry.title === "Settings"
+                                ? "bg-medium_yellow text-brown"
+                                : "bg-light_yellow text-dark_gray") +
+                              (entry.title === "Settings" && height >= 750
                                 ? " absolute bottom-0 w-[256px]"
                                 : "")
                             }

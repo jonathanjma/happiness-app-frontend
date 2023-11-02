@@ -2,15 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { useMutation } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
-import {
-  validateHappiness,
-  formatDate,
-  formatHappinessNum,
-  useWindowDimensions,
-} from "../../utils";
+import { validateHappiness, formatDate, formatHappinessNum } from "../../utils";
 import TextareaAutosize from "react-textarea-autosize";
 
-export default function HappinessForm() {
+export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
 
   const [comment, setComment] = useState("");
@@ -23,8 +18,6 @@ export default function HappinessForm() {
   const [radioValue, setRadioValue] = useState(2);
   const [selDate, setSelDate] = useState(new Date());
   const [happiness, setHappiness] = useState(-1);
-
-  const { height } = useWindowDimensions();
 
   const UNSUBMITTED = "Unsubmitted (change the number to submit)";
   const UPDATING = "Updating...";
@@ -75,18 +68,22 @@ export default function HappinessForm() {
         <button
           className={
             "p-1 border border-light_gray w-1/2 text-sm rounded-l-lg text-black font-medium " +
-            (radioValue === 1 ? "bg-medium_yellow" : "bg-white")
+            (radioValue === 1
+              ? "bg-medium_yellow text-brown"
+              : "bg-white text-dark_gray")
           }
           onClick={() => {
             setRadioValue(1);
           }}
         >
-          <label className="text-brown">Yesterday</label>
+          <label>Yesterday</label>
         </button>
         <button
           className={
             "p-1 border border-light_gray w-1/2 text-sm rounded-r-lg text-black font-medium " +
-            (radioValue === 2 ? "bg-medium_yellow" : "bg-white")
+            (radioValue === 2
+              ? "bg-medium_yellow text-brown"
+              : "bg-white text-dark_gray")
           }
           onClick={() => {
             setRadioValue(2);
