@@ -138,14 +138,12 @@ export default function HappinessForm() {
         <div className="w-full flex justify-center mt-2">
           <TextareaAutosize
             minRows={3}
-            maxRows={Math.floor((height - 662) / 24)}
+            maxRows={Math.max(3, Math.floor((height - 662) / 24))}
             className={`w-full mt-2 rounded-lg p-2 outline-none outline-light_gray outline-1 text-left text-sm min-h-[112px] resize-none`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
               setComment(value);
-              console.log(height);
-              console.log((height - 612) / 24);
             }}
           />
         </div>
