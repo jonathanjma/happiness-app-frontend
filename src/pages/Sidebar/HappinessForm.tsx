@@ -136,6 +136,7 @@ export default function HappinessForm() {
           />
         </div>
         <div className="w-full flex justify-center mt-2">
+          {/* 662 = height in px of other sidebar elements */}
           <TextareaAutosize
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}

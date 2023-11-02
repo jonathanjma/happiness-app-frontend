@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useUser } from "../../contexts/UserProvider";
 import { User } from "../../data/models/User";
 
-import EntriesIcon from "../../assets/book.svg?react";
-import JournalIcon from "../../assets/encrypted.svg?react";
-import StatsIcon from "../../assets/graph.svg?react";
-import GroupsIcon from "../../assets/groups.svg?react";
-import SettingsIcon from "../../assets/settings.svg?react";
+import EntriesIcon from "../../assets/book.svg";
+import JournalIcon from "../../assets/encrypted.svg";
+import StatsIcon from "../../assets/graph.svg";
+import GroupsIcon from "../../assets/groups.svg";
+import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
 import HappinessForm from "./HappinessForm";
 
