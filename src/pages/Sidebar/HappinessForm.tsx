@@ -2,7 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { useMutation } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
-import { validateHappiness, formatDate } from "../../utils";
+import {
+  validateHappiness,
+  formatDate,
+  formatHappinessNum,
+  useWindowDimensions,
+} from "../../utils";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function HappinessForm() {
   const { api } = useApi();
@@ -13,11 +19,12 @@ export default function HappinessForm() {
   // on every recomposition
   const postHappinessTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
   const isInitialRender = useRef(true);
-  const commentBox = useRef();
 
   const [radioValue, setRadioValue] = useState(2);
   const [selDate, setSelDate] = useState(new Date());
   const [happiness, setHappiness] = useState(-1);
+
+  const { height } = useWindowDimensions();
 
   const UNSUBMITTED = "Unsubmitted (change the number to submit)";
   const UPDATING = "Updating...";
@@ -100,32 +107,59 @@ export default function HappinessForm() {
                 selDate.getDate()}
             </div>
           </div>
-          {/* <input
-            className="w-16 h-8 text-base text-center rounded-md bg-gray-100 focus:border-raisin-600 focus:border-1 font-semibold"
+          <input
+            className="w-16 h-8 outline-medium_gray outline-1 text-base text-center rounded-md bg-white outline-none focus:outline-black focus:outline-1 font-semibold"
             type="number"
             inputMode="decimal"
             value={happiness === -1 ? "" : happiness}
             placeholder=""
             onChange={(e: React.FormEvent<HTMLInputElement>) => {
-              const target = e.target as HTMLInputElement
-              if (target.value < 0) {
-                setHappiness(0);
-              } else if (e.target.value > 10) {
-                setHappiness(10);
-              } else if (e.target.value.length > 3) {
-                setHappiness(e.target.value.toString().substring(0, 3));
+              const target = e.target as HTMLInputElement;
+              const value = target.value as string;
+              if (parseFloat(value) < 0) {
+                setHappiness(0.0);
+              } else if (parseFloat(value) > 10) {
+                setHappiness(10.0);
+              } else if (value.length > 3) {
+                setHappiness(parseFloat(value.substring(0, 3)));
               } else {
-                setHappiness(e.target.value);
+                setHappiness(parseFloat(value));
               }
             }}
             onBlur={() => {
               if (happiness !== 10) {
                 setHappiness((prevHappiness) =>
-                  formatHappinessNum(prevHappiness),
+                  parseFloat(formatHappinessNum(prevHappiness)),
                 );
               }
             }}
-          /> */}
+          />
+        </div>
+        <div className="w-full flex justify-center mt-2">
+          <TextareaAutosize
+            minRows={3}
+            maxRows={Math.floor((height - 662) / 24)}
+            className={`w-full mt-2 rounded-lg p-2 outline-none outline-light_gray outline-1 text-left text-sm min-h-[112px] resize-none`}
+            onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+              const target = e.target as HTMLTextAreaElement;
+              const value = target.value as string;
+              setComment(value);
+              console.log(height);
+              console.log((height - 612) / 24);
+            }}
+          />
+        </div>
+        <div className="w-full text-sm flex mt-2">
+          <div className="w-2/3">
+            {radioValue === 2
+              ? selDate.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : ""}
+          </div>
+          {/* Currently the time doesn't update so i need to fix that */}
+          <div className="w-1/3 text-right">{submissionStatus}</div>
         </div>
       </div>
     </>

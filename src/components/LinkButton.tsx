@@ -14,10 +14,7 @@ export default function LinkButton({
   return (
     <a
       type="button"
-      className={
-        "self-start py-3 pl-3 pr-4.5 bg-[#F7EFD7] flex flex-row rounded-xl " +
-        className
-      }
+      className={"py-3 pl-3 pr-4.5 flex flex-row rounded-xl " + className}
       onClick={onClick}
       href={href}
     >
