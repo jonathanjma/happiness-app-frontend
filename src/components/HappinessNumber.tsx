@@ -66,7 +66,7 @@ export default function HappinessNumber({
       className={
         "flex flex-col items-center justify-center hover:cursor-pointer" +
         (sidebar
-          ? " my-1 min-h-[15px] min-w-[15px]"
+          ? " my-0.5 min-h-[15px] min-w-[15px]"
           : " min-h-[32px] min-w-[32px] rounded-full bg-gray-50")
       }
       onClick={() => {
@@ -89,8 +89,10 @@ export default function HappinessNumber({
       type="text"
       value={currentHappiness === -1 ? "--" : currentHappiness.toFixed(1)}
       className={
-        "h-auto resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
-        (sidebar ? " max-w-[55px] text-xl" : " max-w-[80px] text-4xl")
+        "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
+        (sidebar
+          ? " h-[36px] max-w-[55px] text-xl"
+          : " h-auto max-w-[80px] text-4xl")
       }
       onChange={(e) => {
         if (e) {

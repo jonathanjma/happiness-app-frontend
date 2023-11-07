@@ -14,7 +14,7 @@ export default function LinkButton({
   return (
     <a
       type="button"
-      className={"py-3 pl-3 pr-4.5 flex flex-row rounded-xl " + className}
+      className={"flex flex-row rounded-xl py-3 pl-3 pr-4.5 " + className}
       onClick={onClick}
       href={href}
     >
@@ -25,7 +25,7 @@ export default function LinkButton({
         </>
       )}
       {/* TODO label is not clickable */}
-      <label className="text-secondary font-semibold">{label}</label>
+      <label className="font-semibold">{label}</label>
     </a>
   );
 }

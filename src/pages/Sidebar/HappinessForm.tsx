@@ -123,9 +123,10 @@ export default function HappinessForm({ height }: { height: number }) {
             sidebar={true}
           />
         </div>
-        <div className="mt-2 flex w-full justify-center">
+        <div className="mt-1.5 flex w-full justify-center">
           {/* 662 = height in px of other sidebar elements */}
           <TextareaAutosize
+            defaultValue={""}
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
             className={`mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm outline-none outline-1 outline-light_gray`}
@@ -136,7 +137,7 @@ export default function HappinessForm({ height }: { height: number }) {
             }}
           />
         </div>
-        <div className="mt-2 flex w-full text-sm">
+        <div className="mt-2 flex w-full text-sm font-normal text-dark_gray">
           <div className="w-2/3">
             {radioValue === 2
               ? selDate.toLocaleTimeString([], {
@@ -146,7 +147,9 @@ export default function HappinessForm({ height }: { height: number }) {
               : ""}
           </div>
           {/* Currently the time doesn't update so i need to fix that */}
-          <div className="w-1/3 text-right">{submissionStatus}</div>
+          <div className="w-1/3 text-right font-normal text-light_gray">
+            {submissionStatus}
+          </div>
         </div>
       </div>
     </>

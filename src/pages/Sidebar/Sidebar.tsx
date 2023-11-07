@@ -16,7 +16,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
 
   const navConfig = [
     { title: "Entries", route: "/home", icon: EntriesIcon },
-    { title: "Journal", route: "/journal", icon: JournalIcon },
+    { title: "Private Entries", route: "/journal", icon: JournalIcon },
     { title: "Stats", route: "/statistics", icon: StatsIcon },
     { title: "Groups", route: "/groups", icon: GroupsIcon },
     { title: "Settings", route: "/settings", icon: SettingsIcon },
@@ -54,11 +54,11 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                         alt="profile"
                       />
                     </div>
-                    <div className="mr-2 text-black">
+                    <div className="mr-2 text-secondary">
                       <div className="text-base font-semibold">
                         {user!.username}
                       </div>
-                      <div className="text-xs">
+                      <div className="text-xs text-light_gray">
                         Logging since {user!.created.substring(0, 4)}
                       </div>
                     </div>
