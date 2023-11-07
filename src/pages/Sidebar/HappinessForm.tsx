@@ -4,6 +4,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
 import { validateHappiness, formatDate, formatHappinessNum } from "../../utils";
 import TextareaAutosize from "react-textarea-autosize";
+import HappinessNumber from "../../components/HappinessNumber";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -64,12 +65,12 @@ export default function HappinessForm({ height }: { height: number }) {
 
   return (
     <>
-      <div className="w-full flex justify-center mb-4 divide-x-0">
+      <div className="mb-4 flex w-full justify-center divide-x-0">
         <button
           className={
-            "p-1 border border-light_gray w-1/2 text-sm rounded-l-lg text-black font-medium " +
+            "w-1/2 rounded-l-lg border border-light_gray p-1 text-sm font-medium " +
             (radioValue === 1
-              ? "bg-medium_yellow text-brown"
+              ? "bg-yellow text-secondary"
               : "bg-white text-dark_gray")
           }
           onClick={() => {
@@ -80,64 +81,54 @@ export default function HappinessForm({ height }: { height: number }) {
         </button>
         <button
           className={
-            "p-1 border border-light_gray w-1/2 text-sm rounded-r-lg text-black font-medium " +
+            "w-1/2 rounded-r-lg border border-light_gray p-1 text-sm font-medium  " +
             (radioValue === 2
-              ? "bg-medium_yellow text-brown"
+              ? "bg-yellow text-secondary"
               : "bg-white text-dark_gray")
           }
           onClick={() => {
             setRadioValue(2);
           }}
         >
-          <label className="text-brown">Today</label>
+          <label>Today</label>
         </button>
       </div>
-      <div className="p-4 bg-white rounded-xl mb-4">
-        <div className="font-medium text-sm text-dark_gray">
+      <div className="mb-4 rounded-xl bg-white p-4">
+        <div className="text-sm font-medium text-dark_gray">
           {selDate.toLocaleString("en-us", { weekday: "long" })}
         </div>
-        <div className="w-full flex items-center">
-          <div className="w-4/5 text-raisin-600">
+        <div className="flex w-full items-center">
+          <div className="text-raisin-600 w-4/5">
             <div className="text-xl font-semibold">
               {selDate.toLocaleDateString("en-us", { month: "long" }) +
                 " " +
                 selDate.getDate()}
             </div>
           </div>
-          <input
-            className="w-16 h-8 outline-medium_gray outline-1 text-base text-center rounded-md bg-white outline-none focus:outline-black focus:outline-1 font-semibold"
-            type="number"
-            inputMode="decimal"
-            value={happiness === -1 ? "" : happiness}
-            placeholder=""
-            onChange={(e: React.FormEvent<HTMLInputElement>) => {
-              const target = e.target as HTMLInputElement;
-              const value = target.value as string;
-              if (parseFloat(value) < 0) {
+          <HappinessNumber
+            value={happiness}
+            onChangeValue={(n: number) => {
+              const val: string = n.toString();
+              if (parseFloat(val) < 0) {
                 setHappiness(0.0);
-              } else if (parseFloat(value) > 10) {
+              } else if (parseFloat(val) > 10) {
                 setHappiness(10.0);
-              } else if (value.length > 3) {
-                setHappiness(parseFloat(value.substring(0, 3)));
+              } else if (val.length > 3) {
+                setHappiness(parseFloat(val.substring(0, 3)));
               } else {
-                setHappiness(parseFloat(value));
+                setHappiness(parseFloat(val));
               }
             }}
-            onBlur={() => {
-              if (happiness !== 10) {
-                setHappiness((prevHappiness) =>
-                  parseFloat(formatHappinessNum(prevHappiness)),
-                );
-              }
-            }}
+            editable={true}
+            sidebar={true}
           />
         </div>
-        <div className="w-full flex justify-center mt-2">
+        <div className="mt-2 flex w-full justify-center">
           {/* 662 = height in px of other sidebar elements */}
           <TextareaAutosize
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
-            className={`w-full mt-2 rounded-lg p-2 outline-none outline-light_gray outline-1 text-left text-sm min-h-[112px] resize-none`}
+            className={`mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm outline-none outline-1 outline-light_gray`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
@@ -145,7 +136,7 @@ export default function HappinessForm({ height }: { height: number }) {
             }}
           />
         </div>
-        <div className="w-full text-sm flex mt-2">
+        <div className="mt-2 flex w-full text-sm">
           <div className="w-2/3">
             {radioValue === 2
               ? selDate.toLocaleTimeString([], {

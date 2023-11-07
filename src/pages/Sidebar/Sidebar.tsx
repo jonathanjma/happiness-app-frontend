@@ -31,11 +31,11 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
       <div className="flex w-full">
         <div
           id="docs-sidebar"
-          className="transition-all duration-300 transform hidden top-0 left-0 bottom-0 z-[60] min-w-[320px] bg-light_yellow border-gray-200 overflow-y-auto scrollbar-y lg:block lg:translate-x-0 lg:right-auto lg:bottom-0 dark:scrollbar-y dark:bg-gray-800 dark:border-gray-700"
+          className="scrollbar-y dark:scrollbar-y dark:bg-gray-800 dark:border-gray-700 bottom-0 left-0 top-0 z-[60] hidden min-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
         >
-          <div className="h-full flex flex-col">
-            <div className="m-4 grow flex flex-col">
-              <div className="m-4 grow flex flex-col">
+          <div className="flex h-full flex-col">
+            <div className="m-4 flex grow flex-col">
+              <div className="m-4 flex grow flex-col">
                 <div className="mb-1 text-sm font-semibold text-black">
                   Account
                 </div>
@@ -43,19 +43,19 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                   className="flex-none dark:text-white"
                   href={"/profile/" + user!.id}
                 >
-                  <div className="mb-6 rounded-xl flex items-center">
+                  <div className="mb-6 flex items-center rounded-xl">
                     <div
-                      className="items-center mr-2"
+                      className="mr-2 items-center"
                       onClick={() => setSelect("")}
                     >
                       <img
-                        className="mx-3 justify-center max-w-[40px] max-h-[40px] block mx-auto rounded-full sm:mx-0 sm:shrink-0"
+                        className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
                         src={user!.profile_picture}
                         alt="profile"
                       />
                     </div>
-                    <div className="text-black mr-2">
-                      <div className="font-semibold text-base">
+                    <div className="mr-2 text-black">
+                      <div className="text-base font-semibold">
                         {user!.username}
                       </div>
                       <div className="text-xs">
@@ -64,7 +64,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </div>
                     <button
                       className={
-                        "w-3/10 text-sm text-brown border border-brown shadow-lg font-semibold rounded-lg text-sm py-1 px-3 outline-none text-center ml-1.5 min-w-[78px]"
+                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-lg outline-none"
                       }
                       onClick={useUser().logoutUser}
                     >
@@ -73,8 +73,8 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                   </div>
                 </a>
                 <HappinessForm height={height} />
-                <div className="flex flex-col grow">
-                  <nav className="w-full grow relative">
+                <div className="flex grow flex-col">
+                  <nav className="relative w-full grow">
                     {navConfig.map((entry, index) => {
                       return (
                         <div key={index} className={"w-full"}>
@@ -86,7 +86,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                             className={
                               "mt-2 hover:bg-medium_yellow " +
                               (select === entry.title
-                                ? "bg-medium_yellow text-brown"
+                                ? "bg-yellow text-secondary"
                                 : "bg-light_yellow text-dark_gray") +
                               (entry.title === "Settings" && height >= 750
                                 ? " absolute bottom-0 w-[256px]"
@@ -102,7 +102,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
             </div>
           </div>
         </div>
-        <div>{element}</div>
+        <div className="w-full">{element}</div>
       </div>
     </>
   );
