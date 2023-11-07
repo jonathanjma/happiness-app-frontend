@@ -10,6 +10,7 @@ export interface User {
 }
 
 export interface SimpleUser {
+  id: number;
   username: string;
   profile_picture: string;
 }

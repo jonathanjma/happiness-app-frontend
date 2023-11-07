@@ -14,13 +14,38 @@ module.exports = {
     colors: {
       black: "#212121",
       dark_gray: "#575F68",
-      medium_gray: "#808080",
-      light_gray: "#D9D9D9",
+      light_gray: "#808080",
       light_yellow: "#F6F0E0",
+      "gray-50": "#F5F5F5",
+      "gray-100": "#E5E5E5",
+      "gray-200": "#E4E0E0",
+      "gray-400": "#808080",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
-      brown: "#664810",
-      white: "#FFF",
+      secondary: "#664810",
+      transparent: "rgba(255,255,255,0)",
+      white: "#FFFFFF",
+    },
+    extend: {
+      padding: {
+        4.5: "18px",
+      },
+      width: {
+        2.5: "10px",
+      },
+      height: {
+        0.25: "1px",
+        50: "200px",
+      },
+      borderWidth: {
+        1: "1px",
+      },
+      gap: {
+        0.25: "1px",
+      },
+      margin: {
+        0.25: "1px",
+      },
     },
   },
   content: ["./src/**/*.{js,ts,jsx,tsx}", "node_modules/preline/dist/*.js"],

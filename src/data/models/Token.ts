@@ -1,3 +1,3 @@
 export interface Token {
-  sessionToken: string;
+  session_token: string;
 }
