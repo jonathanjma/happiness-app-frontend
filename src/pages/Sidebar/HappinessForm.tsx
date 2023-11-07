@@ -13,7 +13,7 @@ export default function HappinessForm({ height }: { height: number }) {
   const [submissionStatus, setSubmissionStatus] = useState("Updated");
   // TODO refactor to use useRef! the let def was being reassigned
   // on every recomposition
-  const postHappinessTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
+  const postHappinessTimeout = useRef<number | undefined>(undefined);
   const isInitialRender = useRef(true);
 
   const [radioValue, setRadioValue] = useState(2);
