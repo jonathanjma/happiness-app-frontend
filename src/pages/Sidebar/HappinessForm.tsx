@@ -65,7 +65,7 @@ export default function HappinessForm({ height }: { height: number }) {
 
   return (
     <>
-      <div className="mb-4 flex w-full justify-center divide-x-0">
+      <div className="mb-4 flex w-full justify-center">
         <button
           className={
             "w-1/2 rounded-l-lg border border-light_gray p-1 text-sm font-medium " +
@@ -81,7 +81,7 @@ export default function HappinessForm({ height }: { height: number }) {
         </button>
         <button
           className={
-            "w-1/2 rounded-r-lg border border-light_gray p-1 text-sm font-medium  " +
+            "border-right w-1/2 rounded-r-lg border border-l-0 border-light_gray p-1 text-sm font-medium " +
             (radioValue === 2
               ? "bg-yellow text-secondary"
               : "bg-white text-dark_gray")

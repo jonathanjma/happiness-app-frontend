@@ -21,7 +21,7 @@ export default function HappinessNumber({
   value: number;
   onChangeValue: (n: number) => void;
   editable: boolean;
-  sidebar: boolean;
+  sidebar?: boolean;
 }) {
   // The current happiness value which is displayed to the user.
   const [currentHappiness, setCurrentHappiness] = useState(value);
