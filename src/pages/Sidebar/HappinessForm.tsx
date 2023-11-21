@@ -30,24 +30,23 @@ export default function HappinessForm({ height }: { height: number }) {
   );
 
   useEffect(() => {
-    // console.log("submitting to something");
-    // console.log(selDate);
-    // console.log(happiness);
-    // console.log(comment);
-    // console.log(formatDate(selDate));
-    setSubmissionStatus(UPDATING);
-    clearTimeout(postHappinessTimeout.current);
-    postHappinessTimeout.current = setTimeout(() => {
-      postHappinessMutation.mutate({
-        value: happiness,
-        comment: comment,
-        timestamp: formatDate(selDate),
-      });
-    }, 1000);
+    if (happiness === -1) {
+      setSubmissionStatus(UNSUBMITTED);
+    } else {
+      setSubmissionStatus(UPDATING);
+      clearTimeout(postHappinessTimeout.current);
+      postHappinessTimeout.current = setTimeout(() => {
+        postHappinessMutation.mutate({
+          value: happiness,
+          comment: comment,
+          timestamp: formatDate(selDate),
+        });
+      }, 1000);
+    }
   }, [comment, happiness]);
 
   useEffect(() => {
-    if (postHappinessMutation.isSuccess) {
+    if (postHappinessMutation.isSuccess && happiness !== -1) {
       setSubmissionStatus("Updated");
     }
     refetch();
@@ -116,6 +115,8 @@ export default function HappinessForm({ height }: { height: number }) {
       const idx: number = radioValue === 1 ? 0 : 1;
       if (data[idx] === undefined) {
         setSubmissionStatus(UNSUBMITTED);
+        setHappiness(-1);
+        setComment("");
       } else {
         setSubmissionStatus(UPDATED);
         setHappiness(data[idx].value);
@@ -184,7 +185,7 @@ export default function HappinessForm({ height }: { height: number }) {
             value={comment}
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
-            className={`mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm outline-none outline-1 outline-light_gray`}
+            className={`mt-2 min-h-[112px] w-full resize-none overflow-hidden rounded-lg p-2 text-left text-sm outline-none outline-1 outline-light_gray`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
