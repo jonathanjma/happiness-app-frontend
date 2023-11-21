@@ -24,6 +24,7 @@ module.exports = {
       secondary: "#664810",
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",
+      brand_off_white: "#FAFAFA",
     },
     extend: {
       padding: {

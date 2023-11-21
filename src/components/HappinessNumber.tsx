@@ -1,5 +1,6 @@
 import ArrowDownIcon from "../assets/arrow_down.svg";
 import ArrowUpIcon from "../assets/arrow_up.svg";
+import { Constants } from "../constants";
 import Column from "./layout/Column";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,10 +16,12 @@ export default function HappinessNumber({
   value,
   onChangeValue,
   editable,
+  setNetworkingState,
 }: {
   value: number;
   onChangeValue: (n: number) => void;
   editable: boolean;
+  setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
   // The current happiness value.
   const [currentHappiness, setCurrentHappiness] = useState<number>(value);
@@ -56,6 +59,7 @@ export default function HappinessNumber({
    */
   useEffect(() => {
     clearTimeout(updateHappinessTimeout.current);
+    setNetworkingState(Constants.LOADING_MUTATION_TEXT);
     updateHappinessTimeout.current = setTimeout(updateHappiness, 500);
   }, [currentHappiness]);
 
@@ -70,6 +74,7 @@ export default function HappinessNumber({
       onClick={() => {
         if (editable) {
           setCurrentHappiness((current) => {
+            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             let newHappiness = current + change;
             newHappiness = Math.max(newHappiness, 0);
             newHappiness = Math.min(newHappiness, 10);
@@ -112,7 +117,7 @@ export default function HappinessNumber({
         }}
         disabled={!editable}
       />
-      <div className=" h-3" />
+      <div className="h-3" />
 
       {editable && <Changer change={-0.5} />}
     </Column>

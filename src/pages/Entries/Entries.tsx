@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { useIsMutating, useMutation } from "react-query";
 import Row from "../../components/layout/Row";
-import { Happiness } from "../../data/models/Happiness";
+import { Constants } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { useUser } from "../../contexts/UserProvider";
+import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
-import { useUser } from "../../contexts/UserProvider";
+import { shouldProcessLinkClick } from "react-router-dom/dist/dom";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -15,19 +19,69 @@ export default function Entries() {
   const [editing, setEditing] = useState(false);
   const prevSelectedEntryId = useRef<number | undefined>(undefined);
   const { user } = useUser();
+  const { api } = useApi();
+  const numStillMutating = useIsMutating();
+  const [networkingState, setNetworkingState] = useState(
+    Constants.LOADING_MUTATION_TEXT.toString(),
+  );
+
+  const updateHappinessTimeout = useRef<number | undefined>(undefined);
+  const updateHappiness = () => {
+    //@ts-ignore TODO get rid of user_id field once backend is actually updated
+    const { id, author, user_id, ...happinessToPost } = selectedEntry;
+    updateEntryMutation.mutate(happinessToPost);
+  };
 
   useEffect(() => {
     if (
       selectedEntry &&
       prevSelectedEntryId &&
-      prevSelectedEntryId.current !== selectedEntry?.id
+      prevSelectedEntryId.current &&
+      prevSelectedEntryId.current !== selectedEntry?.id &&
+      selectedEntry.value !== -1
     ) {
       setEditing(false);
     }
     if (selectedEntry) {
-      prevSelectedEntryId.current = selectedEntry.id;
+      if (selectedEntry.value === -1) {
+        setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
+      } else {
+        setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+        prevSelectedEntryId.current = selectedEntry.id;
+        clearTimeout(updateHappinessTimeout.current);
+        updateHappinessTimeout.current = setTimeout(updateHappiness, 1000);
+      }
     }
   }, [selectedEntry]);
+
+  // General mutation function for updating Happiness entries
+  const updateEntryMutation = useMutation({
+    mutationFn: (newHappiness: HappinessPost) => {
+      return api.post<Happiness>("/happiness/", newHappiness);
+    },
+    mutationKey: "updateHappiness",
+  });
+
+  // Update the networking state displayed to the user based on updateEntryMutation result
+  useEffect(() => {
+    if (!selectedEntry || selectedEntry.value === -1) {
+      setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
+      return;
+    }
+    if (numStillMutating > 0) {
+      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+      return;
+    }
+    if (updateEntryMutation.isLoading) {
+      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+      return;
+    }
+    if (updateEntryMutation.isError) {
+      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+      return;
+    }
+    setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+  }, [numStillMutating]);
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">
@@ -61,6 +115,8 @@ export default function Entries() {
             });
           }}
           setEditing={setEditing}
+          networkingState={networkingState}
+          setNetworkingState={setNetworkingState}
         />
       </div>
     </Row>
