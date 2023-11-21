@@ -20,7 +20,7 @@ export default function HappinessForm({ height }: { height: number }) {
   const [selDate, setSelDate] = useState(new Date());
   const [happiness, setHappiness] = useState(-1);
 
-  const UNSUBMITTED = "Unsubmitted (change the number to submit)";
+  const UNSUBMITTED = "Unsubmitted (enter number to submit)";
   const UPDATING = "Updating...";
   const UPDATED = "Updated";
   const ERROR = "Error loading/retrieving happiness";
@@ -35,17 +35,15 @@ export default function HappinessForm({ height }: { height: number }) {
     // console.log(happiness);
     // console.log(comment);
     // console.log(formatDate(selDate));
-    if (validateHappiness(happiness)) {
-      setSubmissionStatus(UPDATING);
-      clearTimeout(postHappinessTimeout.current);
-      postHappinessTimeout.current = setTimeout(() => {
-        postHappinessMutation.mutate({
-          value: happiness,
-          comment: comment,
-          timestamp: formatDate(selDate),
-        });
-      }, 1000);
-    }
+    setSubmissionStatus(UPDATING);
+    clearTimeout(postHappinessTimeout.current);
+    postHappinessTimeout.current = setTimeout(() => {
+      postHappinessMutation.mutate({
+        value: happiness,
+        comment: comment,
+        timestamp: formatDate(selDate),
+      });
+    }, 1000);
   }, [comment, happiness]);
 
   useEffect(() => {
@@ -116,7 +114,7 @@ export default function HappinessForm({ height }: { height: number }) {
       setSubmissionStatus(ERROR);
     } else {
       const idx: number = radioValue === 1 ? 0 : 1;
-      if (data[idx] === null) {
+      if (data[idx] === undefined) {
         setSubmissionStatus(UNSUBMITTED);
       } else {
         setSubmissionStatus(UPDATED);
@@ -172,13 +170,7 @@ export default function HappinessForm({ height }: { height: number }) {
             value={happiness}
             onChangeValue={(n: number) => {
               const val: string = n.toString();
-              if (parseFloat(val) < 0) {
-                setHappiness(0.0);
-              } else if (parseFloat(val) > 10) {
-                setHappiness(10.0);
-              } else if (val.length > 3) {
-                setHappiness(parseFloat(val.substring(0, 3)));
-              } else {
+              if (parseFloat(val) >= 0) {
                 setHappiness(parseFloat(val));
               }
             }}
@@ -201,7 +193,7 @@ export default function HappinessForm({ height }: { height: number }) {
           />
         </div>
         <div className="mt-2 flex w-full text-sm font-normal text-dark_gray">
-          <div className="w-2/3">
+          <div className="w-1/2">
             {radioValue === 2
               ? selDate.toLocaleTimeString([], {
                   hour: "2-digit",
@@ -210,7 +202,7 @@ export default function HappinessForm({ height }: { height: number }) {
               : ""}
           </div>
           {/* Currently the time doesn't update so i need to fix that */}
-          <div className="w-1/3 text-right font-normal text-light_gray">
+          <div className="w-1/2 text-right font-normal text-light_gray">
             {submissionStatus}
           </div>
         </div>
