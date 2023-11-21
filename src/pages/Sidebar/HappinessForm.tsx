@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
 import { validateHappiness, formatDate, formatHappinessNum } from "../../utils";
@@ -30,6 +30,11 @@ export default function HappinessForm({ height }: { height: number }) {
   );
 
   useEffect(() => {
+    // console.log("submitting to something");
+    // console.log(selDate);
+    // console.log(happiness);
+    // console.log(comment);
+    // console.log(formatDate(selDate));
     if (validateHappiness(happiness)) {
       setSubmissionStatus(UPDATING);
       clearTimeout(postHappinessTimeout.current);
@@ -47,6 +52,7 @@ export default function HappinessForm({ height }: { height: number }) {
     if (postHappinessMutation.isSuccess) {
       setSubmissionStatus("Updated");
     }
+    refetch();
   }, [postHappinessMutation.isSuccess]);
 
   useEffect(() => {
@@ -62,6 +68,63 @@ export default function HappinessForm({ height }: { height: number }) {
       }
     });
   }, [radioValue]);
+
+  // autofill old entry on load
+  const {
+    isLoading,
+    data,
+    isError,
+    refetch,
+  }: {
+    isLoading: boolean;
+    data: Happiness[] | undefined;
+    isError: boolean;
+    refetch: (
+      queryFnArgs?: undefined,
+    ) => Promise<Happiness[] | undefined | unknown>;
+  } = useQuery(`happiness for user`, () => {
+    return api
+      .get("/happiness/", {
+        start: formatDate(
+          new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate() - 1,
+          ),
+        ),
+        end: formatDate(
+          new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate(),
+          ),
+        ),
+      })
+      .then((res) => res.data);
+  });
+
+  // react to initial query
+  useEffect(() => {
+    // console.log("is updating");
+    if (isLoading || data === undefined) {
+      // TODO from design: loading state for this submission box
+      // console.log(`Loading!`);
+      setSubmissionStatus(UPDATING);
+    } else if (isError) {
+      // TODO from design: error state for this submission box
+      // console.log("Error!");
+      setSubmissionStatus(ERROR);
+    } else {
+      const idx: number = radioValue === 1 ? 0 : 1;
+      if (data[idx] === null) {
+        setSubmissionStatus(UNSUBMITTED);
+      } else {
+        setSubmissionStatus(UPDATED);
+        setHappiness(data[idx].value);
+        setComment(data[idx].comment);
+      }
+    }
+  }, [isLoading, selDate]);
 
   return (
     <>
@@ -99,7 +162,7 @@ export default function HappinessForm({ height }: { height: number }) {
         </div>
         <div className="flex w-full items-center">
           <div className="text-raisin-600 w-4/5">
-            <div className="text-xl font-semibold">
+            <div className="text-lg font-semibold">
               {selDate.toLocaleDateString("en-us", { month: "long" }) +
                 " " +
                 selDate.getDate()}
@@ -126,7 +189,7 @@ export default function HappinessForm({ height }: { height: number }) {
         <div className="mt-1.5 flex w-full justify-center">
           {/* 662 = height in px of other sidebar elements */}
           <TextareaAutosize
-            defaultValue={""}
+            value={comment}
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
             className={`mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm outline-none outline-1 outline-light_gray`}
