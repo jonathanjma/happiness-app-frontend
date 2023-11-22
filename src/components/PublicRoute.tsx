@@ -1,16 +1,20 @@
 import { Navigate } from "react-router-dom";
-import { useUser } from "../contexts/UserProvider";
+import { UserState, useUser } from "../contexts/UserProvider";
 
+// Wraps routes that do not require the user to be logged in
+// If the user is not logged in, the page is shown, otherwise they are redirected to the home page
 export default function PublicRoute({
   children,
 }: {
   children: React.ReactElement;
 }) {
-  const { user } = useUser();
+  const { state } = useUser();
 
-  if (user === undefined) {
-    return children;
-  } else {
+  if (state === UserState.Loading) {
+    return null;
+  } else if (state === UserState.Success) {
     return <Navigate to="/home" />;
+  } else {
+    return children;
   }
 }
