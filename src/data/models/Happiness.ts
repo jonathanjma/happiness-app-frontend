@@ -8,6 +8,7 @@ export interface Happiness {
   author: User;
 }
 
+// type representing the fields used to update a happiness entry
 export interface NewHappiness {
   value: number;
   comment: string;

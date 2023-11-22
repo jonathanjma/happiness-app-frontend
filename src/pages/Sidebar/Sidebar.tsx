@@ -22,7 +22,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
     { title: "Settings", route: "/settings", icon: SettingsIcon },
   ];
 
-  const [select, setSelect] = useState("Entries");
+  const [selectedLink, setSelectedLink] = useState("Entries");
 
   const { height } = useWindowDimensions();
 
@@ -36,7 +36,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
           <div className="flex h-full flex-col">
             <div className="m-4 flex grow flex-col">
               <div className="m-4 flex grow flex-col">
-                <div className="mb-1 text-sm font-semibold text-black">
+                <div className="mb-1 text-sm font-semibold text-dark_gray">
                   Account
                 </div>
                 <a
@@ -46,7 +46,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                   <div className="mb-6 flex items-center rounded-xl">
                     <div
                       className="mr-2 items-center"
-                      onClick={() => setSelect("")}
+                      onClick={() => setSelectedLink("")}
                     >
                       <img
                         className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
@@ -64,7 +64,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </div>
                     <button
                       className={
-                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-lg outline-none"
+                        "w-3/10 shadow-md1 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary outline-none"
                       }
                       onClick={useUser().logoutUser}
                     >
@@ -77,16 +77,16 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                   <nav className="relative w-full grow">
                     {navConfig.map((entry, index) => {
                       return (
-                        <div key={index} className={"w-full"}>
+                        <div key={entry.route} className={"w-full"}>
                           <LinkButton
                             icon={<img src={entry.icon} />}
                             label={entry.title}
-                            onClick={() => setSelect(entry.title)}
+                            onClick={() => setSelectedLink(entry.title)}
                             href={entry.route}
                             className={
-                              "mt-2 hover:bg-medium_yellow " +
-                              (select === entry.title
-                                ? "bg-yellow text-secondary"
+                              "hover:shadow-md1 mt-2 hover:bg-medium_yellow " +
+                              (selectedLink === entry.title
+                                ? "shadow-md1 bg-yellow text-secondary"
                                 : "bg-light_yellow text-dark_gray") +
                               (entry.title === "Settings" && height >= 750
                                 ? " absolute bottom-0 w-[256px]"

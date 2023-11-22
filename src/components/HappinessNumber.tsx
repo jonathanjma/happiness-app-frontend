@@ -9,19 +9,19 @@ import { useEffect, useRef, useState } from "react";
  * @param value the value of the happiness number
  * @param onChangeValue what to do with the value after it has been edited and validated
  * @param editable whether the Happiness number is in editable state
- * @param sidebar whether the Happiness number is inside the sidebar or not (changes style)
+ * @param sidebarStyle represents whether the sidebar style is used or not (default: false)
  * @returns
  */
 export default function HappinessNumber({
   value,
   onChangeValue,
   editable,
-  sidebar = false,
+  sidebarStyle = false,
 }: {
   value: number;
   onChangeValue: (n: number) => void;
   editable: boolean;
-  sidebar?: boolean;
+  sidebarStyle?: boolean;
 }) {
   // The current happiness value which is displayed to the user.
   const [currentHappiness, setCurrentHappiness] = useState(value);
@@ -65,7 +65,7 @@ export default function HappinessNumber({
     <div
       className={
         "flex flex-col items-center justify-center hover:cursor-pointer" +
-        (sidebar
+        (sidebarStyle
           ? " my-0.5 min-h-[15px] min-w-[15px]"
           : " min-h-[32px] min-w-[32px] rounded-full bg-gray-50")
       }
@@ -84,41 +84,43 @@ export default function HappinessNumber({
     </div>
   );
 
-  const numInput = (
-    <input
-      type="text"
-      value={currentHappiness === -1 ? "--" : currentHappiness.toFixed(1)}
-      className={
-        "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
-        (sidebar
-          ? " h-[36px] max-w-[55px] text-xl"
-          : " h-auto max-w-[80px] text-4xl")
-      }
-      onChange={(e) => {
-        if (e) {
-          clearTimeout(updateHappinessTimeout.current);
-          let happinessNum = 0;
-          if (e.target.value !== "") {
-            happinessNum = parseFloat(e.target.value);
-            if (happinessNum < 0) {
-              happinessNum *= -1;
-            }
-            // While loop is unncessary but does make absolutley sure it is in range
-            while (happinessNum > 10) {
-              happinessNum /= 10;
-            }
-          }
-          // We don't change the current happiness until we know for sure
-          // it's a valid range
-          setCurrentHappiness(happinessNum);
+  const NumInput = () => {
+    return (
+      <input
+        type="text"
+        value={currentHappiness === -1 ? "--" : currentHappiness.toFixed(1)}
+        className={
+          "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
+          (sidebarStyle
+            ? " h-[36px] max-w-[55px] text-xl"
+            : " h-auto max-w-[80px] text-4xl")
         }
-      }}
-      disabled={!editable}
-    />
-  );
-  return sidebar ? (
+        onChange={(e) => {
+          if (e) {
+            clearTimeout(updateHappinessTimeout.current);
+            let happinessNum = 0;
+            if (e.target.value !== "") {
+              happinessNum = parseFloat(e.target.value);
+              if (happinessNum < 0) {
+                happinessNum *= -1;
+              }
+              // While loop is unncessary but does make absolutley sure it is in range
+              while (happinessNum > 10) {
+                happinessNum /= 10;
+              }
+            }
+            // We don't change the current happiness until we know for sure
+            // it's a valid range
+            setCurrentHappiness(happinessNum);
+          }
+        }}
+        disabled={!editable}
+      />
+    );
+  };
+  return sidebarStyle ? (
     <div className="flex">
-      {numInput}
+      <NumInput />
       <div className="flex-col">
         {editable && <Changer change={0.5} />}
         {editable && <Changer change={-0.5} />}
@@ -128,7 +130,7 @@ export default function HappinessNumber({
     <Column className=" w-full items-center">
       {editable && <Changer change={0.5} />}
       <div className="h-3" />
-      {numInput}
+      <NumInput />
       <div className="h-3" />
       {editable && <Changer change={-0.5} />}
     </Column>

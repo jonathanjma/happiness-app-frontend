@@ -39,12 +39,16 @@ module.exports = {
       },
       borderWidth: {
         1: "1px",
+        1.5: "1.5px",
       },
       gap: {
         0.25: "1px",
       },
       margin: {
         0.25: "1px",
+      },
+      boxShadow: {
+        md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
       },
     },
   },
