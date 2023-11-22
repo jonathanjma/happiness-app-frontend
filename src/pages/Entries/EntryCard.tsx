@@ -96,12 +96,15 @@ export default function EntryCard({
           <div className="flex-1" />
           {editing ? (
             <>
-              <Button
-                variation="OUTLINED"
-                label="Delete Entry"
-                associatedModalId="delete-confirm-modal"
-              />
-              <div className=" w-4" />
+              {happiness.value !== -1 &&
+                <>
+                  <Button
+                    variation="OUTLINED"
+                    label="Delete Entry"
+                    associatedModalId="delete-confirm-modal"
+                  />
+                  <div className=" w-4" />
+                </>}
               <Button label="Save" onClick={() => setEditing(false)} />
             </>
           ) : (

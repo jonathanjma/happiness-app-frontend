@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useIsMutating, useMutation, useQueries, useQuery } from "react-query";
+import { useIsMutating, useMutation } from "react-query";
 import Row from "../../components/layout/Row";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
@@ -7,7 +7,6 @@ import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
-import { shouldProcessLinkClick } from "react-router-dom/dist/dom";
 
 /**
  * The page for displaying entries with the scrollable calendar
