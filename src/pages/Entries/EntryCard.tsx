@@ -10,7 +10,8 @@ import { Happiness } from "../../data/models/Happiness";
 import Comments from "./Comments";
 import { Constants } from "../../constants";
 import IconWarningOutline from "../../assets/IconWarningOutline";
-import Modal from "../../components/Modal";
+import Modal from "../../components/modals/Modal";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -24,6 +25,7 @@ export default function EntryCard({
   happiness,
   onChangeHappinessNumber,
   onChangeCommentText,
+  onDeleteHappiness,
   editing,
   setEditing,
   networkingState,
@@ -33,6 +35,7 @@ export default function EntryCard({
   className?: string;
   onChangeHappinessNumber: (value: number) => void;
   onChangeCommentText: (value: string) => void;
+  onDeleteHappiness: () => void;
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   networkingState: string;
@@ -96,7 +99,7 @@ export default function EntryCard({
               <Button
                 variation="OUTLINED"
                 label="Delete Entry"
-                associatedModalId="#delete-confirm-modal"
+                associatedModalId="delete-confirm-modal"
               />
               <div className=" w-4" />
               <Button label="Save" onClick={() => setEditing(false)} />
@@ -139,7 +142,7 @@ export default function EntryCard({
             {editing && (
               <Row className="mt-1 gap-1">
                 {happiness.value === -1 ||
-                networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                  networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <svg
@@ -171,14 +174,14 @@ export default function EntryCard({
           <Comments commentsResult={commentsResult} />
         </Column>
       </Column>
-      <Modal id="delete-confirm-modal">
-        <h3>Unsaved Changes</h3>
-        <p>If you leave now, your changes won't be saved.</p>
-        <Row>
-          <Button variation="OUTLINED" label="Cancel" />
-          <Button label="Leave" />
-        </Row>
-      </Modal>
+      <ConfirmationModal
+        id="delete-confirm-modal"
+        title="Deleting happiness"
+        body={`You are deleting happiness for ${new Date(happiness.timestamp).toDateString()}, are you sure you want to continue?`}
+        denyText="Cancel"
+        confirmText="Continue"
+        onConfirm={onDeleteHappiness}
+      />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useIsMutating, useMutation } from "react-query";
+import { useIsMutating, useMutation, useQueries, useQuery } from "react-query";
 import Row from "../../components/layout/Row";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
@@ -62,6 +62,12 @@ export default function Entries() {
     mutationKey: "updateHappiness",
   });
 
+  const deleteHappinessMutation = useMutation({
+    mutationFn: () =>
+      api.delete(`/happiness/?id=${selectedEntry?.id}`),
+    mutationKey: "deleteHappiness"
+  });
+
   // Update the networking state displayed to the user based on updateEntryMutation result
   useEffect(() => {
     if (!selectedEntry || selectedEntry.value === -1) {
@@ -82,6 +88,16 @@ export default function Entries() {
     }
     setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
   }, [numStillMutating]);
+
+  // Update happiness when it is successfully deleted
+  useEffect(() => {
+    console.log(`delete status: ${deleteHappinessMutation.status}`);
+    if (deleteHappinessMutation.isSuccess) {
+      setSelectedEntry((selected) => {
+        return selected ? { ...selected, comment: "", value: -1 } : undefined;
+      });
+    }
+  }, [deleteHappinessMutation]);
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">
@@ -117,6 +133,9 @@ export default function Entries() {
           setEditing={setEditing}
           networkingState={networkingState}
           setNetworkingState={setNetworkingState}
+          onDeleteHappiness={() => {
+            deleteHappinessMutation.mutate();
+          }}
         />
       </div>
     </Row>
