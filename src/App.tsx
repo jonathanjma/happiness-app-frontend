@@ -4,6 +4,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import Entries from "./pages/Entries/Entries";
 import SignIn from "./pages/SignIn/SignIn";
+import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 
@@ -46,16 +47,20 @@ export default function App() {
               path="*"
               element={
                 <PrivateRoute>
-                  <Routes>
-                    <Route path="/home" element={<Entries />} />
-                    {/* <Route path="/statistics" element={<Statistics />} /> */}
-                    {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                    {/* <Route path="/groups" element={<UserGroups />} /> */}
-                    {/* <Route path="/groups/:groupID" element={<Group />} /> */}
-                    {/* <Route path="/settings" element={<Settings />} /> */}
-                    {/* <Route path="/history/:userID" element={<History />} /> */}
-                    <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
+                  <Sidebar
+                    element={
+                      <Routes>
+                        <Route path="/home" element={<Entries />} />
+                        {/* <Route path="/statistics" element={<Statistics />} /> */}
+                        {/* <Route path="/profile/:userID" element={<Profile />} /> */}
+                        {/* <Route path="/groups" element={<UserGroups />} /> */}
+                        {/* <Route path="/groups/:groupID" element={<Group />} /> */}
+                        {/* <Route path="/settings" element={<Settings />} /> */}
+                        {/* <Route path="/history/:userID" element={<History />} /> */}
+                        <Route path="*" element={<Navigate to="/" />} />
+                      </Routes>
+                    }
+                  />
                 </PrivateRoute>
               }
             />

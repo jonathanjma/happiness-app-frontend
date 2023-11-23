@@ -2,6 +2,7 @@ module.exports = {
   theme: {
     fontSize: {
       /* default design font sizes and line heights */
+      xs: ["0.75rem", "1rem"] /* xs */,
       sm: ["0.875rem", "1.5rem"] /* label */,
       base: ["1rem", "1.5rem"] /* body */,
       lg: ["1.25rem", "1.5rem"] /* h5 */,
@@ -38,12 +39,16 @@ module.exports = {
       },
       borderWidth: {
         1: "1px",
+        1.5: "1.5px",
       },
       gap: {
         0.25: "1px",
       },
       margin: {
         0.25: "1px",
+      },
+      boxShadow: {
+        md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
       },
     },
   },
