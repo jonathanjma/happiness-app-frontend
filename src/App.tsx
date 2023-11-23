@@ -6,6 +6,7 @@ import Entries from "./pages/Entries/Entries";
 import SignIn from "./pages/SignIn/SignIn";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
+import UserGroups from "./pages/UserGroups/UserGroups";
 
 export default function App() {
   useEffect(() => {
@@ -48,9 +49,9 @@ export default function App() {
                 <PrivateRoute>
                   <Routes>
                     <Route path="/home" element={<Entries />} />
+                    <Route path="/groups" element={<UserGroups />} />
                     {/* <Route path="/statistics" element={<Statistics />} /> */}
                     {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                    {/* <Route path="/groups" element={<UserGroups />} /> */}
                     {/* <Route path="/groups/:groupID" element={<Group />} /> */}
                     {/* <Route path="/settings" element={<Settings />} /> */}
                     {/* <Route path="/history/:userID" element={<History />} /> */}

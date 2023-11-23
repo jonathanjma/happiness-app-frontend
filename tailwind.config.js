@@ -15,15 +15,18 @@ module.exports = {
       dark_gray: "#575F68",
       light_gray: "#808080",
       light_yellow: "#F6F0E0",
+      light_yellow2: "#F7EFD7",
       "gray-50": "#F5F5F5",
       "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
       "gray-400": "#808080",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
+      yellow2: "#E5C877",
       secondary: "#664810",
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",
+      brand_off_white: "#FAFAFA",
     },
     extend: {
       padding: {
@@ -44,6 +47,10 @@ module.exports = {
       },
       margin: {
         0.25: "1px",
+      },
+      boxShadow: {
+        sm1: "0px 2px 20px 0px rgba(0, 0, 0, 0.15)",
+        md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
       },
     },
   },
