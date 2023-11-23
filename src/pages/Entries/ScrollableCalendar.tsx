@@ -101,8 +101,6 @@ export default function ScrollableCalendar({
   );
 
   React.useEffect(() => {
-    console.log(`selectedDate: ${selectedDate}`);
-    console.log(`all entries: ${allEntries}`);
     if (allEntries) {
       for (const entry of allEntries) {
         if (entry.timestamp === selectedDate) {
