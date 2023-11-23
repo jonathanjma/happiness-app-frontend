@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
 import HappinessNumber from "../../components/HappinessNumber";
@@ -6,11 +6,11 @@ import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
+import { useState } from 'react';
 import { Happiness } from "../../data/models/Happiness";
 import Comments from "./Comments";
-import { Constants } from "../../constants";
+import { Constants, QueryKeys } from "../../constants";
 import IconWarningOutline from "../../assets/IconWarningOutline";
-import Modal from "../../components/modals/Modal";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 
 /**
@@ -42,6 +42,8 @@ export default function EntryCard({
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { api } = useApi();
+  const queryClient = useQueryClient();
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Fetch comments
   const commentsResult = useQuery<Comment[]>(

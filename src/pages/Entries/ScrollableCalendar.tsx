@@ -8,17 +8,22 @@ import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
+import { QueryKeys } from "../../constants";
+import { useState } from 'react';
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
   setSelectedEntry,
+  setEditing
 }: {
   selectedEntry: Happiness | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { api } = useApi();
   const { user } = useUser();
+  const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -74,7 +79,7 @@ export default function ScrollableCalendar({
   // infinite query for fetching happiness
   const { isLoading, data, isError, fetchNextPage, hasNextPage } =
     useInfiniteQuery<HappinessPagination>(
-      ["happiness calendar"],
+      QueryKeys.FETCH_HAPPINESS,
       ({ pageParam = 1 }) => fetcher(pageParam),
       {
         getNextPageParam: (lastPage) => {
@@ -96,10 +101,17 @@ export default function ScrollableCalendar({
   );
 
   React.useEffect(() => {
-    if (allEntries && allEntries.length > 0 && selectedEntry == null) {
-      setSelectedEntry(allEntries[0]);
+    console.log(`selectedDate: ${selectedDate}`);
+    console.log(`all entries: ${allEntries}`);
+    if (allEntries) {
+      for (const entry of allEntries) {
+        if (entry.timestamp === selectedDate) {
+          setSelectedEntry(entry);
+          return;
+        }
+      }
     }
-  }, [allEntries]);
+  }, [selectedDate, allEntries]);
 
   return (
     <div
@@ -126,15 +138,20 @@ export default function ScrollableCalendar({
                   <HappinessCard
                     key={selectedEntry?.id}
                     data={selectedEntry}
-                    click={() => {}}
+                    click={() => { }}
                     selected={true}
                   />
                 ) : (
                   <HappinessCard
                     key={entry.id}
                     data={entry}
-                    selected={selectedEntry?.id === entry.id}
-                    click={() => setSelectedEntry(entry)}
+                    selected={entry.id === selectedEntry?.id}
+                    click={() => {
+                      if (entry.timestamp !== selectedDate) {
+                        setSelectedDate(entry.timestamp);
+                        setEditing(false);
+                      }
+                    }}
                   />
                 ),
               )}

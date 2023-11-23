@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useIsMutating, useMutation } from "react-query";
+import { useIsMutating, useMutation, useQueryClient } from "react-query";
 import Row from "../../components/layout/Row";
-import { Constants } from "../../constants";
+import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
@@ -19,7 +19,8 @@ export default function Entries() {
   const prevSelectedEntryId = useRef<number | undefined>(undefined);
   const { user } = useUser();
   const { api } = useApi();
-  const numStillMutating = useIsMutating();
+  const queryClient = useQueryClient();
+  const numStillMutating = useIsMutating({ mutationKey: MutationKeys.MUTATE_HAPPINESS });
   const [networkingState, setNetworkingState] = useState(
     Constants.LOADING_MUTATION_TEXT.toString(),
   );
@@ -32,15 +33,6 @@ export default function Entries() {
   };
 
   useEffect(() => {
-    if (
-      selectedEntry &&
-      prevSelectedEntryId &&
-      prevSelectedEntryId.current &&
-      prevSelectedEntryId.current !== selectedEntry?.id &&
-      selectedEntry.value !== -1
-    ) {
-      setEditing(false);
-    }
     if (selectedEntry) {
       if (selectedEntry.value === -1) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
@@ -58,13 +50,13 @@ export default function Entries() {
     mutationFn: (newHappiness: HappinessPost) => {
       return api.post<Happiness>("/happiness/", newHappiness);
     },
-    mutationKey: "updateHappiness",
+    mutationKey: MutationKeys.MUTATE_HAPPINESS,
   });
 
   const deleteHappinessMutation = useMutation({
     mutationFn: () =>
       api.delete(`/happiness/?id=${selectedEntry?.id}`),
-    mutationKey: "deleteHappiness"
+    mutationKey: MutationKeys.MUTATE_HAPPINESS
   });
 
   // Update the networking state displayed to the user based on updateEntryMutation result
@@ -77,26 +69,13 @@ export default function Entries() {
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       return;
     }
-    if (updateEntryMutation.isLoading) {
-      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-      return;
-    }
-    if (updateEntryMutation.isError) {
+    if (updateEntryMutation.isError || deleteHappinessMutation.isError) {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
       return;
     }
+    queryClient.invalidateQueries(QueryKeys.FETCH_HAPPINESS);
     setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
   }, [numStillMutating]);
-
-  // Update happiness when it is successfully deleted
-  useEffect(() => {
-    console.log(`delete status: ${deleteHappinessMutation.status}`);
-    if (deleteHappinessMutation.isSuccess) {
-      setSelectedEntry((selected) => {
-        return selected ? { ...selected, comment: "", value: -1 } : undefined;
-      });
-    }
-  }, [deleteHappinessMutation]);
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">
@@ -104,6 +83,7 @@ export default function Entries() {
         <ScrollableCalendar
           selectedEntry={selectedEntry}
           setSelectedEntry={setSelectedEntry}
+          setEditing={setEditing}
         />
       </div>
       <div className="h-full w-full px-8 pb-4 pt-8">
