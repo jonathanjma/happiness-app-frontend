@@ -7,6 +7,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@preline/tabs": "^2.0.1",
     "@tanstack/react-query": "^4.35.7",
     "axios": "^1.5.1",
     "preline": "^1.9.0",

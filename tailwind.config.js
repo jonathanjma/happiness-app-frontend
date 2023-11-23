@@ -11,7 +11,6 @@ module.exports = {
       "4xl": ["2.25rem", "2.75rem"] /* h1 */,
     },
     colors: {
-      black: "#212121",
       dark_gray: "#575F68",
       light_gray: "#808080",
       light_yellow: "#F6F0E0",
@@ -20,6 +19,7 @@ module.exports = {
       "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
       "gray-400": "#808080",
+      "gray-800": "#212121",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
       yellow2: "#E5C877",
