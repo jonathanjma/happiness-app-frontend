@@ -1,5 +1,3 @@
-import ArrowDownIcon from "../assets/arrow_down.svg";
-import ArrowUpIcon from "../assets/arrow_up.svg";
 import { Constants } from "../constants";
 import Column from "./layout/Column";
 import { useEffect, useRef, useState } from "react";
@@ -68,7 +66,7 @@ export default function HappinessNumber({
     setHappinessDisplay(value === -1 ? "--" : value.toFixed(1));
   }, [value]);
 
-  const Changer = ({ change }: { change: number }) => (
+  const Changer = ({ change }: { change: number; }) => (
     <div
       className="flex min-h-[32px] min-w-[32px] flex-col items-center justify-center rounded-full bg-gray-50 hover:cursor-pointer"
       onClick={() => {
@@ -84,7 +82,7 @@ export default function HappinessNumber({
         }
       }}
     >
-      <img src={(change > 0 ? ArrowUpIcon : ArrowDownIcon) as any} />
+      {change > 0 ? <ArrowUpIcon /> : <ArrowDownIcon />}
     </div>
   );
   return (
@@ -123,3 +121,26 @@ export default function HappinessNumber({
     </Column>
   );
 }
+
+const ArrowUpIcon = () => <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clipPath="url(#clip0_1909_7051)">
+    <path d="M9.79222 4.39779C9.3547 3.96024 8.6453 3.96024 8.20778 4.39779L2.39803 10.2077C1.9605 10.6453 1.25111 10.6453 0.813586 10.2077L0.792165 10.1863C0.35466 9.7488 0.35466 9.03946 0.792165 8.60194L8.20778 1.18605C8.6453 0.748507 9.3547 0.748507 9.79222 1.18605L17.2078 8.60194C17.6453 9.03946 17.6453 9.7488 17.2078 10.1863L17.1864 10.2077C16.7489 10.6453 16.0395 10.6453 15.602 10.2077L9.79222 4.39779Z" fill="#575F68" />
+  </g>
+  <defs>
+    <clipPath id="clip0_1909_7051">
+      <rect width="10.6062" height="18" fill="white" transform="matrix(0 -1 1 0 0 11)" />
+    </clipPath>
+  </defs>
+</svg>;
+
+const ArrowDownIcon = () => <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clipPath="url(#clip0_1909_7054)">
+    <path d="M8.20778 6.60221C8.6453 7.03976 9.3547 7.03976 9.79222 6.60221L15.602 0.792253C16.0395 0.354709 16.7489 0.354708 17.1864 0.792253L17.2078 0.813674C17.6453 1.2512 17.6453 1.96054 17.2078 2.39806L9.79222 9.81395C9.3547 10.2515 8.6453 10.2515 8.20778 9.81395L0.792166 2.39806C0.35466 1.96054 0.354658 1.2512 0.792164 0.813674L0.813585 0.792253C1.25111 0.354708 1.9605 0.354708 2.39803 0.792253L8.20778 6.60221Z"
+      fill="#575F68" />
+  </g>
+  <defs>
+    <clipPath id="clip0_1909_7054">
+      <rect width="10.6062" height="18" fill="white" transform="matrix(0 1 -1 0 18 0)" />
+    </clipPath>
+  </defs>
+</svg>;
