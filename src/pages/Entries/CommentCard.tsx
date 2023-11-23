@@ -1,6 +1,6 @@
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import { Comment } from "../../data/models/Comment";
+import {Comment} from "../../data/models/Comment";
 
 /**
  * The type of comment card to display on the big entry card. Text styles are
@@ -10,10 +10,10 @@ import { Comment } from "../../data/models/Comment";
  */
 export default function CommentCard({ comment }: { comment: Comment }) {
   return (
-    <Row className="py-4 px-6">
+    <Row className="px-6 py-4">
       <img
-        className="rounded-full h-10 w-10"
-        src={comment.author.profilePicture}
+        className="h-10 w-10 rounded-full"
+        src={comment.author.profile_picture}
       />
       <div className="w-4" />
       <Column className="gap-0.25">
