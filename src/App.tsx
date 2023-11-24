@@ -4,6 +4,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import Entries from "./pages/Entries/Entries";
 import SignIn from "./pages/SignIn/SignIn";
+import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 import UserGroups from "./pages/UserGroups/UserGroups";
