@@ -107,7 +107,7 @@ export default function EntryCard({
                   />
                   <div className=" w-4" />
                 </>}
-              <Button label="Save" onClick={() => setEditing(false)} />
+              <Button label="Done" onClick={() => setEditing(false)} />
             </>
           ) : (
             <Button
