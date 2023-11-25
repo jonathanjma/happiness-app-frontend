@@ -30,7 +30,8 @@ export default function HappinessForm({ height }: { height: number; }) {
     if (happiness === -1) {
       setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
     } else {
-      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      console.log(`changing networking state`);
+      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       clearTimeout(postHappinessTimeout.current);
       postHappinessTimeout.current = setTimeout(() => {
         postHappinessMutation.mutate({
