@@ -8,6 +8,13 @@ export interface Happiness {
   author: User;
 }
 
+// type representing the fields used to update a happiness entry
+export interface NewHappiness {
+  value: number;
+  comment: string;
+  timestamp: string;
+}
+
 // type of the paginated happiness data structure used for infinite scroll
 export interface HappinessPagination {
   data: Happiness[];
