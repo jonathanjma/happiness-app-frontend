@@ -8,7 +8,7 @@ import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
-import { QueryKeys } from "../../constants";
+import { Constants, QueryKeys } from "../../constants";
 import { useState } from 'react';
 
 // Infinite scrollable calendar for viewing happiness entries
@@ -77,9 +77,9 @@ export default function ScrollableCalendar({
   };
 
   // infinite query for fetching happiness
-  const { isLoading, data, isError, fetchNextPage, hasNextPage } =
+  const { isLoading, data, isError, fetchNextPage, hasNextPage, isSuccess } =
     useInfiniteQuery<HappinessPagination>(
-      QueryKeys.FETCH_HAPPINESS,
+      QueryKeys.FETCH_HAPPINESS + " infinite query",
       ({ pageParam = 1 }) => fetcher(pageParam),
       {
         getNextPageParam: (lastPage) => {
@@ -93,7 +93,7 @@ export default function ScrollableCalendar({
   // combine all entries in React Query pages object
   const allEntries = useMemo(
     () =>
-      data?.pages.reduce(
+      data?.pages?.reduce(
         (acc: Happiness[], page) => [...acc, ...page.data],
         [],
       ),
@@ -111,6 +111,12 @@ export default function ScrollableCalendar({
     }
   }, [selectedDate, allEntries]);
 
+  if (isLoading) {
+    return <Spinner className="m-3" />;
+  }
+  if (isError) {
+    return <p className="m-3">Error: Could not load happiness data.</p>;
+  }
   return (
     <div
       className="scroll-hidden h-full w-[194px] overflow-auto"

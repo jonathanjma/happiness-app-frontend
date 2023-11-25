@@ -128,8 +128,6 @@ export default function HappinessNumber({
         disabled={!editable}
       />
       <div className=" h-3" />
-
-      {editable && <Changer change={-0.5} />}
     </Column>
   );
 

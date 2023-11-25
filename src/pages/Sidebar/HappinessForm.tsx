@@ -1,28 +1,24 @@
 import { useState, useRef, useEffect } from "react";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
-import { validateHappiness, formatDate, formatHappinessNum } from "../../utils";
+import { formatDate } from "../../utils";
 import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
+import { Constants, QueryKeys } from "../../constants";
 
-export default function HappinessForm({ height }: { height: number }) {
+export default function HappinessForm({ height }: { height: number; }) {
   const { api } = useApi();
+  const queryClient = useQueryClient();
 
   const [comment, setComment] = useState("");
-  const [submissionStatus, setSubmissionStatus] = useState("Updated");
+  const [networkingState, setNetworkingState] = useState<string>(Constants.FINISHED_MUTATION_TEXT);
 
   const postHappinessTimeout = useRef<number | undefined>(undefined);
-  const isInitialRender = useRef(true);
 
   const [radioValue, setRadioValue] = useState(2);
   const [selDate, setSelDate] = useState(new Date());
   const [happiness, setHappiness] = useState(-1);
-
-  const UNSUBMITTED = "Unsubmitted (enter number to submit)";
-  const UPDATING = "Updating...";
-  const UPDATED = "Updated";
-  const ERROR = "Error loading/retrieving happiness";
 
   const postHappinessMutation = useMutation((newHappiness: NewHappiness) =>
     api.post("/happiness/", newHappiness),
@@ -32,9 +28,9 @@ export default function HappinessForm({ height }: { height: number }) {
   // If happiness value is not entered, does not submit anything.
   useEffect(() => {
     if (happiness === -1) {
-      setSubmissionStatus(UNSUBMITTED);
+      setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
     } else {
-      setSubmissionStatus(UPDATING);
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
       clearTimeout(postHappinessTimeout.current);
       postHappinessTimeout.current = setTimeout(() => {
         postHappinessMutation.mutate({
@@ -49,9 +45,9 @@ export default function HappinessForm({ height }: { height: number }) {
   // Changes submission status if happiness value is updated successfully and refetches data.
   useEffect(() => {
     if (postHappinessMutation.isSuccess && happiness !== -1) {
-      setSubmissionStatus("Updated");
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes(QueryKeys.FETCH_HAPPINESS) });
     }
-    refetch();
   }, [postHappinessMutation.isSuccess]);
 
   // Changes selected date between today and yesterday when radioValue variable changes.
@@ -82,49 +78,53 @@ export default function HappinessForm({ height }: { height: number }) {
     refetch: (
       queryFnArgs?: undefined,
     ) => Promise<Happiness[] | undefined | unknown>;
-  } = useQuery(`happiness for user`, () => {
-    return api
-      .get("/happiness/", {
-        start: formatDate(
-          new Date(
-            new Date().getFullYear(),
-            new Date().getMonth(),
-            new Date().getDate() - 1,
+  } = useQuery(
+    {
+      queryKey: QueryKeys.FETCH_HAPPINESS + " sidebar query",
+      queryFn: () => api
+        .get("/happiness/", {
+          start: formatDate(
+            new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate() - 1,
+            ),
           ),
-        ),
-        end: formatDate(new Date()),
-      })
-      .then((res) => res.data);
-  });
+          end: formatDate(new Date()),
+        })
+        .then((res) => res.data)
+    }
+  );
 
-  // react to initial query
+  // react to data
   useEffect(() => {
     if (isLoading || data === undefined) {
       // TODO from design: loading state for this submission box
-      setSubmissionStatus(UPDATING);
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     } else if (isError) {
       // TODO from design: error state for this submission box
-      setSubmissionStatus(ERROR);
+      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
     } else {
       const idx: number = radioValue === 1 ? 0 : 1;
       if (data[idx] === undefined) {
-        setSubmissionStatus(UNSUBMITTED);
+        setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
         setHappiness(-1);
         setComment("");
       } else {
-        setSubmissionStatus(UPDATED);
+        setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+        console.log(`data from latest query: ${JSON.stringify(data[idx])}`);
         setHappiness(data[idx].value);
         setComment(data[idx].comment);
       }
     }
-  }, [isLoading, selDate]);
+  }, [data, selDate]);
 
   return (
     <>
       <div className="mb-4 flex w-full justify-center">
         <button
           className={
-            "border-1.5 w-1/2 rounded-l-lg border p-1 " +
+            "w-1/2 rounded-l-lg border p-1 " +
             (radioValue === 1
               ? "border-yellow bg-yellow text-secondary"
               : "border-r-0.5 border-gray-100 bg-white text-dark_gray")
@@ -171,6 +171,7 @@ export default function HappinessForm({ height }: { height: number }) {
             }}
             editable={true}
             sidebarStyle={true}
+            setNetworkingState={setNetworkingState}
           />
         </div>
         <div className="mt-1.5 flex w-full justify-center">
@@ -191,14 +192,14 @@ export default function HappinessForm({ height }: { height: number }) {
           <div className="w-1/2 font-medium text-dark_gray">
             {radioValue === 2
               ? selDate.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
+                hour: "2-digit",
+                minute: "2-digit",
+              })
               : ""}
           </div>
           {/* Currently the time doesn't update so i need to fix that */}
           <div className="w-1/2 text-right font-medium text-light_gray">
-            {submissionStatus}
+            {networkingState}
           </div>
         </div>
       </div>

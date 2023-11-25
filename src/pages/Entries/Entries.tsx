@@ -73,50 +73,60 @@ export default function Entries() {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
       return;
     }
-    queryClient.invalidateQueries(QueryKeys.FETCH_HAPPINESS);
     setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        console.log(`updating query ${query.queryKey}`);
+        console.log(`is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`);
+        return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
+      }
+    });
   }, [numStillMutating]);
 
   return (
-    <Row className="h-screen bg-[#FAFAFA]">
-      <div className="w-[162px] min-w-[162px]">
-        <ScrollableCalendar
-          selectedEntry={selectedEntry}
-          setSelectedEntry={setSelectedEntry}
-          setEditing={setEditing}
-        />
-      </div>
-      <div className="h-full w-full px-8 pb-4 pt-8">
-        <EntryCard
-          happiness={
-            selectedEntry ?? {
-              id: -1,
-              value: -1,
-              comment: "",
-              timestamp: Date.now().toString(),
-              author: user!,
+    <>
+      <button onClick={() => { console.log(`refresh`); queryClient.invalidateQueries({ predicate: (query) => { console.log(`queryKey = \"${query.queryKey}\"`); return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS); } }); }}>refresh</button>
+      < Row className="h-screen bg-[#FAFAFA]" >
+        <div className="w-[162px] min-w-[162px]">
+          <ScrollableCalendar
+            selectedEntry={selectedEntry}
+            setSelectedEntry={setSelectedEntry}
+            setEditing={setEditing}
+          />
+        </div>
+        <div className="h-full w-full px-8 pb-4 pt-8">
+          <EntryCard
+            happiness={
+              selectedEntry ?? {
+                id: -1,
+                value: -1,
+                comment: "",
+                timestamp: Date.now().toString(),
+                author: user!,
+              }
             }
-          }
-          className="h-full"
-          editing={editing}
-          onChangeHappinessNumber={(value) => {
-            setSelectedEntry((selected) => {
-              return selected ? { ...selected, value: value } : undefined;
-            });
-          }}
-          onChangeCommentText={(comment) => {
-            setSelectedEntry((selected) => {
-              return selected ? { ...selected, comment: comment } : undefined;
-            });
-          }}
-          setEditing={setEditing}
-          networkingState={networkingState}
-          setNetworkingState={setNetworkingState}
-          onDeleteHappiness={() => {
-            deleteHappinessMutation.mutate();
-          }}
-        />
-      </div>
-    </Row>
+            className="h-full"
+            editing={editing}
+            onChangeHappinessNumber={(value) => {
+              setSelectedEntry((selected) => {
+                return selected ? { ...selected, value: value } : undefined;
+              });
+            }}
+            onChangeCommentText={(comment) => {
+              setSelectedEntry((selected) => {
+                return selected ? { ...selected, comment: comment } : undefined;
+              });
+            }}
+            setEditing={setEditing}
+            networkingState={networkingState}
+            setNetworkingState={setNetworkingState}
+            onDeleteHappiness={() => {
+              deleteHappinessMutation.mutate();
+            }}
+          />
+        </div>
+      </Row >
+    </>
+
   );
-}
+};
