@@ -15,7 +15,7 @@ module.exports = {
       black: "#212121",
       dark_gray: "#575F68",
       light_gray: "#808080",
-      light_yellow: "#F6F0E0",
+      light_yellow: "#F7EFD7",
       "gray-50": "#F5F5F5",
       "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
@@ -25,6 +25,7 @@ module.exports = {
       secondary: "#664810",
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",
+      brand_off_white: "#FAFAFA",
     },
     extend: {
       padding: {

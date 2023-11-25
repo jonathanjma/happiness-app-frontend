@@ -11,7 +11,7 @@ import LinkButton from "../../components/LinkButton";
 import HappinessForm from "./HappinessForm";
 import { useWindowDimensions } from "../../utils";
 
-export default function Sidebar({ element }: { element: React.ReactElement }) {
+export default function Sidebar({ element }: { element: React.ReactElement; }) {
   const { user } = useUser();
 
   const navConfig = [
@@ -49,7 +49,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                       onClick={() => setSelectedLink("")}
                     >
                       <img
-                        className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                        className="mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
                         src={user!.profile_picture}
                         alt="profile"
                       />
@@ -64,7 +64,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </div>
                     <button
                       className={
-                        "w-3/10 shadow-md1 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary outline-none"
+                        "w-3/10 shadow-md1 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary outline-none"
                       }
                       onClick={useUser().logoutUser}
                     >

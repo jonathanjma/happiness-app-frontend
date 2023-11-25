@@ -27,22 +27,6 @@ export default function App() {
                 </PublicRoute>
               }
             />
-            {/* <Route
-              path="/reset-pass"
-              element={
-                <PublicRoute>
-                  <RequestResetPassword newPassword={false} />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/reset-pass/change-pass/:token"
-              element={
-                <PublicRoute>
-                  <ResetPassword newPassword={true} />
-                </PublicRoute>
-              }
-            /> */}
             <Route
               path="*"
               element={
