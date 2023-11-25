@@ -48,16 +48,20 @@ export default function App() {
               path="*"
               element={
                 <PrivateRoute>
-                  <Routes>
-                    <Route path="/home" element={<Entries />} />
-                    <Route path="/groups" element={<UserGroups />} />
-                    {/* <Route path="/statistics" element={<Statistics />} /> */}
-                    {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                    {/* <Route path="/groups/:groupID" element={<Group />} /> */}
-                    {/* <Route path="/settings" element={<Settings />} /> */}
-                    {/* <Route path="/history/:userID" element={<History />} /> */}
-                    <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
+                  <Sidebar
+                    element={
+                      <Routes>
+                        <Route path="/home" element={<Entries />} />
+                        <Route path="/groups" element={<UserGroups />} />
+                        {/* <Route path="/groups/:groupID" element={<Group />} /> */}
+                        {/* <Route path="/statistics" element={<Statistics />} /> */}
+                        {/* <Route path="/profile/:userID" element={<Profile />} /> */}
+                        {/* <Route path="/settings" element={<Settings />} /> */}
+                        {/* <Route path="/history/:userID" element={<History />} /> */}
+                        <Route path="*" element={<Navigate to="/" />} />
+                      </Routes>
+                    }
+                  />
                 </PrivateRoute>
               }
             />
