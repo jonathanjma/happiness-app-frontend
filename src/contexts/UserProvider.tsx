@@ -4,8 +4,15 @@ import { User } from "../data/models/User";
 import { Constants } from "../constants";
 import { Token } from "../data/models/Token";
 
+export enum UserState {
+  Loading,
+  Error,
+  Success,
+}
+
 interface ContextUser {
   user: User | undefined;
+  state: UserState;
   createUser: (username: string, email: string, password: string) => void;
   loginUser: (username: string, password: string) => void;
   logoutUser: () => void;
@@ -14,6 +21,7 @@ interface ContextUser {
 
 const UserContext = createContext<ContextUser>({
   user: undefined,
+  state: UserState.Loading,
   createUser: (_: string, __: string) => {},
   loginUser: (_: string, __: string) => {},
   logoutUser: () => {},
@@ -33,19 +41,23 @@ export default function UserProvider({
 }: {
   children: React.ReactElement;
 }) {
+  const [state, setState] = useState<UserState>(UserState.Loading);
   const [user, setUser] = useState<User | undefined>(undefined);
   const { api } = useApi();
 
-  const getUserFromToken = async () => {
-    const res = await api.get<User>("/user/self/");
-    setUser(res.data);
-  };
-
   useEffect(() => {
-    (async () => {
-      await getUserFromToken();
-    })();
+    getUserFromToken();
   }, [api]);
+
+  const getUserFromToken = () => {
+    api
+      .get<User>("/user/self/")
+      .then((res) => {
+        setState(UserState.Success);
+        setUser(res.data);
+      })
+      .catch(() => setState(UserState.Error));
+  };
 
   const createUser = (username: string, email: string, password: string) => {
     api
@@ -75,9 +87,10 @@ export default function UserProvider({
       .then(async (res) => {
         if (res.status == 201) {
           localStorage.setItem(Constants.TOKEN, res.data.session_token);
-          await getUserFromToken();
+          getUserFromToken();
         }
-      });
+      })
+      .catch(() => setState(UserState.Error));
   };
 
   const logoutUser = () => {
@@ -93,6 +106,7 @@ export default function UserProvider({
     api.delete<void>("/user/").then((res) => {
       if (res.status == 204) {
         setUser(undefined);
+        setState(UserState.Error);
         localStorage.removeItem(Constants.TOKEN);
       }
     });
@@ -102,6 +116,7 @@ export default function UserProvider({
     <UserContext.Provider
       value={{
         user,
+        state,
         loginUser,
         logoutUser,
         createUser,

@@ -22,7 +22,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
     { title: "Settings", route: "/settings", icon: SettingsIcon },
   ];
 
-  const [selectedLink, setSelectedLink] = useState("Entries");
+  const [selectedLink, setSelectedLink] = useState("");
 
   const { height } = useWindowDimensions();
 
@@ -49,7 +49,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                       onClick={() => setSelectedLink("")}
                     >
                       <img
-                        className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                        className="mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
                         src={user!.profile_picture}
                         alt="profile"
                       />
@@ -64,7 +64,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </div>
                     <button
                       className={
-                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
+                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary shadow-md1 outline-none"
                       }
                       onClick={useUser().logoutUser}
                     >
@@ -83,13 +83,17 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                             label={entry.title}
                             onClick={() => setSelectedLink(entry.title)}
                             href={entry.route}
+                            selectedClass={[
+                              "bg-yellow font-semibold text-secondary shadow-md1 ",
+                              "bg-light_yellow font-medium text-dark_gray ",
+                            ]}
                             className={
                               "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
-                              (selectedLink === entry.title
-                                ? "bg-yellow font-semibold text-secondary shadow-md1"
-                                : "bg-light_yellow font-medium text-dark_gray") +
+                              // (entry.title === selectedLink
+                              //   ? "active:bg-yellow active:font-semibold active:text-secondary active:shadow-md1"
+                              //   : "bg-light_yellow font-medium text-dark_gray") +
                               (entry.title === "Settings" && height >= 750
-                                ? " absolute bottom-0 w-[256px]"
+                                ? " absolute bottom-0 w-[256px] "
                                 : "")
                             }
                           />
