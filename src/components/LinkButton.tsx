@@ -24,8 +24,7 @@ export default function LinkButton({
           <div className="w-2.5" />
         </>
       )}
-      {/* TODO label is not clickable */}
-      <label className="font-semibold">{label}</label>
+      <label className="font-semibold hover:cursor-pointer">{label}</label>
     </a>
   );
 }

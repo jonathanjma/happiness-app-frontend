@@ -7,6 +7,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
+import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
 
 export default function App() {
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function App() {
                     element={
                       <Routes>
                         <Route path="/home" element={<Entries />} />
-                        {/* <Route path="/statistics" element={<Statistics />} /> */}
+                        <Route path="/journal" element={<PrivateEntries />} />
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
                         {/* <Route path="/groups" element={<UserGroups />} /> */}
                         {/* <Route path="/groups/:groupID" element={<Group />} /> */}

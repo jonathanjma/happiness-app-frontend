@@ -134,7 +134,7 @@ export default function HappinessForm({ height }: { height: number; }) {
             setRadioValue(1);
           }}
         >
-          <label className="text-base font-semibold">Yesterday</label>
+          <label className="hover:cursor-pointer text-base font-semibold">Yesterday</label>
         </button>
         <button
           className={
@@ -147,7 +147,7 @@ export default function HappinessForm({ height }: { height: number; }) {
             setRadioValue(2);
           }}
         >
-          <label className="text-base font-semibold">Today</label>
+          <label className="hover:cursor-pointer text-base font-semibold">Today</label>
         </button>
       </div>
       <div className="mb-4 rounded-xl bg-white p-4">

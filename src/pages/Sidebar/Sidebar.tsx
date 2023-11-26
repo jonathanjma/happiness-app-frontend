@@ -68,7 +68,7 @@ export default function Sidebar({ element }: { element: React.ReactElement; }) {
                       }
                       onClick={useUser().logoutUser}
                     >
-                      <label>Log Out</label>
+                      <label className="hover:cursor-pointer">Log Out</label>
                     </button>
                   </div>
                 </a>
