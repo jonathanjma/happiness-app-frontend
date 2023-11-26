@@ -31,7 +31,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
       <div className="flex w-full">
         <div
           id="docs-sidebar"
-          className="scrollbar-y dark:scrollbar-y dark:bg-gray-800 dark:border-gray-700 bottom-0 left-0 top-0 z-[60] hidden min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
+          className="scrollbar-y bottom-0 left-0 top-0 z-[60] hidden h-screen min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
         >
           <div className="flex h-full flex-col">
             <div className="m-4 flex grow flex-col">
@@ -64,7 +64,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </div>
                     <button
                       className={
-                        "w-3/10 shadow-md1 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary outline-none"
+                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
                       }
                       onClick={useUser().logoutUser}
                     >
@@ -84,9 +84,9 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                             onClick={() => setSelectedLink(entry.title)}
                             href={entry.route}
                             className={
-                              "hover:shadow-md1 mt-2 hover:bg-medium_yellow " +
+                              "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
                               (selectedLink === entry.title
-                                ? "shadow-md1 bg-yellow text-secondary"
+                                ? "bg-yellow text-secondary shadow-md1"
                                 : "bg-light_yellow text-dark_gray") +
                               (entry.title === "Settings" && height >= 750
                                 ? " absolute bottom-0 w-[256px]"
