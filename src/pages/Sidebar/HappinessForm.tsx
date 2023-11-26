@@ -124,7 +124,7 @@ export default function HappinessForm({ height }: { height: number }) {
       <div className="mb-4 flex w-full justify-center">
         <button
           className={
-            "border-1.5 w-1/2 rounded-l-lg border p-1 " +
+            "w-1/2 rounded-l-lg border border-1.5 p-1 " +
             (radioValue === 1
               ? "border-yellow bg-yellow text-secondary"
               : "border-r-0.5 border-gray-100 bg-white text-dark_gray")
@@ -133,11 +133,18 @@ export default function HappinessForm({ height }: { height: number }) {
             setRadioValue(1);
           }}
         >
-          <label className="text-base font-semibold">Yesterday</label>
+          <label
+            className={
+              "text-base " +
+              (radioValue === 1 ? "font-semibold" : "font-medium")
+            }
+          >
+            Yesterday
+          </label>
         </button>
         <button
           className={
-            "border-right border-1.5 w-1/2 rounded-r-lg p-1 " +
+            "border-right w-1/2 rounded-r-lg border-1.5 p-1 " +
             (radioValue === 2
               ? "border-yellow bg-yellow text-secondary"
               : "border-l-0.5 border-gray-100 bg-white text-dark_gray")
@@ -146,7 +153,14 @@ export default function HappinessForm({ height }: { height: number }) {
             setRadioValue(2);
           }}
         >
-          <label className="text-base font-semibold">Today</label>
+          <label
+            className={
+              "text-base " +
+              (radioValue === 2 ? "font-semibold" : "font-medium")
+            }
+          >
+            Today
+          </label>
         </button>
       </div>
       <div className="mb-4 rounded-xl bg-white p-4">

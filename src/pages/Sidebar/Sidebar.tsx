@@ -86,8 +86,8 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                             className={
                               "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
                               (selectedLink === entry.title
-                                ? "bg-yellow text-secondary shadow-md1"
-                                : "bg-light_yellow text-dark_gray") +
+                                ? "bg-yellow font-semibold text-secondary shadow-md1"
+                                : "bg-light_yellow font-medium text-dark_gray") +
                               (entry.title === "Settings" && height >= 750
                                 ? " absolute bottom-0 w-[256px]"
                                 : "")
