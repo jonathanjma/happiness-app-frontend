@@ -19,7 +19,13 @@ export default function HappinessForm({ height }: { height: number }) {
   const postHappinessTimeout = useRef<number | undefined>(undefined);
 
   const [radioValue, setRadioValue] = useState(2);
-  const [selDate, setSelDate] = useState(new Date());
+  const [selDate, setSelDate] = useState(
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    ),
+  );
   const [happiness, setHappiness] = useState(-1);
 
   const postHappinessMutation = useMutation((newHappiness: NewHappiness) =>
@@ -66,7 +72,11 @@ export default function HappinessForm({ height }: { height: number }) {
           new Date().getDate() - 1,
         );
       } else {
-        return new Date();
+        return new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate(),
+        );
       }
     });
   }, [radioValue]);
@@ -89,20 +99,15 @@ export default function HappinessForm({ height }: { height: number }) {
     queryFn: () =>
       api
         .get("/happiness/", {
-          start: formatDate(
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() - 1,
-            ),
-          ),
-          end: formatDate(new Date()),
+          start: formatDate(selDate),
+          end: formatDate(selDate),
         })
         .then((res) => res.data),
   });
 
   // react to data
   useEffect(() => {
+    refetch();
     if (isLoading || data === undefined) {
       // TODO from design: loading state for this submission box
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
@@ -110,16 +115,15 @@ export default function HappinessForm({ height }: { height: number }) {
       // TODO from design: error state for this submission box
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
     } else {
-      const idx: number = radioValue === 1 ? 0 : 1;
-      if (data[idx] === undefined) {
+      if (data[0] === undefined) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
         setHappiness(-1);
         setComment("");
       } else {
         setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-        console.log(`data from latest query: ${JSON.stringify(data[idx])}`);
-        setHappiness(data[idx].value);
-        setComment(data[idx].comment);
+        console.log(`data from latest query: ${JSON.stringify(data[0])}`);
+        setHappiness(data[0].value);
+        setComment(data[0].comment);
       }
     }
   }, [data, selDate]);
@@ -210,7 +214,7 @@ export default function HappinessForm({ height }: { height: number }) {
         <div className="mt-2 flex w-full text-sm">
           <div className="w-2/5 font-medium text-dark_gray">
             {radioValue === 2
-              ? selDate.toLocaleTimeString([], {
+              ? new Date().toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })

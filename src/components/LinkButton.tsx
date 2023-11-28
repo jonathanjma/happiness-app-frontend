@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 
+// selectedClass[0] contains the classes that are applied when button is selected
+// selectedClass[1] contains the classes that are applied when button is NOT selected
 export default function LinkButton({
   icon,
   label,
