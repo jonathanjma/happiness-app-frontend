@@ -30,7 +30,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
       <div className="flex w-full">
         <div
           id="docs-sidebar"
-          className="scrollbar-y dark:scrollbar-y dark:border-gray-700 bottom-0 left-0 top-0 z-[60] hidden min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 dark:bg-gray-800 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
+          className="scrollbar-y bottom-0 left-0 top-0 z-[60] hidden min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
         >
           <div className="flex h-full flex-col">
             <div className="m-4 flex grow flex-col">
@@ -38,17 +38,14 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                 <div className="mb-1 text-sm font-semibold text-dark_gray">
                   Account
                 </div>
-                <a
-                  className="flex-none dark:text-white"
-                  href={"/profile/" + user!.id}
-                >
+                <a className="flex-none" href={"/profile/" + user!.id}>
                   <div className="mb-6 flex items-center rounded-xl">
                     <div
                       className="mr-2 items-center"
                       onClick={() => setSelectedLink("")}
                     >
                       <img
-                        className="mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                        className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
                         src={user!.profile_picture}
                         alt="profile"
                       />
@@ -63,7 +60,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     </div>
                     <button
                       className={
-                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary shadow-md1 outline-none"
+                        "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
                       }
                       onClick={useUser().logoutUser}
                     >
@@ -82,6 +79,10 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                             label={entry.title}
                             onClick={() => setSelectedLink(entry.title)}
                             href={entry.route}
+                            selectedClass={[
+                              "bg-yellow font-semibold text-secondary shadow-md1 ",
+                              "bg-light_yellow font-medium text-dark_gray ",
+                            ]}
                             className={
                               "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
                               (selectedLink === entry.title
