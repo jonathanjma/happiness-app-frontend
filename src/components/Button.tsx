@@ -28,7 +28,7 @@ export default function Button({
   switch (variation) {
     case "FILLED":
       className +=
-        "bg-[#F7EFD7] hadow-lg border-1 border-solid border-[rgba(229,200,119,0.30)]  " +
+        "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)] " +
         additions;
       break;
     case "OUTLINED":
