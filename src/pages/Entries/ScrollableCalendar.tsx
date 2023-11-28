@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 import HappinessCard from "./HappinessCard";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -8,17 +8,23 @@ import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
+import { QueryKeys } from "../../constants";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
   setSelectedEntry,
+  setEditing,
 }: {
   selectedEntry: Happiness | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { api } = useApi();
   const { user } = useUser();
+  const [selectedDate, setSelectedDate] = useState<string>(
+    formatDate(new Date()),
+  );
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -72,9 +78,9 @@ export default function ScrollableCalendar({
   };
 
   // infinite query for fetching happiness
-  const { isLoading, data, isError, fetchNextPage, hasNextPage } =
+  const { isLoading, data, isError, fetchNextPage, hasNextPage, isSuccess } =
     useInfiniteQuery<HappinessPagination>(
-      ["happiness calendar"],
+      QueryKeys.FETCH_HAPPINESS + " infinite query",
       ({ pageParam = 1 }) => fetcher(pageParam),
       {
         getNextPageParam: (lastPage) => {
@@ -88,7 +94,7 @@ export default function ScrollableCalendar({
   // combine all entries in React Query pages object
   const allEntries = useMemo(
     () =>
-      data?.pages.reduce(
+      data?.pages?.reduce(
         (acc: Happiness[], page) => [...acc, ...page.data],
         [],
       ),
@@ -96,11 +102,22 @@ export default function ScrollableCalendar({
   );
 
   React.useEffect(() => {
-    if (allEntries && allEntries.length > 0 && selectedEntry == null) {
-      setSelectedEntry(allEntries[0]);
+    if (allEntries) {
+      for (const entry of allEntries) {
+        if (entry.timestamp === selectedDate) {
+          setSelectedEntry(entry);
+          return;
+        }
+      }
     }
-  }, [allEntries]);
+  }, [selectedDate, allEntries]);
 
+  if (isLoading) {
+    return <Spinner className="m-3" />;
+  }
+  if (isError) {
+    return <p className="m-3">Error: Could not load happiness data.</p>;
+  }
   return (
     <div
       className="scroll-hidden h-full w-[194px] overflow-auto"
@@ -133,8 +150,13 @@ export default function ScrollableCalendar({
                   <HappinessCard
                     key={entry.id}
                     data={entry}
-                    selected={selectedEntry?.id === entry.id}
-                    click={() => setSelectedEntry(entry)}
+                    selected={entry.id === selectedEntry?.id}
+                    click={() => {
+                      if (entry.timestamp !== selectedDate) {
+                        setSelectedDate(entry.timestamp);
+                        setEditing(false);
+                      }
+                    }}
                   />
                 ),
               )}
