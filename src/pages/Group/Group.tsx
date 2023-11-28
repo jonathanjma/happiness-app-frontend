@@ -7,16 +7,14 @@ import SettingsIcon from "../../assets/settings.svg";
 import PostIcon from "../../assets/post.svg";
 import GraphIcon from "../../assets/graph.svg";
 import TableIcon from "../../assets/table.svg";
+import Feed from "./Feed";
 
 export default function Group() {
   const { groupID } = useParams();
   const { api } = useApi();
-  const {
-    isLoading: isLoadingGI,
-    data: dataGI,
-    isError: isErrorGI,
-  } = useQuery<Group>("get group " + groupID, () =>
-    api.get<Group>("/group/" + groupID).then((res) => res.data),
+  const { isLoading, data, isError } = useQuery<Group>(
+    "get group " + groupID,
+    () => api.get<Group>("/group/" + groupID).then((res) => res.data),
   );
 
   const tabButtonClasses =
@@ -24,26 +22,26 @@ export default function Group() {
 
   return (
     <div className="mb-8 me-8 ms-10 mt-16">
-      {isLoadingGI ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <>
-          {isErrorGI ? (
+          {isError ? (
             <p className="m-3 text-xl font-medium">
               Error: Could not load groups.
             </p>
           ) : (
             <>
               {/* Header */}
-              <div className="mb-8 flex w-full justify-between">
+              <div className="mb-6 flex w-full justify-between">
                 <p className="m-0 self-center text-3xl font-semibold">
-                  {dataGI!.name}
+                  {data!.name}
                 </p>
-                <button className="shadow-md1 bg-light_yellow2 rounded-xl px-3 py-2">
+                <button className="rounded-xl bg-light_yellow2 px-3 py-2 shadow-md1">
                   <img src={SettingsIcon} className="max-w-[24px]" />
                 </button>
               </div>
-              {/* Tabs */}
+              {/* Tab Buttons */}
               <div>
                 <nav aria-label="Tabs" role="tablist">
                   <button
@@ -81,14 +79,10 @@ export default function Group() {
                   </button>
                 </nav>
               </div>
-
-              <div className="mt-3">
+              {/* Tab Panels */}
+              <div className="mt-6">
                 <div id="tab-panel-1" role="tabpanel" aria-labelledby="tab-1">
-                  <p className="text-gray-500">
-                    This is the{" "}
-                    <em className="text-gray-800 font-semibold">first</em>{" "}
-                    item's tab body.
-                  </p>
+                  <Feed groupData={data!} />
                 </div>
                 <div
                   id="tab-panel-2"
@@ -96,11 +90,7 @@ export default function Group() {
                   role="tabpanel"
                   aria-labelledby="tab-2"
                 >
-                  <p className="text-gray-500">
-                    This is the{" "}
-                    <em className="text-gray-800 font-semibold">second</em>{" "}
-                    item's tab body.
-                  </p>
+                  <p className="text-gray-500">Graph View</p>
                 </div>
                 <div
                   id="tab-panel-3"
@@ -108,11 +98,7 @@ export default function Group() {
                   role="tabpanel"
                   aria-labelledby="tab-3"
                 >
-                  <p className="text-gray-500">
-                    This is the{" "}
-                    <em className="text-gray-800 font-semibold">third</em>{" "}
-                    item's tab body.
-                  </p>
+                  <p className="text-gray-500">Table View</p>
                 </div>
               </div>
             </>
