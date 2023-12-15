@@ -8,14 +8,14 @@ import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
-import { Constants, QueryKeys } from "../../constants";
-import { useState } from 'react';
+import { QueryKeys } from "../../constants";
+import { useState } from "react";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
   setSelectedEntry,
-  setEditing
+  setEditing,
 }: {
   selectedEntry: Happiness | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
@@ -23,7 +23,9 @@ export default function ScrollableCalendar({
 }) {
   const { api } = useApi();
   const { user } = useUser();
-  const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
+  const [selectedDate, setSelectedDate] = useState<string>(
+    formatDate(new Date()),
+  );
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -31,16 +33,18 @@ export default function ScrollableCalendar({
   // happiness data fetch function
   // where every page represents one week of happiness data
   //  (where days with missing entries are filled of blank entries)
+  const entriesPerLoad: number = 14;
+
   const fetcher = async (page: number): Promise<HappinessPagination> => {
     const start = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
-      new Date().getDate() - 7 * page,
+      new Date().getDate() - entriesPerLoad * page,
     );
     const end = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
-      new Date().getDate() - 7 * (page - 1) - (page > 1 ? 1 : 0),
+      new Date().getDate() - entriesPerLoad * (page - 1) - (page > 1 ? 1 : 0),
     );
 
     const res = await api.get<Happiness[]>("/happiness/", {
@@ -137,26 +141,33 @@ export default function ScrollableCalendar({
               scrollableTarget="scrollableDiv"
               className="px-8"
             >
-              {allEntries!.map((entry) =>
+              {allEntries!.map((entry, index) =>
                 selectedEntry && entry.id === selectedEntry.id ? (
-                  <HappinessCard
-                    key={selectedEntry?.id}
-                    data={selectedEntry}
-                    click={() => { }}
-                    selected={true}
-                  />
+                  <>
+                    {index === 0 && <div className="h-1 " />}
+                    <HappinessCard
+                      key={selectedEntry?.id}
+                      data={selectedEntry}
+                      click={() => {}}
+                      selected={true}
+                    />
+                  </>
                 ) : (
-                  <HappinessCard
-                    key={entry.id}
-                    data={entry}
-                    selected={entry.id === selectedEntry?.id}
-                    click={() => {
-                      if (entry.timestamp !== selectedDate) {
-                        setSelectedDate(entry.timestamp);
-                        setEditing(false);
-                      }
-                    }}
-                  />
+                  <>
+                    {index === 0 && <div className="h-1 " />}
+
+                    <HappinessCard
+                      key={entry.id}
+                      data={entry}
+                      selected={entry.id === selectedEntry?.id}
+                      click={() => {
+                        if (entry.timestamp !== selectedDate) {
+                          setSelectedDate(entry.timestamp);
+                          setEditing(false);
+                        }
+                      }}
+                    />
+                  </>
                 ),
               )}
             </InfiniteScroll>

@@ -1,16 +1,12 @@
-import { useQuery } from "react-query";
+import IconWarningOutline from "../../assets/IconWarningOutline";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
-import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import { useApi } from "../../contexts/ApiProvider";
-import { Comment } from "../../data/models/Comment";
-import { Happiness } from "../../data/models/Happiness";
-import Comments from "./Comments";
-import { Constants } from "../../constants";
-import IconWarningOutline from "../../assets/IconWarningOutline";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import { Constants } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { Journal } from "../../data/models/Journal";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -19,42 +15,25 @@ import ConfirmationModal from "../../components/modals/ConfirmationModal";
  * If the happiness value is negative one it represents no happiness for this day
  * @returns
  */
-export default function EntryCard({
+export default function PrivateEntryCard({
   className,
-  happiness,
-  onChangeHappinessNumber,
-  onChangeCommentText,
-  onDeleteHappiness,
+  journal,
+  onChangeJournalText,
+  onDeleteJournal,
   editing,
   setEditing,
   networkingState,
   setNetworkingState,
 }: {
-  happiness: Happiness;
+  journal: Journal;
   className?: string;
-  onChangeHappinessNumber: (value: number) => void;
-  onChangeCommentText: (value: string) => void;
-  onDeleteHappiness: () => void;
+  onChangeJournalText: (value: string) => void;
+  onDeleteJournal: () => void;
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   networkingState: string;
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const { api } = useApi();
-
-  // Fetch comments
-  const commentsResult = useQuery<Comment[]>(
-    [`happinessComments ${happiness.id}`],
-    () => {
-      if (happiness.id >= 0) {
-        return api
-          .get<Comment[]>(`/happiness/${happiness.id}/comments`)
-          .then((res) => res.data);
-      }
-      return [];
-    },
-  );
-
   return (
     <>
       <Column
@@ -65,7 +44,9 @@ export default function EntryCard({
       >
         {/* Header text */}
         <Row className="items-center">
-          <p className="text-dark_gray">You don't have a private entry</p>
+          <p className="text-dark_gray">
+            You have a public entry for this date.
+          </p>
           <span className="w-3" />
           <p
             className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
@@ -73,7 +54,7 @@ export default function EntryCard({
               console.log("TODO open private entries page");
             }}
           >
-            Create a Private Entry
+            View public entry
           </p>
         </Row>
 
@@ -84,7 +65,7 @@ export default function EntryCard({
           <Column>
             <h4>Public Entry</h4>
             <h5 className=" text-dark_gray">
-              {new Date(happiness.timestamp).toLocaleDateString("en-US", {
+              {new Date(journal.timestamp).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
                 year: "numeric",
@@ -95,7 +76,7 @@ export default function EntryCard({
           <div className="flex-1" />
           {editing ? (
             <>
-              {happiness.value !== -1 && (
+              {journal && (
                 <>
                   <Button
                     variation="OUTLINED"
@@ -119,15 +100,6 @@ export default function EntryCard({
         </Row>
         {/* Entry and score */}
         <Row className="mt-6 h-1/4  w-full">
-          <Column className="border-primary-500 flex h-full min-w-[80px] items-center ">
-            <HappinessNumber
-              value={happiness.value}
-              onChangeValue={onChangeHappinessNumber}
-              editable={editing}
-              setNetworkingState={setNetworkingState}
-            />
-          </Column>
-          <div className=" w-6" />
           <Column className="w-full">
             <textarea
               placeholder="Write about your day"
@@ -135,17 +107,16 @@ export default function EntryCard({
                 "h-full w-full resize-none rounded-lg bg-transparent focus:outline-none " +
                 (editing ? "border-1 border-solid border-gray-200 p-5" : "")
               }
-              value={happiness.comment}
+              value={journal.data}
               disabled={!editing}
               onChange={(e) => {
-                onChangeCommentText(e.target.value);
+                onChangeJournalText(e.target.value);
               }}
             />
             {/* Editing status text */}
             {editing && (
               <Row className="mt-1 gap-1">
-                {happiness.value === -1 ||
-                networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                {networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <svg
@@ -172,20 +143,14 @@ export default function EntryCard({
           </Column>
         </Row>
         <div className="h-8" />
-        {/* Comments */}
-        <Column className="h-0 w-full flex-1 items-stretch">
-          <Comments commentsResult={commentsResult} />
-        </Column>
       </Column>
       <ConfirmationModal
         id="delete-confirm-modal"
-        title="Deleting happiness"
-        body={`You are deleting happiness for ${new Date(
-          happiness.timestamp,
-        ).toDateString()}, are you sure you want to continue?`}
-        denyText="Cancel"
-        confirmText="Continue"
-        onConfirm={onDeleteHappiness}
+        title="Deleting entry?"
+        body={`This action cannot be undone.`}
+        denyText="Delete Entry"
+        confirmText="Continue Editing"
+        onConfirm={onDeleteJournal}
       />
     </>
   );

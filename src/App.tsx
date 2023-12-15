@@ -7,7 +7,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
-import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
+import PrivateEntries from "./pages/PrivateEntries/PrivateEntriesAuthenticate";
 
 export default function App() {
   useEffect(() => {
