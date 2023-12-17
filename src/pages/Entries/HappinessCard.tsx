@@ -26,8 +26,8 @@ export default function HappinessCard({
 
   return (
     <div className=" relative">
-      {isToday && !selected && (
-        <p className="absolute -translate-y-1/2 translate-x-1 transform rounded-3xl bg-yellow px-3 py-0.5 text-xs font-medium text-secondary">
+      {isToday && (
+        <p className={`absolute -translate-y-1/2 translate-x-1 transform rounded-3xl px-3 py-0.5 text-xs font-medium ${!selected ? "bg-yellow text-secondary" : "bg-secondary text-white"}`}>
           Today
         </p>
       )}
@@ -48,9 +48,6 @@ export default function HappinessCard({
               </p>
             </Column>
             <div className=" flex flex-1" />
-            {isToday && selected && (
-              <label className=" font-semibold text-secondary">Today</label>
-            )}
           </Row>
 
           <div className=" h-[1px]" />

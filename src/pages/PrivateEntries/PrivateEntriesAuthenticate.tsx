@@ -14,8 +14,8 @@ export default function PrivateEntriesAuthenticate() {
   const { user } = useUser();
   const onSubmitPassword = async () => {
     api
-      .post(
-        "/token/",
+      .get(
+        "/journal/key",
         {},
         {
           headers: {
