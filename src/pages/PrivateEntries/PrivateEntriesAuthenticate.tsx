@@ -13,15 +13,18 @@ export default function PrivateEntriesAuthenticate() {
   const { api } = useApi();
   const { user } = useUser();
   const onSubmitPassword = async () => {
+    console.log(`${user?.username}:${passwordText}`);
     api
       .get(
         "/journal/key",
-        {},
+        {
+          password: passwordText
+        },
         {
           headers: {
-            Authorization: `Basic ${btoa(`${user!.username}:${passwordText}`)}`,
-          },
-        },
+            'Password-Key': "None"
+          }
+        }
       )
       .then((res) => {
         console.log(`res data ${JSON.stringify(res.data)}`);

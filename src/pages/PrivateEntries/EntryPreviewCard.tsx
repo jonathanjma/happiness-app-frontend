@@ -18,11 +18,11 @@ export default function EntryPreviewCard({ click, selected, data }: {
           Today
         </p>
       )}
-      <Card className="p-3 w-[108px] h-[108px] elevation-01">
+      <Card className="p-3 w-[108px] h-[108px] elevation-01 overflow-hidden relative">
         <label className="text-gray-600 leading-4 z-10">{date.toLocaleString("en-us", { weekday: "long" })}</label>
         <p className="font-semibold text-gray-600 leading-5 z-10">{date.toLocaleDateString("en-us", { month: "short", day: "numeric" })}</p>
-        <div className="absolute  translate-x-[40px] translate-y-[43px]">
-          <UnlockedIcon width={60} height={78} />
+        <div className="absolute overflow-hidden translate-x-[36px] translate-y-[43px]">
+          <UnlockedIcon width={60} height={78} opacity={0.08} />
         </div>
       </Card>
     </div>
