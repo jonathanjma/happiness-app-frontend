@@ -12,7 +12,7 @@ export default function EntryPreviewCard({ click, selected, data }: {
     date.toLocaleDateString("sv") === new Date().toLocaleDateString("sv");
 
   return (
-    <div className="relative">
+    <div className="relative w-[108px] ">
       {isToday && (
         <p className={`absolute -translate-y-1/2 translate-x-1 transform rounded-3xl px-3 py-0.5 text-xs font-medium ${!selected ? "bg-yellow text-secondary" : "bg-secondary text-white"}`}>
           Today

@@ -6,6 +6,7 @@ import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
+import { Constants } from "../../constants";
 
 export default function PrivateEntriesAuthenticate() {
   const [passwordText, setPasswordText] = useState("");
@@ -15,7 +16,7 @@ export default function PrivateEntriesAuthenticate() {
   const onSubmitPassword = async () => {
     console.log(`${user?.username}:${passwordText}`);
     api
-      .get(
+      .post(
         "/journal/key",
         {
           password: passwordText
@@ -27,8 +28,8 @@ export default function PrivateEntriesAuthenticate() {
         }
       )
       .then((res) => {
-        console.log(`res data ${JSON.stringify(res.data)}`);
-        console.log(`res header ${res.headers["Password-Key"]}`);
+        sessionStorage.setItem(Constants.PASSWORD_KEY, res.headers["password-key"]);
+        window.location.reload();
       });
   };
 

@@ -4,10 +4,10 @@ import { useInfiniteQuery } from "react-query";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
-import { Happiness, HappinessPagination, JournalPagination } from "../../data/models/Happiness";
+import { JournalPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
-import { QueryKeys } from "../../constants";
+import { Constants, QueryKeys } from "../../constants";
 import { useState } from "react";
 import EntryPreviewCard from "./EntryPreviewCard";
 import { Journal } from "../../data/models/Journal";
@@ -47,10 +47,8 @@ export default function ScrollableJournalCalendar({
     );
 
     // TODO add authorization parameters  
-    const res = await api.get<Journal[]>("/journal/", {
-      start: formatDate(start),
-      end: formatDate(end),
-    });
+    const res = await api.get<Journal[]>("/journal/", {},
+      { headers: { "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY) } });
 
     let itr = new Date(start);
     while (itr <= end) {
@@ -122,7 +120,7 @@ export default function ScrollableJournalCalendar({
   }
   return (
     <div
-      className="scroll-hidden h-full w-[194px] overflow-auto"
+      className="scroll-hidden h-full overflow-auto"
       id="scrollableDiv"
     >
       {isLoading ? (
@@ -138,23 +136,20 @@ export default function ScrollableJournalCalendar({
               hasMore={!!hasNextPage}
               loader={<Spinner className="m-3" text="Loading entries..." />}
               scrollableTarget="scrollableDiv"
-              className="px-8"
             >
               {allEntries!.map((entry, index) =>
                 selectedEntry && entry.id === selectedEntry.id ? (
                   <>
-                    {index === 0 && <div className="h-1 " />}
                     <EntryPreviewCard
                       key={selectedEntry?.id}
                       data={selectedEntry}
                       click={() => { }}
                       selected={true}
                     />
+                    <div className="h-4" />
                   </>
                 ) : (
                   <>
-                    {index === 0 && <div className="h-1 " />}
-
                     <EntryPreviewCard
                       key={entry.id}
                       data={entry}
@@ -165,6 +160,7 @@ export default function ScrollableJournalCalendar({
                         }
                       }}
                     />
+                    <div className="h-4" />
                   </>
                 ),
               )}

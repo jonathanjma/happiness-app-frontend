@@ -1,5 +1,6 @@
 export enum Constants {
   TOKEN = "token",
+  PASSWORD_KEY = "passwordKey",
   LOADING_MUTATION_TEXT = "Applying changes...",
   FINISHED_MUTATION_TEXT = "Updated",
   ERROR_MUTATION_TEXT = "Failed to apply changes, please try again later",
