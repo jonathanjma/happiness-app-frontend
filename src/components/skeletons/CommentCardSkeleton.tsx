@@ -13,7 +13,7 @@ export default function CommentCardSkeleton() {
           <li className="h-5 w-full bg-gray-300 animate-pulse" />
           <li className="h-5 w-3/4 bg-gray-300 animate-pulse" />
         </ul>
-        <span className="w-1/5 h-4 bg-gray-300 animate-pulse" />
+        <span className="w-1/6 h-4 bg-gray-300 animate-pulse" />
       </Column>
     </Row>
   );

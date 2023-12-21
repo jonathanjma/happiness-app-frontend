@@ -85,6 +85,12 @@ export default function Comments({
       <>
         <h5 className={"my-0.25 " + modalVariant ? "text-gray-400" : "text-black"}>Comments loading...</h5>
         <div className="h-0.25 w-full bg-gray-200" />
+
+        <div className="overflow-auto" ref={commentsContainer}>
+          {Array(3).fill(0).map((_, __) =>
+            <CommentCardSkeleton />
+          )}
+        </div>
       </>
     );
   }
