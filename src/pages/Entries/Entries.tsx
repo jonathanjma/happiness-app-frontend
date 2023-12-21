@@ -88,7 +88,6 @@ export default function Entries() {
   return (
     <>
       <Row className="h-screen bg-[#FAFAFA]">
-        <Button associatedModalId="viewer" label="open modal" />
         <div className="w-[162px] min-w-[162px]">
           <ScrollableCalendar
             selectedEntry={selectedEntry}
@@ -128,9 +127,6 @@ export default function Entries() {
           />
         </div>
       </Row>
-      {selectedEntry &&
-        <HappinessViewerModal id="viewer" happiness={selectedEntry} />
-      }
     </>
   );
 };
