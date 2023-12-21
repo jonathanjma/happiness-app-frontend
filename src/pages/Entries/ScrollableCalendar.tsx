@@ -26,8 +26,14 @@ export default function ScrollableCalendar({
     formatDate(new Date()),
   );
 
+  // start calendar at today if no date argument provided, otherwise start at the provided date
   const startDateStr = new URLSearchParams(useLocation().search).get("date");
-  const startDate = startDateStr ? new Date(startDateStr) : new Date();
+  const today = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+  );
+  const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : today;
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [topRef, topInView] = useInView();
@@ -38,30 +44,33 @@ export default function ScrollableCalendar({
 
   // happiness data fetch function
   // where every page represents one week of happiness data
-  //  (where days with missing entries are filled of blank entries)
+  //  and days with missing entries are represented with blank entries
   const fetcher = async (page: number): Promise<HappinessPagination> => {
     const start = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate() - 7 * (page + 1),
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate() - 7 * (page + 1) + (page >= 0 ? 0 : 1),
     );
     const end = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate() - 7 * page - (page > 0 ? 1 : 0),
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate() - 7 * page - (page > 0 ? 1 : 0),
     );
-    console.log(start + " " + end);
 
     const res = await api.get<Happiness[]>("/happiness/", {
       start: formatDate(start),
       end: formatDate(end),
     });
 
+    let happinessData = res.data;
+
+    // create empty happiness entries for missed days
     let itr = new Date(start);
     while (itr <= end) {
-      // create empty happiness entry for submitted days
-      if (res.data.findIndex((x) => x.timestamp === formatDate(itr)) === -1) {
-        res.data.push({
+      if (
+        happinessData.findIndex((x) => x.timestamp === formatDate(itr)) === -1
+      ) {
+        happinessData.push({
           id: counter.current,
           author: user!,
           value: -1,
@@ -72,15 +81,21 @@ export default function ScrollableCalendar({
       }
       itr.setDate(itr.getDate() + 1);
     }
+
     // reverse sort days
-    res.data.sort(
+    happinessData.sort(
       (a, b) =>
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
 
+    // ensure all dates are before today
+    happinessData = happinessData.filter(
+      (x) => new Date(x.timestamp + "T00:00:00") <= today,
+    );
+
     // add page attribute so page number is remembered
     return {
-      data: res.data,
+      data: happinessData,
       page: page,
     };
   };
@@ -90,25 +105,22 @@ export default function ScrollableCalendar({
     isLoading,
     data,
     isError,
-    isFetchingNextPage,
     isFetchingPreviousPage,
     fetchNextPage,
     fetchPreviousPage,
-    hasNextPage,
     hasPreviousPage,
   } = useInfiniteQuery<HappinessPagination>(
     QueryKeys.FETCH_HAPPINESS + " infinite query",
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
-        // return false if last page
-        //
-        // *****
-        // console.log(firstPage);
+        // no more pages left if the first page is the most recent page
+        const latestDate = new Date(firstPage.data[0].timestamp + "T00:00:00");
+        if (latestDate >= today) return false;
+
         return firstPage.page - 1; // decrement page number to fetch
       },
       getNextPageParam: (lastPage) => {
-        // return false if last page
         return lastPage.page + 1; // increment page number to fetch
       },
       refetchOnWindowFocus: false,
@@ -132,13 +144,13 @@ export default function ScrollableCalendar({
 
   // load more entries when top reached
   useEffect(() => {
-    if (topInView) fetchPreviousPage();
+    if (topInView && hasPreviousPage) fetchPreviousPage();
   }, [topInView]);
 
   // autoscroll past top loading message on load
   useEffect(() => {
     // height of loading msg + margin is 100 + 12 = 112
-    scrollRef.current!.scrollTop = 112 + 1; // 1 needed to avoid triggering top load
+    scrollRef.current!.scrollTop = 112 + 1; // + 1 needed to avoid triggering top load
   }, [isLoading]);
 
   // don't scroll to top when new content prepended
@@ -173,11 +185,12 @@ export default function ScrollableCalendar({
             <p className="m-3">Error: Could not load happiness data.</p>
           ) : (
             <div className="px-8">
-              <div ref={topRef}>
-                <Spinner
-                  className="m-3 min-h-[100px]"
-                  text="Loading entries..."
-                />
+              <div ref={topRef} className="relative m-3 min-h-[100px]">
+                {hasPreviousPage ? (
+                  <Spinner text="Loading entries..." />
+                ) : (
+                  <p className="absolute bottom-0">No more entries!</p>
+                )}
               </div>
               {allEntries!.map((entry) =>
                 selectedEntry && entry.id === selectedEntry.id ? (
