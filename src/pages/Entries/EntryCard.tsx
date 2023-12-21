@@ -8,7 +8,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
 import { useState } from 'react';
 import { Happiness } from "../../data/models/Happiness";
-import Comments from "./Comments";
+import Comments from "../../components/Comments";
 import { Constants, QueryKeys } from "../../constants";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
@@ -176,7 +176,7 @@ export default function EntryCard({
         <div className="h-8" />
         {/* Comments */}
         <Column className="h-0 w-full flex-1 items-stretch">
-          <Comments commentsResult={commentsResult} />
+          <Comments associatedHappinessId={happiness.id} />
         </Column>
       </Column>
       <ConfirmationModal

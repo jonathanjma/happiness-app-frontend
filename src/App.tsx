@@ -7,11 +7,14 @@ import SignIn from "./pages/SignIn/SignIn";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
 export default function App() {
   useEffect(() => {
     // @ts-ignore
     import("preline");
+    TimeAgo.addDefaultLocale(en);
   }, []);
 
   return (
