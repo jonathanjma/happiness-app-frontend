@@ -8,6 +8,7 @@ import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
 import { QueryKeys } from "../../constants";
 import { useInView } from "react-intersection-observer";
+import { useLocation } from "react-router-dom";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
@@ -25,6 +26,11 @@ export default function ScrollableCalendar({
     formatDate(new Date()),
   );
 
+  const startDateStr = new URLSearchParams(useLocation().search).get("date");
+  const startDate = startDateStr ? new Date(startDateStr) : new Date();
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [topRef, topInView] = useInView();
   const [bottomRef, bottomInView] = useInView();
 
   // use negative ids for days with no happiness entry
@@ -37,13 +43,14 @@ export default function ScrollableCalendar({
     const start = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
-      new Date().getDate() - 7 * page,
+      new Date().getDate() - 7 * (page + 1),
     );
     const end = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
-      new Date().getDate() - 7 * (page - 1) - (page > 1 ? 1 : 0),
+      new Date().getDate() - 7 * page - (page > 0 ? 1 : 0),
     );
+    console.log(start + " " + end);
 
     const res = await api.get<Happiness[]>("/happiness/", {
       start: formatDate(start),
@@ -84,12 +91,22 @@ export default function ScrollableCalendar({
     data,
     isError,
     isFetchingNextPage,
+    isFetchingPreviousPage,
     fetchNextPage,
+    fetchPreviousPage,
     hasNextPage,
+    hasPreviousPage,
   } = useInfiniteQuery<HappinessPagination>(
     QueryKeys.FETCH_HAPPINESS + " infinite query",
-    ({ pageParam = 1 }) => fetcher(pageParam),
+    ({ pageParam = 0 }) => fetcher(pageParam),
     {
+      getPreviousPageParam: (firstPage) => {
+        // return false if last page
+        //
+        // *****
+        // console.log(firstPage);
+        return firstPage.page - 1; // decrement page number to fetch
+      },
       getNextPageParam: (lastPage) => {
         // return false if last page
         return lastPage.page + 1; // increment page number to fetch
@@ -108,10 +125,31 @@ export default function ScrollableCalendar({
     [data],
   );
 
-  // Load more entries when bottom reached
+  // load more entries when bottom reached
   useEffect(() => {
     if (bottomInView) fetchNextPage();
   }, [bottomInView]);
+
+  // load more entries when top reached
+  useEffect(() => {
+    if (topInView) fetchPreviousPage();
+  }, [topInView]);
+
+  // autoscroll past top loading message on load
+  useEffect(() => {
+    // height of loading msg + margin is 100 + 12 = 112
+    scrollRef.current!.scrollTop = 112 + 1; // 1 needed to avoid triggering top load
+  }, [isLoading]);
+
+  // don't scroll to top when new content prepended
+  useEffect(() => {
+    if (!isFetchingPreviousPage && scrollRef.current)
+      // height of each card + border + margin is 8 + 1 + 140 + 1 = 150
+      scrollRef.current.scrollTo({
+        top: 112 + 7 * 150,
+        behavior: "instant",
+      });
+  }, [isFetchingPreviousPage]);
 
   // display details of selected entry
   useEffect(() => {
@@ -126,7 +164,7 @@ export default function ScrollableCalendar({
   }, [selectedDate, allEntries]);
 
   return (
-    <div className="scroll-hidden h-full w-[194px] overflow-auto">
+    <div ref={scrollRef} className="h-full w-[194px] overflow-auto">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -135,6 +173,12 @@ export default function ScrollableCalendar({
             <p className="m-3">Error: Could not load happiness data.</p>
           ) : (
             <div className="px-8">
+              <div ref={topRef}>
+                <Spinner
+                  className="m-3 min-h-[100px]"
+                  text="Loading entries..."
+                />
+              </div>
               {allEntries!.map((entry) =>
                 selectedEntry && entry.id === selectedEntry.id ? (
                   <HappinessCard
@@ -158,7 +202,10 @@ export default function ScrollableCalendar({
                 ),
               )}
               <div ref={bottomRef}>
-                <Spinner className="m-3" text="Loading entries..." />
+                <Spinner
+                  className="m-3 min-h-[100px]"
+                  text="Loading entries..."
+                />
               </div>
             </div>
           )}
