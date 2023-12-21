@@ -203,7 +203,7 @@ export default function HappinessForm({ height }: { height: number }) {
             value={comment}
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
-            className={`mt-2 min-h-[112px] w-full resize-none overflow-hidden rounded-lg p-2 text-left text-sm font-medium text-dark_gray outline-none outline-1 outline-gray-100`}
+            className={`scroll-hidden mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm font-medium text-dark_gray outline-none outline-1 outline-gray-100`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
@@ -212,16 +212,16 @@ export default function HappinessForm({ height }: { height: number }) {
           />
         </div>
         <div className="mt-2 flex w-full text-sm">
-          <div className="w-2/5 font-medium text-dark_gray">
+          {/* <div className="w-2/5 font-medium text-dark_gray">
             {radioValue === 2
               ? new Date().toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })
               : ""}
-          </div>
+          </div> */}
           {/* Currently the time doesn't update so i need to fix that */}
-          <div className="w-3/5 text-right font-medium text-light_gray">
+          <div className="w-full text-right font-medium text-light_gray">
             {networkingState}
           </div>
         </div>
