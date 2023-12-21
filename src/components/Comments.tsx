@@ -83,7 +83,7 @@ export default function Comments({
   if (commentsResult.isLoading) {
     return (
       <>
-        <h5 className={"my-0.25 " + modalVariant ? "text-gray-400" : "text-black"}>Comments loading...</h5>
+        <h5 className={`my-1 ${modalVariant ? "text-gray-400" : "text-black"}`}>Comments loading...</h5>
         <div className="h-0.25 w-full bg-gray-200" />
 
         <div className="overflow-auto" ref={commentsContainer}>
@@ -101,7 +101,7 @@ export default function Comments({
 
   return (
     <>
-      <h5 className={"my-1 " + modalVariant ? "text-gray-400" : "text-black"}>
+      <h5 className={`my-1 ${modalVariant ? "text-gray-400" : "text-black"}`}>
         {myComments.length === 0
           ? "Comments"
           : `Comments (${myComments.length})`}
