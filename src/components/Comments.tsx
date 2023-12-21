@@ -1,31 +1,56 @@
 import { createRef, useEffect, useState } from "react";
-import { UseQueryResult, useQuery } from "react-query";
-import { Comment } from "../data/models/Comment";
-import CommentCard from "./CommentCard";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
-import Row from "./layout/Row";
 import { useUser } from "../contexts/UserProvider";
+import { Comment } from "../data/models/Comment";
+import CommentCard from "./CommentCard";
 import TextField from "./TextArea";
+import Row from "./layout/Row";
+import CommentCardSkeleton from "./skeletons/CommentCardSkeleton";
+
+interface PostComment {
+  text: string,
+}
 
 export default function Comments({
   associatedHappinessId,
   canAddComment = false,
+  modalVariant = false,
 }: {
   associatedHappinessId: number;
   canAddComment?: boolean;
+  modalVariant?: boolean;
 }) {
   const commentsContainer = createRef<HTMLDivElement>();
   const [dividerOpacity, setDividerOpacity] = useState(100);
   const { api } = useApi();
+  const queryClient = useQueryClient();
   const { user } = useUser();
 
 
   const [comment, setComment] = useState("");
 
+  // Set up post comment mutation and function
+  const postCommentMutation = useMutation(
+    (newComment: PostComment) => api.post<Comment>(`/happiness/${associatedHappinessId}/comment`, newComment), {
+    onSuccess: (res) => {
+      queryClient.setQueryData<Comment[]>([QueryKeys.FETCH_COMMENTS, { id: associatedHappinessId }],
+        (prevData) => prevData ? [res.data, ...prevData] : [res.data]
+      );
+      setComment("");
+    }
+  });
+  const postComment = () => {
+    if (comment.trim().length > 0) {
+      postCommentMutation.mutate({ text: comment });
+    }
+  };
+
+
   // Fetch comments
   const commentsResult = useQuery<Comment[]>(
-    QueryKeys.FETCH_COMMENTS + associatedHappinessId,
+    [QueryKeys.FETCH_COMMENTS, { id: associatedHappinessId }],
     () => {
       if (associatedHappinessId >= 0) {
         return api
@@ -54,10 +79,11 @@ export default function Comments({
     }
   }, [commentsContainer]);
 
+  // React to comments data
   if (commentsResult.isLoading) {
     return (
       <>
-        <h5 className="my-0.25">Comments loading...</h5>
+        <h5 className={"my-0.25 " + modalVariant ? "text-gray-400" : "text-black"}>Comments loading...</h5>
         <div className="h-0.25 w-full bg-gray-200" />
       </>
     );
@@ -66,9 +92,10 @@ export default function Comments({
     return <p>Error loading comments</p>;
   }
   const myComments: Comment[] = commentsResult.data!;
+
   return (
     <>
-      <h5 className="my-0.25 ">
+      <h5 className={"my-1 " + modalVariant ? "text-gray-400" : "text-black"}>
         {myComments.length === 0
           ? "Comments"
           : `Comments (${myComments.length})`}
@@ -81,11 +108,13 @@ export default function Comments({
         <Row className="py-4 px-6 gap-4">
           <img className="w-10 h-10 rounded-full" src={user.profile_picture} />
           <TextField
+            className="flex flex-1"
             value={comment}
             onChangeValue={setComment}
             hint="Write a comment"
+            onEnterPressed={postComment}
             innerIcon={
-              <button onClick={() => { console.log(`hi`); /* TODO post comment */ }}>
+              <button className="h-6" onClick={postComment}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M18.723 12.8385L4.76537 18.7231C4.46411 18.8436 4.1779 18.8176 3.90675 18.6452C3.63558 18.4727 3.5 18.2224 3.5 17.8942V6.10586C3.5 5.77764 3.63558 5.52731 3.90675 5.35488C4.1779 5.18245 4.46411 5.15649 4.76537 5.27701L18.723 11.1616C19.0948 11.3257 19.2806 11.6052 19.2806 12C19.2806 12.3949 19.0948 12.6744 18.723 12.8385ZM4.99997 17L16.85 12L4.99997 7.00003V10.6924L10.423 12L4.99997 13.3077V17Z" fill="#808080" />
                 </svg>
@@ -99,7 +128,7 @@ export default function Comments({
         <p className="mt-8">Nothing to see here!</p>}
 
       <div className="overflow-auto" ref={commentsContainer}>
-
+        {postCommentMutation.isLoading && <CommentCardSkeleton />}
         {myComments.map((c, _) => (
           <CommentCard comment={c} key={c.id} />
         ))}

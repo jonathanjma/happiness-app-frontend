@@ -1,21 +1,21 @@
-import { useQuery } from "react-query";
+import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
+import Comments from "../Comments";
 import Column from "../layout/Column";
 import Row from "../layout/Row";
+import CommentCardSkeleton from "../skeletons/CommentCardSkeleton";
 import Modal from "./Modal";
-import { QueryKeys } from "../../constants";
-import { useApi } from "../../contexts/ApiProvider";
-import Comments from "../Comments";
-import { Comment } from "../../data/models/Comment";
 
 export default function HappinessViewerModal({ happiness, id }: { happiness: Happiness, id: string; }) {
   const { api } = useApi();
+  console.log(`JSON: ${JSON.stringify(happiness.author)}`);
 
 
 
   return (
     <Modal id={id}>
       <Column className="gap-6 w-[600px]">
+
         {/* Top row for closing */}
         <Row>
           <div className="flex flex-1" />
@@ -46,7 +46,9 @@ export default function HappinessViewerModal({ happiness, id }: { happiness: Hap
         <p className="text-gray-600">{happiness.comment}</p>
 
         {/* Comments */}
-        <Comments associatedHappinessId={happiness.id} canAddComment={true} />
+        <div>
+          <Comments modalVariant associatedHappinessId={happiness.id} canAddComment={true} />
+        </div>
       </Column>
     </Modal>
   );

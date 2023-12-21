@@ -176,7 +176,7 @@ export default function EntryCard({
         <div className="h-8" />
         {/* Comments */}
         <Column className="h-0 w-full flex-1 items-stretch">
-          <Comments associatedHappinessId={happiness.id} />
+          <Comments associatedHappinessId={happiness.id} modalVariant={false} />
         </Column>
       </Column>
       <ConfirmationModal

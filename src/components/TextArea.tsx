@@ -13,6 +13,8 @@ interface TextFieldProps {
   isEnabled?: boolean;
   value: string;
   onChangeValue: React.Dispatch<React.SetStateAction<string>>;
+  className?: string;
+  onEnterPressed?: () => void;
 }
 
 export default function TextField({
@@ -27,12 +29,14 @@ export default function TextField({
   isEnabled = true,
   value,
   onChangeValue,
+  className = "",
+  onEnterPressed
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   console.log(`hasError = ${hasError}`);
   return (
-    <Column className="w-[250px] gap-1">
+    <Column className={"w-[250px] gap-1 " + className}>
       {title && <p className="text-gray-400">{title}</p>}
       <Row
         className={
@@ -58,8 +62,14 @@ export default function TextField({
           onBlur={() => {
             setIsFocused(false);
           }}
+          placeholder={hint}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && onEnterPressed) {
+              onEnterPressed();
+            }
+          }}
         />
-        <span className="mr-4">{innerIcon}</span>
+        <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>
       </Row>
       {(supportingText || supportingIcon) && (
         <Row className="items-center gap-1">
