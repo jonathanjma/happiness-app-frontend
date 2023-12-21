@@ -1,21 +1,19 @@
-import * as React from "react";
-import { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 import HappinessCard from "./HappinessCard";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
-import { Constants, QueryKeys } from "../../constants";
-import { useState } from 'react';
+import { QueryKeys } from "../../constants";
+import { useInView } from "react-intersection-observer";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
   setSelectedEntry,
-  setEditing
+  setEditing,
 }: {
   selectedEntry: Happiness | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
@@ -23,7 +21,11 @@ export default function ScrollableCalendar({
 }) {
   const { api } = useApi();
   const { user } = useUser();
-  const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
+  const [selectedDate, setSelectedDate] = useState<string>(
+    formatDate(new Date()),
+  );
+
+  const [bottomRef, bottomInView] = useInView();
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -77,18 +79,24 @@ export default function ScrollableCalendar({
   };
 
   // infinite query for fetching happiness
-  const { isLoading, data, isError, fetchNextPage, hasNextPage, isSuccess } =
-    useInfiniteQuery<HappinessPagination>(
-      QueryKeys.FETCH_HAPPINESS + " infinite query",
-      ({ pageParam = 1 }) => fetcher(pageParam),
-      {
-        getNextPageParam: (lastPage) => {
-          // return false if last page
-          return lastPage.page + 1; // increment page number to fetch
-        },
-        refetchOnWindowFocus: false,
+  const {
+    isLoading,
+    data,
+    isError,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery<HappinessPagination>(
+    QueryKeys.FETCH_HAPPINESS + " infinite query",
+    ({ pageParam = 1 }) => fetcher(pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        // return false if last page
+        return lastPage.page + 1; // increment page number to fetch
       },
-    );
+      refetchOnWindowFocus: false,
+    },
+  );
 
   // combine all entries in React Query pages object
   const allEntries = useMemo(
@@ -100,7 +108,13 @@ export default function ScrollableCalendar({
     [data],
   );
 
-  React.useEffect(() => {
+  // Load more entries when bottom reached
+  useEffect(() => {
+    if (bottomInView) fetchNextPage();
+  }, [bottomInView]);
+
+  // display details of selected entry
+  useEffect(() => {
     if (allEntries) {
       for (const entry of allEntries) {
         if (entry.timestamp === selectedDate) {
@@ -111,17 +125,8 @@ export default function ScrollableCalendar({
     }
   }, [selectedDate, allEntries]);
 
-  if (isLoading) {
-    return <Spinner className="m-3" />;
-  }
-  if (isError) {
-    return <p className="m-3">Error: Could not load happiness data.</p>;
-  }
   return (
-    <div
-      className="scroll-hidden h-full w-[194px] overflow-auto"
-      id="scrollableDiv"
-    >
+    <div className="scroll-hidden h-full w-[194px] overflow-auto">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -129,20 +134,13 @@ export default function ScrollableCalendar({
           {isError ? (
             <p className="m-3">Error: Could not load happiness data.</p>
           ) : (
-            <InfiniteScroll
-              dataLength={allEntries ? allEntries.length : 0}
-              next={() => fetchNextPage()}
-              hasMore={!!hasNextPage}
-              loader={<Spinner className="m-3" text="Loading entries..." />}
-              scrollableTarget="scrollableDiv"
-              className="px-8"
-            >
+            <div className="px-8">
               {allEntries!.map((entry) =>
                 selectedEntry && entry.id === selectedEntry.id ? (
                   <HappinessCard
                     key={selectedEntry?.id}
                     data={selectedEntry}
-                    click={() => { }}
+                    click={() => {}}
                     selected={true}
                   />
                 ) : (
@@ -159,7 +157,10 @@ export default function ScrollableCalendar({
                   />
                 ),
               )}
-            </InfiniteScroll>
+              <div ref={bottomRef}>
+                <Spinner className="m-3" text="Loading entries..." />
+              </div>
+            </div>
           )}
         </>
       )}
