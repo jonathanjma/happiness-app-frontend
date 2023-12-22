@@ -4,18 +4,11 @@ import HappinessCard from "./HappinessCard";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
+import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
 import { QueryKeys } from "../../constants";
 import { useInView } from "react-intersection-observer";
 import { useLocation } from "react-router-dom";
-
-// Strips time from Date and shifts the day by the given amount
-const modifyDateDay = (date: Date, dayDiff: number) =>
-  new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayDiff);
-
-// Convert YYYY-MM-DD date string to Date and strip time
-const dateFromStr = (dateStr: string) => new Date(dateStr + "T00:00:00");
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
-/**
- * Formats a given date object in the format yyyy-mm-dd format
- * @param date 
- * @returns A string of the formatted date
- */
+
+// Formats a given date object in the format yyyy-mm-dd format
 export function formatDate(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+// Strips time from Date and shifts the day by the given amount
+export const modifyDateDay = (date: Date, dayDiff: number) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayDiff);
+
+// Convert YYYY-MM-DD date string to Date and strip time
+export const dateFromStr = (dateStr: string) => new Date(dateStr + "T00:00:00");
 
 export function validateHappiness(happiness: number | undefined) {
   return (
