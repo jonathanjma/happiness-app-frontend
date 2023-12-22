@@ -26,16 +26,21 @@ export default function ScrollableCalendar({
     formatDate(new Date()),
   );
 
-  // start calendar at today if no date argument provided, otherwise start at the provided date
+  // start calendar at today if no valid date argument provided, otherwise start at the provided date
   const startDateStr = new URLSearchParams(useLocation().search).get("date");
   const today = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
     new Date().getDate(),
   );
-  const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : today;
+  const startDate =
+    startDateStr && !isNaN(new Date(startDateStr + "T00:00:00").getTime())
+      ? new Date(startDateStr + "T00:00:00")
+      : today;
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+
   const [topRef, topInView] = useInView();
   const [bottomRef, bottomInView] = useInView();
 
@@ -130,7 +135,7 @@ export default function ScrollableCalendar({
   // combine all entries in React Query pages object
   const allEntries = useMemo(
     () =>
-      data?.pages?.reduce(
+      data?.pages.reduce(
         (acc: Happiness[], page) => [...acc, ...page.data],
         [],
       ),
@@ -151,16 +156,22 @@ export default function ScrollableCalendar({
   useEffect(() => {
     // height of loading msg + margin is 100 + 12 = 112
     scrollRef.current!.scrollTop = 112 + 1; // + 1 needed to avoid triggering top load
+    setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
-  // don't scroll to top when new content prepended
+  // remain scrolled to same day in calendar new content prepended
   useEffect(() => {
-    if (!isFetchingPreviousPage && scrollRef.current)
-      // height of each card + border + margin is 8 + 1 + 140 + 1 = 150
-      scrollRef.current.scrollTo({
-        top: 112 + 7 * 150,
+    // remember div scroll height before previous page fetch
+    if (isFetchingPreviousPage) {
+      setPrevScrollHeight(scrollRef.current!.scrollHeight);
+    }
+    // new scroll height is simply: current - previous
+    if (!isFetchingPreviousPage && data) {
+      scrollRef.current!.scrollTo({
+        top: scrollRef.current!.scrollHeight - prevScrollHeight,
         behavior: "instant",
       });
+    }
   }, [isFetchingPreviousPage]);
 
   // display details of selected entry
@@ -176,7 +187,10 @@ export default function ScrollableCalendar({
   }, [selectedDate, allEntries]);
 
   return (
-    <div ref={scrollRef} className="h-full w-[194px] overflow-auto">
+    <div
+      ref={scrollRef}
+      className="scroll-hidden h-full w-[194px] overflow-auto"
+    >
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
