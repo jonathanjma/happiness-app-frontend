@@ -10,6 +10,13 @@ import { QueryKeys } from "../../constants";
 import { useInView } from "react-intersection-observer";
 import { useLocation } from "react-router-dom";
 
+// Strips time from Date and shifts the day by the given amount
+const modifyDateDay = (date: Date, dayDiff: number) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayDiff);
+
+// Convert YYYY-MM-DD date string to Date and strip time
+const dateFromStr = (dateStr: string) => new Date(dateStr + "T00:00:00");
+
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
@@ -28,14 +35,10 @@ export default function ScrollableCalendar({
 
   // start calendar at today if no valid date argument provided, otherwise start at the provided date
   const startDateStr = new URLSearchParams(useLocation().search).get("date");
-  const today = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-  );
+  const today = modifyDateDay(new Date(), 0);
   const startDate =
-    startDateStr && !isNaN(new Date(startDateStr + "T00:00:00").getTime())
-      ? new Date(startDateStr + "T00:00:00")
+    startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
+      ? dateFromStr(startDateStr)
       : today;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -51,16 +54,11 @@ export default function ScrollableCalendar({
   // where every page represents one week of happiness data
   //  and days with missing entries are represented with blank entries
   const fetcher = async (page: number): Promise<HappinessPagination> => {
-    const start = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate() - 7 * (page + 1) + (page >= 0 ? 0 : 1),
+    const start = modifyDateDay(
+      startDate,
+      -7 * (page + 1) + (page >= 0 ? 0 : 1),
     );
-    const end = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate() - 7 * page - (page > 0 ? 1 : 0),
-    );
+    const end = modifyDateDay(startDate, -7 * page - (page > 0 ? 1 : 0));
 
     const res = await api.get<Happiness[]>("/happiness/", {
       start: formatDate(start),
@@ -95,7 +93,7 @@ export default function ScrollableCalendar({
 
     // ensure all dates are before today
     happinessData = happinessData.filter(
-      (x) => new Date(x.timestamp + "T00:00:00") <= today,
+      (x) => dateFromStr(x.timestamp) <= today,
     );
 
     // add page attribute so page number is remembered
@@ -120,8 +118,7 @@ export default function ScrollableCalendar({
     {
       getPreviousPageParam: (firstPage) => {
         // no more pages left if the first page is the most recent page
-        const latestDate = new Date(firstPage.data[0].timestamp + "T00:00:00");
-        if (latestDate >= today) return false;
+        if (dateFromStr(firstPage.data[0].timestamp) >= today) return false;
 
         return firstPage.page - 1; // decrement page number to fetch
       },
