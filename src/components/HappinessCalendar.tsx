@@ -33,16 +33,24 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
 
     const dayToAdd = new Date(startDate);
     for (let i = 0; i <= 6; i++) {
-      dayToAdd.setDate(dayToAdd.getDate() + i);
+      dayToAdd.setDate(startDate.getDate() + i);
       days.push(new Date(dayToAdd));
     }
+  }
+
+  let finalStartDate = new Date(startDate);
+  let finalEndDate = new Date(endDate);
+
+  if (variation === "MONTHLY") {
+    finalStartDate.setDate(finalStartDate.getDate() - 7);
+    finalEndDate.setDate(finalEndDate.getDate() + 7);
   }
 
   const { isLoading, data, isError } = useQuery<Happiness[]>(
     [QueryKeys.FETCH_HAPPINESS, `${formatDate(startDate)} to ${formatDate(endDate)}`],
     async () => {
       const res = await api
-        .get<Happiness[]>("/happiness/", { start: formatDate(startDate), end: formatDate(endDate) });
+        .get<Happiness[]>("/happiness/", { start: formatDate(finalStartDate), end: formatDate(finalEndDate) });
       return res.data;
     });
 
