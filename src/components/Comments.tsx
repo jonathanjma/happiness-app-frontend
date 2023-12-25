@@ -4,6 +4,7 @@ import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { useUser } from "../contexts/UserProvider";
 import { Comment } from "../data/models/Comment";
+import { getDateObjFromUTCString } from "../utils";
 import CommentCard from "./CommentCard";
 import TextField from "./TextArea";
 import Row from "./layout/Row";
@@ -55,7 +56,14 @@ export default function Comments({
       if (associatedHappinessId >= 0) {
         return api
           .get<Comment[]>(`/happiness/${associatedHappinessId}/comments`)
-          .then((res) => res.data);
+          .then((res) => {
+            return res.data.map(comment => {
+              const estDate = getDateObjFromUTCString(comment.timestamp);
+              comment.timestamp = estDate.toLocaleString();
+
+              return comment;
+            });
+          });
       }
       return [];
     },

@@ -1,19 +1,11 @@
 import CloseIcon from "../../assets/CloseIcon";
-import IconWarningOutline from "../../assets/IconWarningOutline";
-import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
 import Comments from "../Comments";
 import Column from "../layout/Column";
 import Row from "../layout/Row";
-import CommentCardSkeleton from "../skeletons/CommentCardSkeleton";
 import Modal from "./Modal";
 
 export default function HappinessViewerModal({ happiness, id }: { happiness: Happiness, id: string; }) {
-  const { api } = useApi();
-  console.log(`JSON: ${JSON.stringify(happiness.author)}`);
-
-
-
   return (
     <Modal id={id}>
       <Column className="gap-6 w-[600px]">
@@ -22,7 +14,6 @@ export default function HappinessViewerModal({ happiness, id }: { happiness: Hap
         <Row>
           <div className="flex flex-1" />
           <button data-hs-overlay={`#${id}`}>
-            {/* TODO make this into a component, fix color */}
             <CloseIcon color="#575F68" />
           </button>
         </Row>

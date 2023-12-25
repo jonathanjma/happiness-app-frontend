@@ -1,6 +1,6 @@
-import Modal from './Modal';
-import Row from '../layout/Row';
 import Button from '../Button';
+import Row from '../layout/Row';
+import Modal from './Modal';
 
 interface ConfirmationModalProps {
   title: string,

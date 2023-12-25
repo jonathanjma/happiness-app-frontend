@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
+import Button from "../../components/Button";
 import Row from "../../components/layout/Row";
+import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
-import Button from "../../components/Button";
-import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -87,6 +87,7 @@ export default function Entries() {
 
   return (
     <>
+      {selectedEntry && <HappinessViewerModal happiness={selectedEntry} id="view" />}
       <Row className="h-screen bg-[#FAFAFA]">
         <div className="w-[162px] min-w-[162px]">
           <ScrollableCalendar
@@ -127,6 +128,7 @@ export default function Entries() {
           />
         </div>
       </Row>
+      <Button label="open" associatedModalId="view" />
     </>
   );
 };
