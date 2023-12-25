@@ -123,8 +123,5 @@ export default function Entries() {
         />
       </div>
     </Row>
-
-
-
   );
 };
