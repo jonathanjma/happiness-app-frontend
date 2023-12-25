@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
@@ -7,12 +7,14 @@ import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
 import { Constants, QueryKeys } from "../../constants";
 
-export default function HappinessForm({ height }: { height: number; }) {
+export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
   const queryClient = useQueryClient();
 
   const [comment, setComment] = useState("");
-  const [networkingState, setNetworkingState] = useState<string>(Constants.FINISHED_MUTATION_TEXT);
+  const [networkingState, setNetworkingState] = useState<string>(
+    Constants.FINISHED_MUTATION_TEXT,
+  );
 
   const postHappinessTimeout = useRef<number | undefined>(undefined);
 
@@ -47,7 +49,10 @@ export default function HappinessForm({ height }: { height: number; }) {
   useEffect(() => {
     if (postHappinessMutation.isSuccess && happiness !== -1) {
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-      queryClient.invalidateQueries({ predicate: (query) => query.queryKey.includes(QueryKeys.FETCH_HAPPINESS) });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.includes(QueryKeys.FETCH_HAPPINESS),
+      });
     }
   }, [postHappinessMutation.isSuccess]);
 
@@ -79,10 +84,10 @@ export default function HappinessForm({ height }: { height: number; }) {
     refetch: (
       queryFnArgs?: undefined,
     ) => Promise<Happiness[] | undefined | unknown>;
-  } = useQuery(
-    {
-      queryKey: QueryKeys.FETCH_HAPPINESS + " sidebar query",
-      queryFn: () => api
+  } = useQuery({
+    queryKey: QueryKeys.FETCH_HAPPINESS + " sidebar query",
+    queryFn: () =>
+      api
         .get("/happiness/", {
           start: formatDate(
             new Date(
@@ -93,9 +98,8 @@ export default function HappinessForm({ height }: { height: number; }) {
           ),
           end: formatDate(new Date()),
         })
-        .then((res) => res.data)
-    }
-  );
+        .then((res) => res.data),
+  });
 
   // react to data
   useEffect(() => {
@@ -138,7 +142,7 @@ export default function HappinessForm({ height }: { height: number; }) {
         </button>
         <button
           className={
-            "border-right border-1.5 w-1/2 rounded-r-lg p-1 " +
+            "border-right w-1/2 rounded-r-lg border-1.5 p-1 " +
             (radioValue === 2
               ? "border-yellow bg-yellow text-secondary"
               : "border-l-0.5 border-gray-100 bg-white text-dark_gray")
@@ -193,9 +197,9 @@ export default function HappinessForm({ height }: { height: number; }) {
           <div className="w-1/2 font-medium text-dark_gray">
             {radioValue === 2
               ? selDate.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
               : ""}
           </div>
           {/* Currently the time doesn't update so i need to fix that */}

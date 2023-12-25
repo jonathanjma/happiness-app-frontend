@@ -1,6 +1,6 @@
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import { Comment } from "../../data/models/Comment";
+import {Comment} from "../../data/models/Comment";
 
 /**
  * The type of comment card to display on the big entry card. Text styles are

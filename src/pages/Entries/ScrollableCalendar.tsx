@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 import HappinessCard from "./HappinessCard";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -8,14 +8,13 @@ import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import { useUser } from "../../contexts/UserProvider";
-import { Constants, QueryKeys } from "../../constants";
-import { useState } from 'react';
+import { QueryKeys } from "../../constants";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
   selectedEntry,
   setSelectedEntry,
-  setEditing
+  setEditing,
 }: {
   selectedEntry: Happiness | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
@@ -23,7 +22,9 @@ export default function ScrollableCalendar({
 }) {
   const { api } = useApi();
   const { user } = useUser();
-  const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
+  const [selectedDate, setSelectedDate] = useState<string>(
+    formatDate(new Date()),
+  );
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -142,7 +143,7 @@ export default function ScrollableCalendar({
                   <HappinessCard
                     key={selectedEntry?.id}
                     data={selectedEntry}
-                    click={() => { }}
+                    click={() => {}}
                     selected={true}
                   />
                 ) : (

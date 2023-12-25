@@ -15,6 +15,7 @@ export default function PublicRoute({
   } else if (state === UserState.Success) {
     return <Navigate to="/home" />;
   } else {
+    // UserState.Error
     return children;
   }
 }
