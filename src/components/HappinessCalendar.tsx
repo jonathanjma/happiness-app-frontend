@@ -2,7 +2,8 @@ import { useQuery } from "react-query";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Happiness } from "../data/models/Happiness";
-import { formatDate } from "../utils";
+import { formatDate, getWeekdayFromNumber, parseYYYmmddFormat } from "../utils";
+import Row from "./layout/Row";
 
 export default function HappinessCalendar({ startDate, variation, selectedEntry, onSelectEntry }: {
   startDate: Date,
@@ -17,7 +18,12 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
     endDate.setMonth(startDate.getMonth() + 1);
     endDate.setDate(0);
 
+    const startDaysOfWeek = new Date(startDate);
     const dayToAdd = new Date(startDate);
+    while (startDaysOfWeek.getDay() !== 0) {
+      startDaysOfWeek.setDate(startDaysOfWeek.getDate() - 1);
+      days.unshift(new Date(startDaysOfWeek));
+    }
     while (dayToAdd.getMonth() === endDate.getMonth()) {
       days.push(new Date(dayToAdd));
       dayToAdd.setDate(dayToAdd.getDate() + 1);
@@ -41,26 +47,29 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
     });
 
   return <div className="grid gap-x-2 gap-y-4 w-full grid-cols-7">
-    {isLoading ? <p>loading</p> : isError ? <p>error</p> : days.map((date) => {
-      const matchingDateList = data?.filter((h) => h.timestamp === formatDate(date));
-      if (matchingDateList && matchingDateList.length > 0) {
-        return <DayCell
-          happiness={matchingDateList[0]}
-          isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
-          onClick={() => { onSelectEntry(matchingDateList[0]); }}
-          key={matchingDateList[0].id}
-        />;
-      }
 
-      return <EmptyCell key={date.getDate()} cellNumber={date.getDate()} />;
-    })
+    {Array(7).fill(0).map((_, i) => <Row className="w-full justify-center"> <label className="text-xs text-gray-400">{getWeekdayFromNumber(i)}</label></Row>)}
+
+    {isLoading ? <p>loading</p> : isError ? <p>error</p> :
+      days.map((date) => {
+        const matchingDateList = data?.filter((h) => h.timestamp === formatDate(date));
+        if (matchingDateList && matchingDateList.length > 0) {
+          return <DayCell
+            happiness={matchingDateList[0]}
+            isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
+            onClick={() => { onSelectEntry(matchingDateList[0]); }}
+            key={matchingDateList[0].id}
+          />;
+        }
+        return <EmptyCell key={date.getDate() + date.getMonth() * 1000} cellNumber={date.getDate()} />;
+      })
     }
   </div>;
 }
 
 const DayCell = ({ happiness, isSelected, onClick }: { happiness: Happiness; isSelected: boolean; onClick: () => void; }) => {
   const happinessPercent = happiness.value * 10;
-  const cellNumber = new Date(happiness.timestamp).getDate();
+  const cellNumber = parseYYYmmddFormat(happiness.timestamp).getDate();
   const isToday = formatDate(new Date()) === happiness.timestamp;
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
 

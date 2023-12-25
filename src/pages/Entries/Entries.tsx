@@ -74,8 +74,6 @@ export default function Entries() {
     setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     queryClient.invalidateQueries({
       predicate: (query) => {
-        console.log(`updating query ${query.queryKey}`);
-        console.log(`is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`);
         return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
       }
     });
@@ -123,7 +121,7 @@ export default function Entries() {
           />
         </div>
       </Row> */}
-      <div className="w-[340px] border-secondary border-2">
+      <div className="w-[340px] m-10">
         <HappinessCalendar
           startDate={new Date("12-01-23")}
           variation="MONTHLY"
