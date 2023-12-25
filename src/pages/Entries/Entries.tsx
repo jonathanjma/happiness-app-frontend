@@ -128,7 +128,7 @@ export default function Entries() {
           startDate={new Date("12-01-23")}
           variation="MONTHLY"
           selectedEntry={selectedEntry!}
-          onSelectEntry={() => { }} />
+          onSelectEntry={(entry) => { setSelectedEntry(entry); }} />
       </div>
 
     </>
