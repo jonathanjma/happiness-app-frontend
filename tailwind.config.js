@@ -20,6 +20,7 @@ module.exports = {
       "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
       "gray-400": "#808080",
+      "gray-600": "#575F68",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
       secondary: "#664810",

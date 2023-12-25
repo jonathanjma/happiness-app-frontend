@@ -11,6 +11,10 @@ export function formatDate(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+// Strips time from Date and shifts the day by the given amount
+export const modifyDateDay = (date: Date, dayDiff: number) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayDiff);
+
 export function validateHappiness(happiness: number | undefined) {
   return (
     happiness !== undefined &&

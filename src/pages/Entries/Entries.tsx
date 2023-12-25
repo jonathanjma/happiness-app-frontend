@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
-import Row from "../../components/layout/Row";
+import HappinessCalendar from "../../components/HappinessCalendar";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
-import EntryCard from "./EntryCard";
-import ScrollableCalendar from "./ScrollableCalendar";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -84,45 +82,56 @@ export default function Entries() {
   }, [numStillMutating]);
 
   return (
-    <Row className="h-screen bg-[#FAFAFA]" >
-      <div className="w-[162px] min-w-[162px]">
-        <ScrollableCalendar
-          selectedEntry={selectedEntry}
-          setSelectedEntry={setSelectedEntry}
-          setEditing={setEditing}
-        />
-      </div>
-      <div className="h-full w-full px-8 pb-4 pt-8">
-        <EntryCard
-          happiness={
-            selectedEntry ?? {
-              id: -1,
-              value: -1,
-              comment: "",
-              timestamp: Date.now().toString(),
-              author: user!,
+    <>
+      {/* <Row className="h-screen bg-[#FAFAFA]" >
+        <div className="w-[162px] min-w-[162px]">
+          <ScrollableCalendar
+            selectedEntry={selectedEntry}
+            setSelectedEntry={setSelectedEntry}
+            setEditing={setEditing}
+          />
+        </div>
+        <div className="h-full w-full px-8 pb-4 pt-8">
+          <EntryCard
+            happiness={
+              selectedEntry ?? {
+                id: -1,
+                value: -1,
+                comment: "",
+                timestamp: Date.now().toString(),
+                author: user!,
+              }
             }
-          }
-          className="h-full"
-          editing={editing}
-          onChangeHappinessNumber={(value) => {
-            setSelectedEntry((selected) => {
-              return selected ? { ...selected, value: value } : undefined;
-            });
-          }}
-          onChangeCommentText={(comment) => {
-            setSelectedEntry((selected) => {
-              return selected ? { ...selected, comment: comment } : undefined;
-            });
-          }}
-          setEditing={setEditing}
-          networkingState={networkingState}
-          setNetworkingState={setNetworkingState}
-          onDeleteHappiness={() => {
-            deleteHappinessMutation.mutate();
-          }}
-        />
+            className="h-full"
+            editing={editing}
+            onChangeHappinessNumber={(value) => {
+              setSelectedEntry((selected) => {
+                return selected ? { ...selected, value: value } : undefined;
+              });
+            }}
+            onChangeCommentText={(comment) => {
+              setSelectedEntry((selected) => {
+                return selected ? { ...selected, comment: comment } : undefined;
+              });
+            }}
+            setEditing={setEditing}
+            networkingState={networkingState}
+            setNetworkingState={setNetworkingState}
+            onDeleteHappiness={() => {
+              deleteHappinessMutation.mutate();
+            }}
+          />
+        </div>
+      </Row> */}
+      <div className="w-[340px] border-secondary border-2">
+        <HappinessCalendar
+          startDate={new Date("12-01-23")}
+          variation="MONTHLY"
+          selectedEntry={selectedEntry!}
+          onSelectEntry={() => { }} />
       </div>
-    </Row>
+
+    </>
+
   );
 };
