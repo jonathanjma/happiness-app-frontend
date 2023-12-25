@@ -14,6 +14,8 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
   const { api } = useApi();
   let endDate = new Date(startDate);
   const days = [];
+  // Check the variation to format the query to send to the backend
+  // as well as the list of days that will be shown on the calendar.
   if (variation === "MONTHLY") {
     endDate.setMonth(startDate.getMonth() + 1);
     endDate.setDate(0);
@@ -38,6 +40,8 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
     }
   }
 
+  // Since monthly extends beyond the month to fill in the week, we add 1 week
+  // of padding to the query
   let finalStartDate = new Date(startDate);
   let finalEndDate = new Date(endDate);
 
@@ -71,14 +75,18 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
       days.map((date) => {
         const matchingDateList = data?.filter((h) => h.timestamp === formatDate(date));
         if (matchingDateList && matchingDateList.length > 0) {
-          return <Row className="w-full justify-center"><DayCell
-            happiness={matchingDateList[0]}
-            isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
-            onClick={() => { onSelectEntry(matchingDateList[0]); }}
-            key={matchingDateList[0].id}
-          /></Row>;
+          return <Row className="w-full justify-center">
+            <DayCell
+              happiness={matchingDateList[0]}
+              isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
+              onClick={() => { onSelectEntry(matchingDateList[0]); }}
+              key={matchingDateList[0].id}
+            />
+          </Row>;
         }
-        return <Row className="w-full justify-center"><EmptyCell key={date.getDate() + date.getMonth() * 1000} cellNumber={date.getDate()} /></Row>;
+        return <Row className="w-full justify-center">
+          <EmptyCell key={date.getDate() + date.getMonth() * 1000} cellNumber={date.getDate()} />
+        </Row>;
       })
     }
   </div>;
@@ -97,10 +105,11 @@ const DayCell = ({ happiness, isSelected, onClick }: { happiness: Happiness; isS
       onClick={onClick}
     >
       <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>{cellNumber}</p>
-      {isToday && <div
-        className="absolute left-1/2 transform translate-y-full rounded-[18px] bg-yellow -translate-x-1/2 w-16 h-3"
-      ></div>}
-
+      {isToday &&
+        <div
+          className="absolute left-1/2 transform translate-y-full rounded-[18px] bg-yellow -translate-x-1/2 w-16 h-3"
+        />
+      }
     </div>
   );
 };
@@ -110,8 +119,10 @@ const EmptyCell = ({ cellNumber }: { cellNumber: number; }) => {
 
   return <div className={`w-10 h-10 flex items-center justify-center border-[1px] relative ${isToday ? 'border-yellow' : 'border-gray-300'} rounded-lg`}>
     <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>{cellNumber}</p>
-    {isToday && <div
-      className="absolute left-1/2 transform translate-y-[18px] rounded-[18px] bg-yellow -translate-x-1/2 w-4 h-[3px]"
-    ></div>}
+    {isToday &&
+      <div
+        className="absolute left-1/2 transform translate-y-[18px] rounded-[18px] bg-yellow -translate-x-1/2 w-4 h-[3px]"
+      />
+    }
   </div>;
 };
