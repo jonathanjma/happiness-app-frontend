@@ -46,22 +46,31 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
       return res.data;
     });
 
-  return <div className="grid gap-x-2 gap-y-4 w-full grid-cols-7">
+  return <div className={`grid gap-y-4 w-full ${variation === "MONTHLY" ? 'grid-cols-7' : "grid-cols-1"} `}>
+    {variation === "MONTHLY" && Array(7).fill(0).map((_, i) =>
+      <Row className="w-full justify-center">
+        <label className="text-xs text-gray-400">{getWeekdayFromNumber(i)}</label>
+      </Row>
+    )}
 
-    {Array(7).fill(0).map((_, i) => <Row className="w-full justify-center"> <label className="text-xs text-gray-400">{getWeekdayFromNumber(i)}</label></Row>)}
+    {variation === "WEEKLY" &&
+      <Row className="w-full justify-center">
+        <label className="text-xs text-gray-400">{`${startDate.getDate()}-${startDate.getDate() + 6}`}</label>
+      </Row>
+    }
 
     {isLoading ? <p>loading</p> : isError ? <p>error</p> :
       days.map((date) => {
         const matchingDateList = data?.filter((h) => h.timestamp === formatDate(date));
         if (matchingDateList && matchingDateList.length > 0) {
-          return <DayCell
+          return <Row className="w-full justify-center"><DayCell
             happiness={matchingDateList[0]}
             isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
             onClick={() => { onSelectEntry(matchingDateList[0]); }}
             key={matchingDateList[0].id}
-          />;
+          /></Row>;
         }
-        return <EmptyCell key={date.getDate() + date.getMonth() * 1000} cellNumber={date.getDate()} />;
+        return <Row className="w-full justify-center"><EmptyCell key={date.getDate() + date.getMonth() * 1000} cellNumber={date.getDate()} /></Row>;
       })
     }
   </div>;
