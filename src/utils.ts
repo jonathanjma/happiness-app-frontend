@@ -9,11 +9,18 @@ export function formatDate(date: Date) {
 }
 
 // Strips time from Date and shifts the day by the given amount
-export const modifyDateDay = (date: Date, dayDiff: number) =>
-  new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayDiff);
+export function modifyDateDay(date: Date, dayDiff: number) {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + dayDiff,
+  );
+}
 
 // Convert YYYY-MM-DD date string to Date and strip time
-export const dateFromStr = (dateStr: string) => new Date(dateStr + "T00:00:00");
+export function dateFromStr(dateStr: string) {
+  return new Date(dateStr + "T00:00:00");
+}
 
 export function validateHappiness(happiness: number | undefined) {
   return (
