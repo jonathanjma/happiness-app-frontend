@@ -7,10 +7,10 @@ import StatsIcon from "../../assets/graph.svg";
 import GroupsIcon from "../../assets/groups.svg";
 import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
-import HappinessForm from "./HappinessForm";
 import { useWindowDimensions } from "../../utils";
+import HappinessForm from "./HappinessForm";
 
-export default function Sidebar({ element }: { element: React.ReactElement }) {
+export default function Sidebar({ element }: { element: React.ReactElement; }) {
   const { user } = useUser();
 
   const navConfig = [
@@ -26,7 +26,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
   const { height } = useWindowDimensions();
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full h-screen">
       <div
         id="docs-sidebar"
         className="scrollbar-y bottom-0 left-0 top-0 z-[60] hidden min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
