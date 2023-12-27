@@ -20,7 +20,9 @@ export default function Entries() {
   const { user } = useUser();
   const { api } = useApi();
   const queryClient = useQueryClient();
-  const numStillMutating = useIsMutating({ mutationKey: MutationKeys.MUTATE_HAPPINESS });
+  const numStillMutating = useIsMutating({
+    mutationKey: MutationKeys.MUTATE_HAPPINESS,
+  });
   const [networkingState, setNetworkingState] = useState(
     Constants.LOADING_MUTATION_TEXT.toString(),
   );
@@ -54,9 +56,8 @@ export default function Entries() {
   });
 
   const deleteHappinessMutation = useMutation({
-    mutationFn: () =>
-      api.delete(`/happiness/?id=${selectedEntry?.id}`),
-    mutationKey: MutationKeys.MUTATE_HAPPINESS
+    mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
+    mutationKey: MutationKeys.MUTATE_HAPPINESS,
   });
 
   // Update the networking state displayed to the user based on updateEntryMutation result
@@ -77,14 +78,16 @@ export default function Entries() {
     queryClient.invalidateQueries({
       predicate: (query) => {
         console.log(`updating query ${query.queryKey}`);
-        console.log(`is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`);
+        console.log(
+          `is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`,
+        );
         return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
-      }
+      },
     });
   }, [numStillMutating]);
 
   return (
-    <Row className="h-screen bg-[#FAFAFA]" >
+    <Row className="h-screen bg-[#FAFAFA]">
       <div className="w-[162px] min-w-[162px]">
         <ScrollableCalendar
           selectedEntry={selectedEntry}
@@ -125,4 +128,4 @@ export default function Entries() {
       </div>
     </Row>
   );
-};
+}

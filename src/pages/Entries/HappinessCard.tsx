@@ -16,7 +16,7 @@ export default function HappinessCard({
   const isToday =
     date.toLocaleDateString("sv") === new Date().toLocaleDateString("sv");
   if (selected) {
-    classes = "border-0 bg-yellow shadow-[0_2px_20px_0_rgba(0,0,0,0.15)]";
+    classes = "border-0 bg-yellow shadow-sm1";
   } else if (isToday) {
     classes = "bg-light_yellow";
   } else {

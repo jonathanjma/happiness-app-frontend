@@ -3,5 +3,9 @@ export default function Column({
   className = "",
   ...rest
 }: React.HTMLProps<HTMLDivElement>) {
-  return <div className={"flex flex-col " + className} {...rest}>{children}</div>;
+  return (
+    <div className={"flex flex-col " + className} {...rest}>
+      {children}
+    </div>
+  );
 }
