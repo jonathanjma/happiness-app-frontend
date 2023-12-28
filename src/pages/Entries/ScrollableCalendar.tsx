@@ -26,7 +26,7 @@ export default function ScrollableCalendar({
     formatDate(new Date()),
   );
 
-  // start calendar at today if no valid date argument provided, otherwise start at the provided date
+  // start calendar at today if novalid date argument provided, otherwise start at the provided date
   const startDateStr = new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
   const startDate =

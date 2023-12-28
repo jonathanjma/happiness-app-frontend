@@ -1,17 +1,17 @@
+import { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
+import IconWarningOutline from "../../assets/IconWarningOutline";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
+import Comments from "../../components/Comments";
 import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
-import { useState } from "react";
 import { Happiness } from "../../data/models/Happiness";
-import Comments from "./Comments";
-import { Constants } from "../../constants";
-import IconWarningOutline from "../../assets/IconWarningOutline";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -177,7 +177,7 @@ export default function EntryCard({
         <div className="h-8" />
         {/* Comments */}
         <Column className="h-0 w-full flex-1 items-stretch">
-          <Comments commentsResult={commentsResult} />
+          <Comments associatedHappinessId={happiness.id} modalVariant={false} />
         </Column>
       </Column>
       <ConfirmationModal
