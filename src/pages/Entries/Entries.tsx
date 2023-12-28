@@ -57,7 +57,7 @@ export default function Entries() {
 
   const deleteHappinessMutation = useMutation({
     mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
-    mutationKey: MutationKeys.MUTATE_HAPPINES,
+    mutationKey: MutationKeys.MUTATE_HAPPINESS,
   });
 
   // Update the networking state displayed to the user based on updateEntryMutation result
