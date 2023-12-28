@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import IconClose from "../../assets/IconClose";
 import IconFilter from "../../assets/IconFilter";
 import Button from "../../components/Button";
@@ -7,61 +8,53 @@ import HappinessNumber from "../../components/HappinessNumber";
 import TextField from "../../components/TextArea";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import { QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { Happiness } from "../../data/models/Happiness";
+import { formatDate } from "../../utils";
+import SearchResult from "./SearchResult";
 export default function SearchBar() {
-  const [text, setText] = useState("");
+  const [text, setText] = useState("dinner");
   const [isFocused, setIsFocused] = useState(false);
 
-  const [happinessRangeStart, setHappinessRangeStart] = useState(0);
-  const [happinessRangeEnd, setHappinessRangeEnd] = useState(10);
+  const [startValue, setStartValue] = useState(0);
+  const [endValue, setEndValue] = useState(10);
+  const [startDate, setStartDate] = useState(new Date("12-01-23"));
+  const [endDate, setEndDate] = useState(new Date());
+  const [filterShowing, setFilterShowing] = useState(false);
+  const [resultsShowing, setResultsShowing] = useState(false);
 
 
-  const FilterCard = () =>
-    <Card className="py-3 shadow-md2 border-1 border-gray-200">
-      {/* Score */}
-      <Column className="p-4 gap-1">
-        <label className="text-gray-400">Score</label>
-        <Row className="gap-3 items-end">
-          <HappinessNumber
-            value={happinessRangeStart}
-            onChangeValue={(v) => { setHappinessRangeStart(v); }}
-            editable={true}
-            sidebarStyle
-          />
-          <label className="text-gray-400">to</label>
-          <HappinessNumber
-            value={happinessRangeEnd}
-            onChangeValue={(v) => { setHappinessRangeEnd(v); }}
-            editable
-            sidebarStyle
-          />
-        </Row>
-      </Column>
+  const { api } = useApi();
+  const { data, isLoading, isError } = useQuery<Happiness[]>({
+    queryKey: [
+      QueryKeys.FETCH_HAPPINESS,
+      { start: formatDate(startDate) },
+      { end: formatDate(endDate) },
+      { low: startValue },
+      { high: endValue },
+      { count: 5 },
+      { text: text },
+    ],
+    queryFn: async () => {
+      const res = await api.get<Happiness[]>("/happiness/search", {
+        start: formatDate(startDate),
+        end: formatDate(endDate),
+        low: startValue,
+        high: endValue,
+        count: 5,
+        text: text,
+      });
+      return res.data;
+    }
+  });
 
-      {/* Date */}
-      <Column className="p-4 gap-1">
-        <label className="text-gray-400">Date</label>
-        <Row className="gap-3">
-          <TextField
-            value=""
-            hint="MM / DD / YYYY"
-            onChangeValue={() => { }}
-          />
-          <label className="text-gray-400">to</label>
-          <TextField
-            value=""
-            hint="MM / DD / YYYY"
-            onChangeValue={() => { }}
-          />
-        </Row>
-      </Column>
-      <Row className="gap-4 px-4 justify-end items-end">
-        <Button label="Search" variation="FILLED" size="SMALL" />
-        <label className="text-gray-400">or press ENTER</label>
-      </Row>
-    </Card>;
+  useEffect(() => {
+  });
 
   return (
-    <Column className="gap-4">
+    <Column className="gap-4 z-50">
+      {/* Search bar */}
       <Row className={`px-6 py-3 border-gray-300 rounded-[50px] border-1 items-center hover:border-gray-400 ${isFocused ? "shadow-form-selected border-yellow hover:border-yellow" : ""}`}>
         <input
           value={text}
@@ -72,7 +65,7 @@ export default function SearchBar() {
           onFocus={() => { setIsFocused(true); }}
         />
         <Row className="gap-4">
-          <IconFilter color="#808080" className="hover:cursor-pointer" />
+          <IconFilter color="#808080" className="hover:cursor-pointer" onClick={() => { setFilterShowing((showing) => !showing); }} />
           {text.length !== 0 &&
             <IconClose
               color="#808080"
@@ -82,8 +75,62 @@ export default function SearchBar() {
           }
         </Row>
       </Row>
-      <FilterCard />
+      {/* Filter card */}
+      {filterShowing &&
+        <Card
+          className={`z-50 absolute translate-y-16 py-3 shadow-md2 border-1 border-gray-200 hs-dropdown-menu transition-[opacity,margin] duration`}
+        >
+          {/* Score */}
+          <Column className="p-4 gap-1">
+            <label className="text-gray-400">Score</label>
+            <Row className="gap-3 items-end">
+              <HappinessNumber
+                value={startValue}
+                onChangeValue={(v) => { setStartValue(v); }}
+                editable={true}
+                sidebarStyle
+              />
+              <label className="text-gray-400">to</label>
+              <HappinessNumber
+                value={endValue}
+                onChangeValue={(v) => { setEndValue(v); }}
+                editable
+                sidebarStyle
+              />
+            </Row>
+          </Column>
+
+          {/* Date */}
+          <Column className="p-4 gap-1">
+            <label className="text-gray-400">Date</label>
+            <Row className="gap-3 items-end">
+              <TextField
+                value=""
+                hint="MM / DD / YYYY"
+                onChangeValue={() => { }}
+              />
+              <label className="text-gray-400">to</label>
+              <TextField
+                value=""
+                hint="MM / DD / YYYY"
+                onChangeValue={() => { }}
+              />
+            </Row>
+          </Column>
+          <Row className="gap-4 px-4 justify-end items-end">
+            <Button label="Search" variation="FILLED" size="SMALL" />
+            <label className="text-gray-400">or press ENTER</label>
+          </Row>
+        </Card>}
+
+      {/* Results preview */}
+      <Card className="absolute border-gray-200 shadow-md2">
+        {data &&
+          data.map((h) => <SearchResult happiness={h} keyword={text} />)
+        }
+      </Card>
     </Column>
 
   );
 }
+

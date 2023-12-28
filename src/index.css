@@ -36,6 +36,10 @@
     label {
         @apply text-sm font-medium;
     }
+
+    caption {
+        @apply text-xs font-medium leading-4;
+    }
 }
 
 /* CSS class for hiding the scrollbar */
