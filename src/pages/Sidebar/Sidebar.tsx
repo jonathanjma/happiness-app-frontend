@@ -44,7 +44,7 @@ export default function Sidebar({ element }: { element: React.ReactElement; }) {
                     onClick={() => setSelectedLink("")}
                   >
                     <img
-                      className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                      className="mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
                       src={user!.profile_picture}
                       alt="profile"
                     />
@@ -59,7 +59,7 @@ export default function Sidebar({ element }: { element: React.ReactElement; }) {
                   </div>
                   <button
                     className={
-                      "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
+                      "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary shadow-md1 outline-none"
                     }
                     onClick={useUser().logoutUser}
                   >

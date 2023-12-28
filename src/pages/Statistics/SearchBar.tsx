@@ -1,6 +1,11 @@
-
+import { useState } from "react";
+import TextArea from "../../components/TextArea";
 export default function SearchBar() {
+  const [text, setText] = useState("");
   return (
-    <div>SearchBar</div>
+    <div>
+
+      <TextArea value={text} onChangeValue={setText} />
+    </div>
   );
 }
