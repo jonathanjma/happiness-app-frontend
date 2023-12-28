@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { UserGroups } from "../../data/models/User";
 import Spinner from "../../components/Spinner";
 import GroupCard from "./GroupCard";
+import Button from "../../components/Button";
 
 export default function UserGroups() {
   const { api } = useApi();
@@ -15,9 +16,7 @@ export default function UserGroups() {
       {/* Header */}
       <div className="mb-8 flex w-full justify-between">
         <p className="m-0 self-center text-3xl font-semibold">Your Groups</p>
-        <button className="shadow-md1 bg-light_yellow2 rounded-xl px-4.5 py-3 text-sm font-semibold text-secondary">
-          New Group
-        </button>
+        <Button label="New Group" variation="FILLED" />
       </div>
       {/* Group cards */}
       {isLoading ? (

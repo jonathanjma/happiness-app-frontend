@@ -19,6 +19,8 @@ export default function HappinessCard({
     classes = "border-0 bg-yellow shadow-sm1";
   } else if (isToday) {
     classes = "bg-light_yellow";
+  } else {
+    classes = "bg-white";
   }
 
   return (

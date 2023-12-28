@@ -9,11 +9,14 @@ import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import Group from "./pages/Group/Group";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 export default function App() {
   useEffect(() => {
     // @ts-ignore
     import("preline");
+    TimeAgo.addDefaultLocale(en);
   }, []);
 
   return (
@@ -29,22 +32,6 @@ export default function App() {
                 </PublicRoute>
               }
             />
-            {/* <Route
-              path="/reset-pass"
-              element={
-                <PublicRoute>
-                  <RequestResetPassword newPassword={false} />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/reset-pass/change-pass/:token"
-              element={
-                <PublicRoute>
-                  <ResetPassword newPassword={true} />
-                </PublicRoute>
-              }
-            /> */}
             <Route
               path="*"
               element={
