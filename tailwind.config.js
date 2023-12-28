@@ -19,6 +19,7 @@ module.exports = {
       "gray-50": "#F5F5F5",
       "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
+      "gray-300": "#D5D5D5",
       "gray-400": "#808080",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
@@ -52,6 +53,7 @@ module.exports = {
       boxShadow: {
         sm1: "0px 2px 20px 0px rgba(0, 0, 0, 0.15)",
         md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
+        md2: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)",
       },
     },
   },

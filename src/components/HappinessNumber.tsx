@@ -1,6 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import { Constants } from "../constants";
 import Column from "./layout/Column";
-import { useEffect, useRef, useState } from "react";
 
 /**
  * Component represeting the Happiness number.
@@ -15,13 +15,13 @@ export default function HappinessNumber({
   value,
   onChangeValue,
   editable,
-  setNetworkingState,
+  setNetworkingState = () => { },
   sidebarStyle = false,
 }: {
   value: number;
   onChangeValue: (n: number) => void;
   editable: boolean;
-  setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
+  setNetworkingState?: React.Dispatch<React.SetStateAction<string>>;
   sidebarStyle?: boolean;
 }) {
   // The current happiness value.
@@ -69,7 +69,7 @@ export default function HappinessNumber({
     setHappinessDisplay(value === -1 ? "--" : value.toFixed(1));
   }, [value]);
 
-  const Changer = ({ change }: { change: number }) => (
+  const Changer = ({ change }: { change: number; }) => (
     <div
       className={
         "flex flex-col items-center justify-center hover:cursor-pointer" +
@@ -127,7 +127,8 @@ export default function HappinessNumber({
         }}
         disabled={!editable}
       />
-      <div className=" h-3" />
+      {!sidebarStyle && <div className=" h-3" />}
+
     </Column>
   );
 
