@@ -51,7 +51,7 @@ export default function HappinessForm({ height }: { height: number }) {
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey.includes(QueryKeys.FETCH_HAPPINESS,
+          query.queryKey.includes(QueryKeys.FETCH_HAPPINESS),
       });
     }
   }, [postHappinessMutation.isSuccess]);
