@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
-import Button from "../../components/Button";
 import Row from "../../components/layout/Row";
-import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
@@ -22,7 +20,9 @@ export default function Entries() {
   const { user } = useUser();
   const { api } = useApi();
   const queryClient = useQueryClient();
-  const numStillMutating = useIsMutating({ mutationKey: MutationKeys.MUTATE_HAPPINESS });
+  const numStillMutating = useIsMutating({
+    mutationKey: MutationKeys.MUTATE_HAPPINESS,
+  });
   const [networkingState, setNetworkingState] = useState(
     Constants.LOADING_MUTATION_TEXT.toString(),
   );
@@ -56,9 +56,8 @@ export default function Entries() {
   });
 
   const deleteHappinessMutation = useMutation({
-    mutationFn: () =>
-      api.delete(`/happiness/?id=${selectedEntry?.id}`),
-    mutationKey: MutationKeys.MUTATE_HAPPINESS
+    mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
+    mutationKey: MutationKeys.MUTATE_HAPPINES,
   });
 
   // Update the networking state displayed to the user based on updateEntryMutation result
@@ -79,56 +78,54 @@ export default function Entries() {
     queryClient.invalidateQueries({
       predicate: (query) => {
         console.log(`updating query ${query.queryKey}`);
-        console.log(`is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`);
+        console.log(
+          `is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`,
+        );
         return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
-      }
+      },
     });
   }, [numStillMutating]);
 
   return (
-    <>
-      {selectedEntry && <HappinessViewerModal happiness={selectedEntry} id="view" />}
-      <Row className="h-screen bg-[#FAFAFA]">
-        <div className="w-[162px] min-w-[162px]">
-          <ScrollableCalendar
-            selectedEntry={selectedEntry}
-            setSelectedEntry={setSelectedEntry}
-            setEditing={setEditing}
-          />
-        </div>
-        <div className="h-full w-full px-8 pb-4 pt-8">
-          <EntryCard
-            happiness={
-              selectedEntry ?? {
-                id: -1,
-                value: -1,
-                comment: "",
-                timestamp: Date.now().toString(),
-                author: user!,
-              }
+    <Row className="h-screen bg-[#FAFAFA]">
+      <div className="w-[162px] min-w-[162px]">
+        <ScrollableCalendar
+          selectedEntry={selectedEntry}
+          setSelectedEntry={setSelectedEntry}
+          setEditing={setEditing}
+        />
+      </div>
+      <div className="h-full w-full px-8 pb-4 pt-8">
+        <EntryCard
+          happiness={
+            selectedEntry ?? {
+              id: -1,
+              value: -1,
+              comment: "",
+              timestamp: Date.now().toString(),
+              author: user!,
             }
-            className="h-full"
-            editing={editing}
-            onChangeHappinessNumber={(value) => {
-              setSelectedEntry((selected) => {
-                return selected ? { ...selected, value: value } : undefined;
-              });
-            }}
-            onChangeCommentText={(comment) => {
-              setSelectedEntry((selected) => {
-                return selected ? { ...selected, comment: comment } : undefined;
-              });
-            }}
-            setEditing={setEditing}
-            networkingState={networkingState}
-            setNetworkingState={setNetworkingState}
-            onDeleteHappiness={() => {
-              deleteHappinessMutation.mutate();
-            }}
-          />
-        </div>
-      </Row>
-      <Button label="open" associatedModalId="view" />
-    </>
+          }
+          className="h-full"
+          editing={editing}
+          onChangeHappinessNumber={(value) => {
+            setSelectedEntry((selected) => {
+              return selected ? { ...selected, value: value } : undefined;
+            });
+          }}
+          onChangeCommentText={(comment) => {
+            setSelectedEntry((selected) => {
+              return selected ? { ...selected, comment: comment } : undefined;
+            });
+          }}
+          setEditing={setEditing}
+          networkingState={networkingState}
+          setNetworkingState={setNetworkingState}
+          onDeleteHappiness={() => {
+            deleteHappinessMutation.mutate();
+          }}
+        />
+      </div>
+    </Row>
   );
-};
+}

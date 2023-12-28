@@ -7,8 +7,9 @@ import SignIn from "./pages/SignIn/SignIn";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
+import UserGroups from "./pages/UserGroups/UserGroups";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 export default function App() {
   useEffect(() => {
@@ -38,10 +39,10 @@ export default function App() {
                     element={
                       <Routes>
                         <Route path="/home" element={<Entries />} />
+                        <Route path="/groups" element={<UserGroups />} />
+                        {/* <Route path="/groups/:groupID" element={<Group />} /> */}
                         {/* <Route path="/statistics" element={<Statistics />} /> */}
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                        {/* <Route path="/groups" element={<UserGroups />} /> */}
-                        {/* <Route path="/groups/:groupID" element={<Group />} /> */}
                         {/* <Route path="/settings" element={<Settings />} /> */}
                         {/* <Route path="/history/:userID" element={<History />} /> */}
                         <Route path="*" element={<Navigate to="/" />} />
