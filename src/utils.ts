@@ -23,6 +23,7 @@ export function getWeekdayFromNumber(n: number): string {
   date.setDate(new Date().getDate() - new Date().getDay() + n);
   return date.toLocaleString("en-us", { weekday: "short" });
 }
+
 /**
  * Parses a date string in the YYYY-MM-dd format while avoiding weird timezone issues.
  * Please use this function whenever trying to parse a date in this format!
@@ -33,6 +34,7 @@ export function parseYYYmmddFormat(dateString: string): Date {
   // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
   const values = dateString.split("-");
   return new Date(`${values[1]}-${values[2]}-${values[0]}`);
+}
 
 /**
  * Gets a proper JS date object given a date string in the YYYY-MM-DD HH:mm:ss.SSSSS
@@ -101,4 +103,3 @@ export function useWindowDimensions() {
 
   return windowDimensions;
 }
-
