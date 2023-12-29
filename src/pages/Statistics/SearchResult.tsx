@@ -8,14 +8,30 @@ export default function SearchResult({ happiness, keyword }: {
 }) {
   const [isHovered, setIsHovered] = useState(false);
   // TODO replace global padding with margin so I can use button according to design
+  const processedComment = happiness.comment.split(" ");
+  const importantSection = processedComment.slice(processedComment.indexOf(keyword) - 3);
+  const before = importantSection.slice(0, 3).join(" ");
+  const after = importantSection.slice(processedComment.indexOf(keyword)).join(" ");
+
   return (
-    <Row className={`p-4 items-center ${isHovered ? "bg-gray-200" : "bg-white"} rounded-2xl`}
+    <Row className={`items-center ${isHovered ? "bg-gray-200" : "bg-white"} rounded-2xl`}
       onMouseEnter={() => { setIsHovered(true); }}
-      onMouseLeave={() => { setIsHovered(true); }}>
-      <span className={`p-1 ${isHovered ? "bg-gray-50" : "bg-gray-200"} rounded-[4px]`} >
+      onMouseLeave={() => { setIsHovered(false); }}>
+      <span className={`ml-4 my-4 p-1 ${isHovered ? "bg-gray-50" : "bg-gray-200"} rounded-[4px]`} >
         <caption className=" text-gray-600">{happiness.value.toFixed(1)}</caption>
       </span>
       <div className="w-3" />
+
+      <span className="text-gray-400 text-sm">
+        {before}
+      </span>
+      <span className="text-gray-800 font-semibold text-sm bg-yellow">
+        {keyword}
+      </span>
+      <span className="text-gray-400 text-sm">
+        {after}
+      </span>
+
       <label className="truncate w-5/6 text-gray-400">{happiness.comment}</label>
       <div className="flex flex-grow" />
       {!isHovered && <label className="text-gray-600">{new Date(happiness.timestamp).toLocaleDateString("en-us", {
