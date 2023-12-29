@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import { useState } from "react";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
@@ -10,8 +11,9 @@ export default function SearchResult({ happiness, keyword }: {
   const processedComment = happiness.comment;
   const highlightedKeyword = `<span class="text-gray-800 font-semibold text-md bg-yellow">${keyword}</span>`;
   const highlightedComment = processedComment
-    .replace(new RegExp(`\\b${keyword}\\b`, 'g'), highlightedKeyword)
-    .substring(processedComment.indexOf(keyword));
+    .replace(new RegExp(`${keyword}`, 'g'), highlightedKeyword)
+    .substring(processedComment.indexOf(keyword) - 20);
+  const sanitizedContent = DOMPurify.sanitize(highlightedComment);
 
   return (
     <Row className={`items-center w-full ${isHovered ? "bg-gray-200" : "bg-white"} rounded-2xl`}
@@ -21,7 +23,7 @@ export default function SearchResult({ happiness, keyword }: {
         <caption className=" text-gray-600">{happiness.value.toFixed(1)}</caption>
       </span>
       <div className="min-w-[12px]" />
-      <div className="text-gray-400 truncate text-sm" dangerouslySetInnerHTML={{ __html: highlightedComment }} />
+      <div className="text-gray-400 truncate text-sm" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
       <div className="flex flex-grow min-w-[32px]" />
       {!isHovered && <label className="text-gray-600 mr-4 min-w-[100px]">{new Date(happiness.timestamp).toLocaleDateString("en-us", {
         month: "short",
@@ -29,6 +31,7 @@ export default function SearchResult({ happiness, keyword }: {
         year: "numeric"
       })}</label>}
       {isHovered &&
+        // TODO code functionality when this is merged with bidirectional inf scroll
         <button className="bg-gray-50 rounded-lg p-1 h-10 mr-4 min-w-[120px]" >
           <label className="text-gray-400 hover:cursor-pointer">
             Open in Entries
