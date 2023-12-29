@@ -5,7 +5,6 @@ import IconFilter from "../../assets/IconFilter";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import HappinessNumber from "../../components/HappinessNumber";
-import TextField from "../../components/TextArea";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
@@ -13,13 +12,14 @@ import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 import SearchResult from "./SearchResult";
+
 export default function SearchBar() {
   const [text, setText] = useState("dinner");
   const [isFocused, setIsFocused] = useState(false);
 
   const [startValue, setStartValue] = useState(0);
   const [endValue, setEndValue] = useState(10);
-  const [startDate, setStartDate] = useState(new Date("12-01-23"));
+  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const [endDate, setEndDate] = useState(new Date());
   const [filterShowing, setFilterShowing] = useState(false);
   const [resultsShowing, setResultsShowing] = useState(false);
@@ -29,7 +29,7 @@ export default function SearchBar() {
   const { data, isLoading, isError } = useQuery<Happiness[]>({
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
-      { start: formatDate(startDate) },
+      { start: formatDate(new Date(startDate?.valueOf())) },
       { end: formatDate(endDate) },
       { low: startValue },
       { high: endValue },
@@ -53,7 +53,7 @@ export default function SearchBar() {
   });
 
   return (
-    <Column className="gap-4 z-50">
+    <Column className="gap-4 z-50 w-full border-secondary border-2">
       {/* Search bar */}
       <Row className={`px-6 py-3 border-gray-300 rounded-[50px] border-1 items-center hover:border-gray-400 ${isFocused ? "shadow-form-selected border-yellow hover:border-yellow" : ""}`}>
         <input
@@ -104,17 +104,7 @@ export default function SearchBar() {
           <Column className="p-4 gap-1">
             <label className="text-gray-400">Date</label>
             <Row className="gap-3 items-end">
-              <TextField
-                value=""
-                hint="MM / DD / YYYY"
-                onChangeValue={() => { }}
-              />
               <label className="text-gray-400">to</label>
-              <TextField
-                value=""
-                hint="MM / DD / YYYY"
-                onChangeValue={() => { }}
-              />
             </Row>
           </Column>
           <Row className="gap-4 px-4 justify-end items-end">
@@ -124,13 +114,20 @@ export default function SearchBar() {
         </Card>}
 
       {/* Results preview */}
-      <Card className="absolute border-gray-200 shadow-md2">
-        {data &&
-          data.map((h) => <SearchResult happiness={h} keyword={text} />)
-        }
-      </Card>
+      {resultsShowing &&
+        <Card className="absolute border-gray-200 shadow-md2 w-full">
+          {data &&
+            data.map((h) => <SearchResult happiness={h} keyword={text} />)
+          }
+          {/* Footer */}
+          <Row className="px-4 py-3 w-full bg-gray-50 border-t-1 border-gray-200">
+            <label className="text-gray-400">Press ↑ or ↓ to navigate. Press ENTER or press button to open in Entries</label>
+            <div className="flex flex-grow " />
+            <a className="underline text-sm text-gray-400 hover:cursor-pointer">View All Search Results</a>
+          </Row>
+        </Card>
+      }
     </Column>
-
   );
 }
 
