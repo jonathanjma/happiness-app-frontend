@@ -7,7 +7,6 @@ import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
-
 /**
  * The page for displaying entries with the scrollable calendar
  */
@@ -77,10 +76,6 @@ export default function Entries() {
     setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     queryClient.invalidateQueries({
       predicate: (query) => {
-        console.log(`updating query ${query.queryKey}`);
-        console.log(
-          `is updating? ${query.queryKey.includes(QueryKeys.FETCH_HAPPINESS)}`,
-        );
         return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
       },
     });
@@ -108,15 +103,15 @@ export default function Entries() {
           }
           className="h-full"
           editing={editing}
-          onChangeHappinessNumber={(value) => {
-            setSelectedEntry((selected) => {
-              return selected ? { ...selected, value: value } : undefined;
-            });
+          onChangeHappinessNumber={(value: number) => {
+            setSelectedEntry((selected) =>
+              (selected ? { ...selected, value: value } : undefined)
+            );
           }}
-          onChangeCommentText={(comment) => {
-            setSelectedEntry((selected) => {
-              return selected ? { ...selected, comment: comment } : undefined;
-            });
+          onChangeCommentText={(text: string) => {
+            setSelectedEntry((selected) =>
+              (selected ? { ...selected, comment: text } : undefined)
+            );
           }}
           setEditing={setEditing}
           networkingState={networkingState}

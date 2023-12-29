@@ -9,6 +9,34 @@ export function formatDate(date: Date) {
 }
 
 /**
+ * Gets the shortened form of a weekday from number, according to design.
+ * For example:
+ * 0 -> Sun
+ * 1 -> Mon
+ * ...
+ * 6 -> Sat
+ * @param n the number to use
+ * @returns a string representing the shortened weekday.
+ */
+export function getWeekdayFromNumber(n: number): string {
+  const date = new Date();
+  date.setDate(new Date().getDate() - new Date().getDay() + n);
+  return date.toLocaleString("en-us", { weekday: "short" });
+}
+
+/**
+ * Parses a date string in the YYYY-MM-dd format while avoiding weird timezone issues.
+ * Please use this function whenever trying to parse a date in this format!
+ * @param dateString the string to be parsed
+ * @returns date object containing the proper time
+ */
+export function parseYYYmmddFormat(dateString: string): Date {
+  // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
+  const values = dateString.split("-");
+  return new Date(`${values[1]}-${values[2]}-${values[0]}`);
+}
+
+/**
  * Gets a proper JS date object given a date string in the YYYY-MM-DD HH:mm:ss.SSSSS
  * format (this string MUST be in UTC) and converts it to a date object in the
  * user's time zone.
