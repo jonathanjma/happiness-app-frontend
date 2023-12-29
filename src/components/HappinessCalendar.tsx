@@ -65,28 +65,22 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
       </Row>
     )}
 
-    {variation === "WEEKLY" &&
-      <Row className="w-full justify-center">
-        <label className="text-xs text-gray-400">{startDate.toLocaleDateString("en-us", { weekday: "short" })}</label>
-      </Row>
-    }
-
     {isLoading ? <p>loading</p> : isError ? <p>error</p> :
       days.map((date) => {
-        const matchingDateList = data?.filter((h) => h.timestamp === formatDate(date));
-        if (matchingDateList && matchingDateList.length > 0) {
+        const matchingHappiness = data?.find((h) => h.timestamp === formatDate(date));
+        if (matchingHappiness) {
           return <Row className="w-full justify-center">
             <DayCell
-              happiness={matchingDateList[0]}
+              happiness={matchingHappiness}
               isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
-              onClick={() => { onSelectEntry(matchingDateList[0]); }}
-              key={matchingDateList[0].id}
+              onClick={() => { onSelectEntry(matchingHappiness); }}
+              key={matchingHappiness.id}
               showWeekday={variation === "WEEKLY"}
             />
           </Row>;
         }
         return <Row className="w-full justify-center">
-          <EmptyCell key={date.getDate() + date.getMonth() * 1000} cellNumber={date.getDate()} />
+          <EmptyCell showWeekday={variation === "WEEKLY"} key={date.getDate() + date.getMonth() * 1000} happinessDate={date} />
         </Row>;
       })
     }
@@ -124,11 +118,13 @@ const DayCell = ({ happiness, isSelected, onClick, showWeekday = false }: {
   );
 };
 
-const EmptyCell = ({ cellNumber }: { cellNumber: number; }) => {
-  const isToday = cellNumber === new Date().getDate();
+const EmptyCell = ({ happinessDate, showWeekday = false }: { happinessDate: Date; showWeekday?: boolean; }) => {
+  const isToday = formatDate(happinessDate) === formatDate(new Date());
 
   return <div className={`w-10 h-10 flex items-center justify-center border-[1px] relative ${isToday ? 'border-yellow' : 'border-gray-300'} rounded-lg`}>
-    <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>{cellNumber}</p>
+    <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>{showWeekday ?
+      happinessDate.toLocaleDateString("en-us", { weekday: "short" })
+      : happinessDate.getDate()}</p>
     {isToday &&
       <div
         className="absolute left-1/2 transform translate-y-[18px] rounded-[18px] bg-yellow -translate-x-1/2 w-4 h-[3px]"
