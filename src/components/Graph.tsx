@@ -5,7 +5,13 @@ import { ChartConfiguration, ChartDataset } from "chart.js";
 import { Chart, ChartData, registerables } from "chart.js";
 Chart.register(...registerables);
 
-export default function Graph({ entries }: { entries: Happiness[] }) {
+export default function Graph({
+  entries,
+  label: graphLabel,
+}: {
+  entries: Happiness[];
+  label: string;
+}) {
   if (entries.length === 0) {
     console.log("uh oh");
   }
@@ -90,9 +96,9 @@ export default function Graph({ entries }: { entries: Happiness[] }) {
   return (
     <>
       <div className="flex w-full justify-center">
-        <div className="@lg:min-h-[500px] bg-cultured-50 mb-4 flex max-h-[380px] min-h-[380px] w-full max-w-[1000px] flex-wrap justify-center space-y-2 rounded-xl py-8 shadow-lg">
+        <div className="@lg:min-h-[500px] bg-cultured-50 mb-4 flex min-h-[380px] w-full max-w-[1000px] flex-wrap justify-center space-y-2 rounded-xl py-8 shadow-lg">
           <p className="text-raisin-600 flex w-full justify-center text-xl font-medium">
-            Weekly Happiness
+            {graphLabel}
           </p>
           <div className="@lg:min-h-[400px] mx-2 flex max-h-[285px] min-h-[285px] w-full justify-center">
             <LineChart chartData={chartData} />
