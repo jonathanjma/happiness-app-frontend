@@ -5,12 +5,22 @@ import { ChartConfiguration, ChartDataset } from "chart.js";
 import { Chart, ChartData, registerables } from "chart.js";
 Chart.register(...registerables);
 
+/**
+ * Custom component for displaying graph of happiness values over time
+ * @param entires list of happiness entries to be shown in the graph
+ * @param graphTitle the title of the graph, displayed above graph
+ * @param graphSubTitle the subtitle of the graph, displayed above graph and below graph title
+ * @returns
+ */
+
 export default function Graph({
   entries,
-  label: graphLabel,
+  graphTitle = "",
+  graphSubTitle = "",
 }: {
   entries: Happiness[];
-  label: string;
+  graphTitle?: string;
+  graphSubTitle?: string;
 }) {
   if (entries.length === 0) {
     console.log("uh oh");
@@ -96,10 +106,13 @@ export default function Graph({
   return (
     <>
       <div className="flex w-full justify-center">
-        <div className="@lg:min-h-[500px] bg-cultured-50 mb-4 flex min-h-[380px] w-full max-w-[1000px] flex-wrap justify-center space-y-2 rounded-xl py-8 shadow-lg">
-          <p className="text-raisin-600 flex w-full justify-center text-xl font-medium">
-            {graphLabel}
-          </p>
+        <div className="@lg:min-h-[500px] mb-4 flex min-h-[380px] w-full max-w-[1000px] flex-wrap justify-center rounded-[10px] bg-brand_off_white py-8 shadow-lg">
+          <h4 className="flex w-full justify-center text-black">
+            {graphTitle}
+          </h4>
+          <h5 className="flex w-full justify-center text-gray-400">
+            {graphSubTitle}
+          </h5>
           <div className="@lg:min-h-[400px] mx-2 flex max-h-[285px] min-h-[285px] w-full justify-center">
             <LineChart chartData={chartData} />
           </div>

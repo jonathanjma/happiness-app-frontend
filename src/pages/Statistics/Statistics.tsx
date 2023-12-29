@@ -16,7 +16,8 @@ export default function Statistics() {
   const { api } = useApi();
   const queryClient = useQueryClient();
   const [radioValue, setRadioValue] = useState(1);
-  const [graphName, setGraphName] = useState("Weekly Happiness");
+  const [graphTitle, setGraphTitle] = useState("Weekly Happiness");
+  const [graphSubTitle, setGraphSubTitle] = useState("");
   const [start, setStart] = useState(
     new Date(
       new Date().getFullYear(),
@@ -79,17 +80,35 @@ export default function Statistics() {
         return new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
       }
     });
-    setGraphName(() =>
+    setGraphTitle(() =>
       radioValue === 1 ? "Weekly Happiness" : "Monthly Happiness",
     );
   }, [radioValue]);
 
+  // change subtitle when data changes
+  useEffect(() => {
+    setGraphSubTitle(
+      () =>
+        start.toLocaleString("default", { month: "long" }) +
+        " " +
+        (radioValue === 1
+          ? start.getDate() +
+            "-" +
+            (start.getMonth() === end.getMonth()
+              ? ""
+              : end.toLocaleString("default", { month: "long" }) + " ") +
+            end.getDate()
+          : start.getFullYear()),
+    );
+  }, [data, radioValue, start, end]);
+
   // react to changes in data
   useEffect(() => {
     refetch();
-  }, [data, start, end, graphName]);
+  }, [data, start, end, graphTitle]);
 
-  console.log(graphName);
+  console.log(start);
+  console.log(end);
 
   return (
     <>
@@ -108,7 +127,11 @@ export default function Statistics() {
           <></>
         ) : (
           <div className="h-[600px] w-3/5">
-            <Graph entries={data} label={graphName} />
+            <Graph
+              entries={data}
+              graphTitle={graphTitle}
+              graphSubTitle={graphSubTitle}
+            />
           </div>
         )}
       </div>
