@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
-import HappinessCalendar from "../../components/HappinessCalendar";
+import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
+import EntryCard from "./EntryCard";
+import ScrollableCalendar from "./ScrollableCalendar";
 /**
  * The page for displaying entries with the scrollable calendar
  */
@@ -79,14 +81,8 @@ export default function Entries() {
   }, [numStillMutating]);
 
   return (
-    <>
-      <HappinessCalendar
-        startDate={new Date("12-24-2023")}
-        selectedEntry={selectedEntry!}
-        onSelectEntry={setSelectedEntry}
-        variation="WEEKLY"
-      />
-      {/* <Row className="h-screen bg-[#FAFAFA]" >
+
+    <Row className="h-screen bg-[#FAFAFA]" >
       <div className="w-[162px] min-w-[162px]">
         <ScrollableCalendar
           selectedEntry={selectedEntry}
@@ -125,12 +121,6 @@ export default function Entries() {
           }}
         />
       </div>
-    </Row> */}
-    </>
-
-
-
-
-
+    </Row>
   );
 };
