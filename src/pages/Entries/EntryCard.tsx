@@ -1,17 +1,17 @@
+import { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
+import IconWarningOutline from "../../assets/IconWarningOutline";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
+import Comments from "../../components/Comments";
 import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
-import { useState } from 'react';
 import { Happiness } from "../../data/models/Happiness";
-import Comments from "./Comments";
-import { Constants, QueryKeys } from "../../constants";
-import IconWarningOutline from "../../assets/IconWarningOutline";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -98,7 +98,7 @@ export default function EntryCard({
           <div className="flex-1" />
           {editing ? (
             <>
-              {happiness.value !== -1 &&
+              {happiness.value !== -1 && (
                 <>
                   <Button
                     variation="OUTLINED"
@@ -106,7 +106,8 @@ export default function EntryCard({
                     associatedModalId="delete-confirm-modal"
                   />
                   <div className=" w-4" />
-                </>}
+                </>
+              )}
               <Button label="Done" onClick={() => setEditing(false)} />
             </>
           ) : (
@@ -147,7 +148,7 @@ export default function EntryCard({
             {editing && (
               <Row className="mt-1 gap-1">
                 {happiness.value === -1 ||
-                  networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <svg
@@ -176,13 +177,15 @@ export default function EntryCard({
         <div className="h-8" />
         {/* Comments */}
         <Column className="h-0 w-full flex-1 items-stretch">
-          <Comments commentsResult={commentsResult} />
+          <Comments associatedHappinessId={happiness.id} modalVariant={false} />
         </Column>
       </Column>
       <ConfirmationModal
         id="delete-confirm-modal"
         title="Deleting happiness"
-        body={`You are deleting happiness for ${new Date(happiness.timestamp).toDateString()}, are you sure you want to continue?`}
+        body={`You are deleting happiness for ${new Date(
+          happiness.timestamp,
+        ).toDateString()}, are you sure you want to continue?`}
         denyText="Cancel"
         confirmText="Continue"
         onConfirm={onDeleteHappiness}
