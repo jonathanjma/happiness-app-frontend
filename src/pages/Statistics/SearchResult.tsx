@@ -13,6 +13,7 @@ export default function SearchResult({ happiness, keyword }: {
   const before = importantSection.slice(0, 3).join(" ");
   const after = importantSection.slice(processedComment.indexOf(keyword)).join(" ");
 
+  // TODO rewrite logic to support multiple instances of keyword
   return (
     <Row className={`items-center ${isHovered ? "bg-gray-200" : "bg-white"} rounded-2xl`}
       onMouseEnter={() => { setIsHovered(true); }}
