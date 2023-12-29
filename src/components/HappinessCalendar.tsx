@@ -67,7 +67,7 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
 
     {variation === "WEEKLY" &&
       <Row className="w-full justify-center">
-        <label className="text-xs text-gray-400">{`${startDate.getDate()}-${startDate.getDate() + 6}`}</label>
+        <label className="text-xs text-gray-400">{startDate.toLocaleDateString("en-us", { weekday: "short" })}</label>
       </Row>
     }
 
@@ -81,6 +81,7 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
               isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
               onClick={() => { onSelectEntry(matchingDateList[0]); }}
               key={matchingDateList[0].id}
+              showWeekday={variation === "WEEKLY"}
             />
           </Row>;
         }
@@ -92,7 +93,12 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
   </div>;
 }
 
-const DayCell = ({ happiness, isSelected, onClick }: { happiness: Happiness; isSelected: boolean; onClick: () => void; }) => {
+const DayCell = ({ happiness, isSelected, onClick, showWeekday = false }: {
+  happiness: Happiness;
+  isSelected: boolean;
+  onClick: () => void;
+  showWeekday?: boolean;
+}) => {
   const happinessPercent = happiness.value * 10;
   const cellNumber = parseYYYmmddFormat(happiness.timestamp).getDate();
   const isToday = formatDate(new Date()) === happiness.timestamp;
@@ -104,7 +110,11 @@ const DayCell = ({ happiness, isSelected, onClick }: { happiness: Happiness; isS
       style={{ background: `linear-gradient(to top, ${fillColor} 0%, ${fillColor} ${happinessPercent}%, transparent ${happinessPercent}%, transparent 100%)` }}
       onClick={onClick}
     >
-      <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>{cellNumber}</p>
+      <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>
+        {showWeekday ?
+          parseYYYmmddFormat(happiness.timestamp).toLocaleDateString("en-us", { weekday: "short" })
+          : cellNumber}
+      </p>
       {isToday &&
         <div
           className="absolute left-1/2 transform translate-y-full rounded-[18px] bg-yellow -translate-x-1/2 w-16 h-3"

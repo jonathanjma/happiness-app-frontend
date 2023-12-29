@@ -19,7 +19,7 @@ export const modifyDateDay = (date: Date, dayDiff: number) =>
  * Gets the shortened form of a weekday from number, according to design.
  * For example:
  * 0 -> Sun
- * 1 -> M
+ * 1 -> Mon
  * ...
  * 6 -> Sat
  * @param n the number to use
