@@ -94,47 +94,46 @@ export default function HappinessNumber({
     </div>
   );
 
-  const NumInput = () => (
-    <Column>
-      <input
-        type="text"
-        value={happinessDisplay}
-        className={
-          "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
-          (sidebarStyle
-            ? " h-[36px] max-w-[55px] text-xl"
-            : " h-auto max-w-[80px] text-4xl")
-        }
-        onChange={(e) => {
-          clearTimeout(updateHappinessTimeout.current);
-          let happinessNum = 0;
-          if (e.target.value !== "") {
-            happinessNum = parseFloat(
-              e.target.value.substring(e.target.value.indexOf("-") + 1),
-            );
-            if (happinessNum < 0) {
-              happinessNum *= -1;
-            }
-            // While loop is unncessary but does make absolutley sure it is in range
-            while (happinessNum > 10) {
-              happinessNum /= 10;
-            }
-          }
-          // We don't change the current happiness until we know for sure
-          // it's a valid range
-          setCurrentHappiness(happinessNum);
-          setHappinessDisplay(happinessNum.toString());
-        }}
-        disabled={!editable}
-      />
-      {!sidebarStyle && <div className=" h-3" />}
 
-    </Column>
-  );
 
   return sidebarStyle ? (
     <div className="flex">
-      <NumInput />
+      {/* Input */}
+      <Column>
+        <input
+          type="text"
+          value={happinessDisplay}
+          className={
+            "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
+            (sidebarStyle
+              ? " h-[36px] max-w-[55px] text-xl"
+              : " h-auto max-w-[80px] text-4xl")
+          }
+          onChange={(e) => {
+            clearTimeout(updateHappinessTimeout.current);
+            let happinessNum = 0;
+            if (e.target.value !== "") {
+              happinessNum = parseFloat(
+                e.target.value.substring(e.target.value.indexOf("-") + 1),
+              );
+              if (happinessNum < 0) {
+                happinessNum *= -1;
+              }
+              // While loop is unncessary but does make absolutley sure it is in range
+              while (happinessNum > 10) {
+                happinessNum /= 10;
+              }
+            }
+            // We don't change the current happiness until we know for sure
+            // it's a valid range
+            setCurrentHappiness(happinessNum);
+            setHappinessDisplay(happinessNum.toString());
+          }}
+          disabled={!editable}
+        />
+        {!sidebarStyle && <div className=" h-3" />}
+
+      </Column>
       <div className="flex-col">
         {editable && <Changer change={0.5} />}
         {editable && <Changer change={-0.5} />}
@@ -144,7 +143,42 @@ export default function HappinessNumber({
     <Column className=" w-full items-center">
       {editable && <Changer change={0.5} />}
       <div className="h-3" />
-      <NumInput />
+      {/* Input */}
+      <Column>
+        <input
+          type="text"
+          value={happinessDisplay}
+          className={
+            "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
+            (sidebarStyle
+              ? " h-[36px] max-w-[55px] text-xl"
+              : " h-auto max-w-[80px] text-4xl")
+          }
+          onChange={(e) => {
+            clearTimeout(updateHappinessTimeout.current);
+            let happinessNum = 0;
+            if (e.target.value !== "") {
+              happinessNum = parseFloat(
+                e.target.value.substring(e.target.value.indexOf("-") + 1),
+              );
+              if (happinessNum < 0) {
+                happinessNum *= -1;
+              }
+              // While loop is unncessary but does make absolutley sure it is in range
+              while (happinessNum > 10) {
+                happinessNum /= 10;
+              }
+            }
+            // We don't change the current happiness until we know for sure
+            // it's a valid range
+            setCurrentHappiness(happinessNum);
+            setHappinessDisplay(happinessNum.toString());
+          }}
+          disabled={!editable}
+        />
+        {!sidebarStyle && <div className=" h-3" />}
+
+      </Column>
       <div className="h-3" />
       {editable && <Changer change={-0.5} />}
     </Column>
