@@ -101,7 +101,10 @@ export default function HappinessNumber({
       {/* Input */}
       <Column>
         <input
-          type="text"
+          type="number"
+          step={.5}
+          max={10}
+          min={0}
           value={happinessDisplay}
           className={
             "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
@@ -146,7 +149,10 @@ export default function HappinessNumber({
       {/* Input */}
       <Column>
         <input
-          type="text"
+          type="number"
+          step={.5}
+          max={10}
+          min={0}
           value={happinessDisplay}
           className={
             "resize-none border-0 border-gray-400 bg-transparent p-0 text-center font-medium focus:border-b-1 focus:outline-none" +
