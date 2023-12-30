@@ -23,6 +23,7 @@ export default function SearchBar() {
   const [endDate, setEndDate] = useState("");
   const [filterShowing, setFilterShowing] = useState(false);
   const [resultsShowing, setResultsShowing] = useState(false);
+  const [selectedEntryIndex, setSelectedEntryIndex] = useState(-1);
 
   // handle showing and hiding filter and results
   const handleToggleFilter = () => {
@@ -37,22 +38,9 @@ export default function SearchBar() {
     setFilterShowing(false);
     setResultsShowing(true);
   };
-  // handle when user presses enter to make a search
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Enter") {
-      handleShowResults();
-    }
-  };
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-
-    // Cleanup
-    return () => { window.removeEventListener('keydown', handleKeyDown); };
-  }, []);
-
 
   const { api } = useApi();
-  const { data, isLoading, isError } = useQuery<Happiness[]>({
+  const { data } = useQuery<Happiness[]>({
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
       { start: formatDate(parseYYYmmddFormat(startDate)) },
@@ -79,10 +67,37 @@ export default function SearchBar() {
       return res.data;
     }
   });
+
+
+  // Add keyboard listener for pressing enter and navigation between entries
   useEffect(() => {
-    console.log(`startDate: ${startDate}`);
-    console.log(`parsed as date: ${new Date(startDate)}`);
-  }, [startDate]);
+    // handle when user presses enter to make a search or change selected entry
+    // Initialization of this function must be done in use effect to prevent
+    // data from being capturerd in closure
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        if (resultsShowing) {
+          // TODO when bidirectional infinite scroll is merged
+          console.log(`selected entry value and comment: ${!data ? "no data" : data[selectedEntryIndex]?.value + data[selectedEntryIndex]?.comment}`);
+        } else {
+          handleShowResults();
+        }
+      }
+      if (event.key === "ArrowUp" && data && data.length > 0) {
+        setSelectedEntryIndex((i) => (i - 1 < 0) ? data.length - 1 : i - 1);
+      }
+      if (event.key === "ArrowDown" && data && data.length > 0) {
+        setSelectedEntryIndex((i) => {
+          return (i + 1 >= data.length) ? 0 : i + 1;
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup
+    return () => { window.removeEventListener('keydown', handleKeyDown); };
+  }, [data, selectedEntryIndex]);
 
   return (
     <Column className="relative gap-4 z-50 w-full">
@@ -102,7 +117,11 @@ export default function SearchBar() {
             <IconClose
               color="#808080"
               className="hover:cursor-pointer"
-              onClick={() => { setText(""); }}
+              onClick={() => {
+                setText("");
+                setResultsShowing(false);
+                setSelectedEntryIndex(-1);
+              }}
             />
           }
         </Row>
@@ -110,7 +129,7 @@ export default function SearchBar() {
       {/* Filter card */}
       {filterShowing &&
         <Card
-          className={`z-50 left-0 right-0 absolute translate-y-16 py-3 shadow-md2 border-1 border-gray-200`}
+          className={`z-50 left-0 right-0 absolute translate-y-16 py-3 shadow-md2 border-1 border-gray-200 bg-white`}
         >
           {/* Score */}
           <Column className="p-4 gap-1">
@@ -162,7 +181,19 @@ export default function SearchBar() {
       {resultsShowing &&
         <Card className="absolute translate-y-16 left-0 right-0 border-gray-200 shadow-md2 z-50">
           {data &&
-            data.map((h) => <SearchResult happiness={h} keyword={text} key={h.id} />)
+            data.map((h, index) =>
+              <div
+                onMouseEnter={() => { setSelectedEntryIndex(index); }}
+                onMouseLeave={() => { setSelectedEntryIndex(-1); }}
+              >
+                <SearchResult
+                  happiness={h}
+                  keyword={text}
+                  key={h.id}
+                  selected={index === selectedEntryIndex}
+                />
+              </div>
+            )
           }
           {/* Footer */}
           <Row className="px-4 py-3 w-full bg-gray-50 border-t-1 border-gray-200">
