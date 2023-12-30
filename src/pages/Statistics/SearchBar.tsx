@@ -181,20 +181,22 @@ export default function SearchBar() {
       {/* Results preview */}
       {resultsShowing &&
         <Card className="absolute translate-y-16 left-0 right-0 border-gray-200 shadow-md2 z-50">
-          {data &&
-            data.map((h, index) =>
-              <div
-                onMouseEnter={() => { setSelectedEntryIndex(index); }}
-                onMouseLeave={() => { setSelectedEntryIndex(-1); }}
-              >
-                <SearchResult
-                  happiness={h}
-                  keyword={text}
-                  key={h.id}
-                  selected={index === selectedEntryIndex}
-                />
-              </div>
-            )
+          {data && data.length === 0 ? <p className="mx-4 my-3 text-gray-400">No entries match the query</p> :
+            <>
+              {data && data.map((h, index) =>
+                <div
+                  onMouseEnter={() => { setSelectedEntryIndex(index); }}
+                  onMouseLeave={() => { setSelectedEntryIndex(-1); }}
+                >
+                  <SearchResult
+                    happiness={h}
+                    keyword={text}
+                    key={h.id}
+                    selected={index === selectedEntryIndex}
+                  />
+                </div>
+              )}
+            </>
           }
           {/* Footer */}
           <Row className="px-4 py-3 w-full bg-gray-50 border-t-1 border-gray-200">

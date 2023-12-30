@@ -29,6 +29,7 @@ module.exports = {
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",
       brand_off_white: "#FAFAFA",
+      error: "#EC7070",
     },
     extend: {
       padding: {
