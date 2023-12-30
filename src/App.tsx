@@ -9,11 +9,14 @@ import Sidebar from "./pages/Sidebar/Sidebar";
 import SignIn from "./pages/SignIn/SignIn";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 export default function App() {
   useEffect(() => {
     // @ts-ignore
     import("preline");
+    TimeAgo.addDefaultLocale(en);
   }, []);
 
   return (

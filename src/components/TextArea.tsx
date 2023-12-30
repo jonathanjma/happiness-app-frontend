@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
 import Column from "./layout/Column";
+import { useRef, useState } from "react";
 import Row from "./layout/Row";
 interface TextFieldProps {
   title?: string;
@@ -16,7 +16,17 @@ interface TextFieldProps {
   className?: string;
   onEnterPressed?: () => void;
 }
-
+/**
+ * Generic TextField component for use for Happiness App
+ * @param value text field content
+ * @param onChangeValue action when the value changes
+ * @param className style to default to if editingStyle, disabledStyle, or emptyStyle is null
+ * @param disabledStyle style to use whenever the textarea is disabled
+ * @param emptyStyle style to use when text field content is empty but the text field is not disabled
+ * @param editingStyle style to use when the text field is not disabled and not empty
+ * @param enabled a boolean value representing whether the textarea is enabled
+ * @returns TextArea component
+ */
 export default function TextField({
   title,
   type = "text",
