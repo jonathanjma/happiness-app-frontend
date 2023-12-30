@@ -131,6 +131,9 @@ export default function Statistics() {
               entries={data}
               graphTitle={graphTitle}
               graphSubTitle={graphSubTitle}
+              showDay={radioValue === 1}
+              uniqDays={true}
+              range={[start, end]}
             />
           </div>
         )}
