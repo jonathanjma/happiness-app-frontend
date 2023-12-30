@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Happiness } from "../data/models/Happiness";
-import { formatDate, getWeekdayFromNumber, parseYYYmmddFormat } from "../utils";
+import { formatDate, getWeekdayFromNumber, parseYYYYmmddFormat } from "../utils";
 import Row from "./layout/Row";
 
 export default function HappinessCalendar({ startDate, variation, selectedEntry, onSelectEntry }: {
@@ -94,7 +94,7 @@ const DayCell = ({ happiness, isSelected, onClick, showWeekday = false }: {
   showWeekday?: boolean;
 }) => {
   const happinessPercent = happiness.value * 10;
-  const cellNumber = parseYYYmmddFormat(happiness.timestamp).getDate();
+  const cellNumber = parseYYYYmmddFormat(happiness.timestamp).getDate();
   const isToday = formatDate(new Date()) === happiness.timestamp;
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
 
@@ -106,7 +106,7 @@ const DayCell = ({ happiness, isSelected, onClick, showWeekday = false }: {
     >
       <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>
         {showWeekday ?
-          parseYYYmmddFormat(happiness.timestamp).toLocaleDateString("en-us", { weekday: "short" })
+          parseYYYYmmddFormat(happiness.timestamp).toLocaleDateString("en-us", { weekday: "short" })
           : cellNumber}
       </p>
       {isToday &&

@@ -18,7 +18,7 @@ export function formatDate(date: Date) {
  * @param dateString the string to be parsed
  * @returns date object containing the proper time
  */
-export function parseYYYmmddFormat(dateString: string): Date {
+export function parseYYYYmmddFormat(dateString: string): Date {
   // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
   const values = dateString.split("-");
   return new Date(`${values[1]}-${values[2]}-${values[0]}`);

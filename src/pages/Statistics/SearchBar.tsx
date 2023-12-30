@@ -10,7 +10,7 @@ import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { formatDate, parseYYYmmddFormat } from "../../utils";
+import { formatDate, parseYYYYmmddFormat } from "../../utils";
 import SearchResult from "./SearchResult";
 
 export default function SearchBar() {
@@ -43,8 +43,8 @@ export default function SearchBar() {
   const { data } = useQuery<Happiness[]>({
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
-      { start: formatDate(parseYYYmmddFormat(startDate)) },
-      { end: formatDate(parseYYYmmddFormat(endDate)) },
+      { start: formatDate(parseYYYYmmddFormat(startDate)) },
+      { end: formatDate(parseYYYYmmddFormat(endDate)) },
       { low: startValue },
       { high: endValue },
       { count: 5 },
@@ -58,10 +58,10 @@ export default function SearchBar() {
         text: text,
       };
       if (!isNaN(new Date(startDate).getTime())) {
-        query.start = formatDate(parseYYYmmddFormat(startDate));
+        query.start = formatDate(parseYYYYmmddFormat(startDate));
       }
       if (!isNaN(new Date(endDate).getTime())) {
-        query.end = formatDate(parseYYYmmddFormat(endDate));
+        query.end = formatDate(parseYYYYmmddFormat(endDate));
       }
       const res = await api.get<Happiness[]>("/happiness/search", query);
       return res.data;
