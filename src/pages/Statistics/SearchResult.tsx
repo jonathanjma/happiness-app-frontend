@@ -7,15 +7,15 @@ export default function SearchResult({ happiness, keyword, selected }: {
   keyword: string;
   selected: boolean;
 }) {
-  const processedComment = happiness.comment;
+  const comment = happiness.comment;
+  // Prepare highlighted text
   const highlightedKeyword = `<span class="text-gray-800 font-semibold text-md bg-yellow">${keyword}</span>`;
-  const highlightedComment = processedComment
+
+  const highlightedComment = comment
     .replace(new RegExp(`${keyword}`, 'g'), highlightedKeyword)
-    .substring(processedComment.indexOf(keyword) - 20);
+    .substring(comment.indexOf(keyword) - 20);
   const sanitizedContent = DOMPurify.sanitize(highlightedComment);
-  // TODO change to trying to start at full words before but if it's too long then don't
   // TODO make sure search only updates when user presses enter or do the displayed text vs searched text thing
-  // TODO almost done! Just cleanup first down press then enter not working
 
   return (
     <Row className={`items-center w-full ${selected ? "bg-gray-200" : "bg-white"} rounded-2xl`}>
