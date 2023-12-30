@@ -1,6 +1,9 @@
 import DOMPurify from "dompurify";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
+import { parseYYYYmmddFormat } from "../../utils";
+
+const BASE_FRONTEND_URL = import.meta.env.VITE_BASE_URL;
 
 export default function SearchResult({ happiness, keyword, selected }: {
   happiness: Happiness;
@@ -15,7 +18,6 @@ export default function SearchResult({ happiness, keyword, selected }: {
     .replace(new RegExp(`${keyword}`, 'g'), highlightedKeyword)
     .substring(comment.indexOf(keyword) - 20);
   const sanitizedContent = DOMPurify.sanitize(highlightedComment);
-  // TODO make sure search only updates when user presses enter or do the displayed text vs searched text thing
 
   return (
     <Row className={`items-center w-full ${selected ? "bg-gray-200" : "bg-white"} rounded-2xl`}>
@@ -25,7 +27,7 @@ export default function SearchResult({ happiness, keyword, selected }: {
       <div className="min-w-[12px]" />
       <div className="text-gray-400 truncate text-sm" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
       <div className="flex flex-grow min-w-[32px]" />
-      {!selected && <label className="text-gray-600 mr-4 min-w-[100px]">{new Date(happiness.timestamp).toLocaleDateString("en-us", {
+      {!selected && <label className="text-gray-600 mr-4 min-w-[100px]">{parseYYYYmmddFormat(happiness.timestamp).toLocaleDateString("en-us", {
         month: "short",
         day: "numeric",
         year: "numeric"
@@ -33,8 +35,7 @@ export default function SearchResult({ happiness, keyword, selected }: {
       {selected &&
         <button className="bg-gray-50 rounded-lg p-1 h-10 mr-4 min-w-[120px]"
           onClick={() => {
-            // TODO open entry
-            console.log(`opening entry for happiness ${happiness.comment}`);
+            window.open(BASE_FRONTEND_URL + `/home?date=${happiness.timestamp}`);
           }}
         >
           <label className="text-gray-400 hover:cursor-pointer">

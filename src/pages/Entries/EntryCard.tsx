@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
@@ -42,8 +41,6 @@ export default function EntryCard({
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { api } = useApi();
-  const queryClient = useQueryClient();
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Fetch comments
   const commentsResult = useQuery<Comment[]>(
@@ -148,7 +145,7 @@ export default function EntryCard({
             {editing && (
               <Row className="mt-1 gap-1">
                 {happiness.value === -1 ||
-                networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                  networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <svg

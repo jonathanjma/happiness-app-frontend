@@ -13,6 +13,8 @@ import { Happiness } from "../../data/models/Happiness";
 import { formatDate, parseYYYYmmddFormat } from "../../utils";
 import SearchResult from "./SearchResult";
 
+const BASE_FRONTEND_URL = import.meta.env.VITE_BASE_URL;
+
 export default function SearchBar() {
   const [text, setText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -76,9 +78,8 @@ export default function SearchBar() {
     // data from being capturerd in closure
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
-        if (resultsShowing) {
-          // TODO when bidirectional infinite scroll is merged
-          console.log(`selected entry value and comment: ${!data ? "no data" : data[selectedEntryIndex]?.value + data[selectedEntryIndex]?.comment}`);
+        if (resultsShowing && selectedEntryIndex >= 0 && data && selectedEntryIndex < data.length) {
+          window.open(BASE_FRONTEND_URL + `/home?date=${data[selectedEntryIndex].timestamp}`);
         } else {
           handleShowResults();
         }
