@@ -50,7 +50,7 @@ function TabPanel({
   return (
     <div
       id={"tab-panel-" + index}
-      className={index !== 1 ? "hidden" : ""}
+      className={"h-full overflow-y-auto " + (index !== 1 ? "hidden" : "")}
       role="tabpanel"
       aria-labelledby={"tab-" + index}
     >
@@ -68,44 +68,46 @@ export default function Group() {
   );
 
   return (
-    <div className="mx-8 mb-4 mt-16">
+    <div>
       {isLoading ? (
-        <Spinner />
+        <Spinner className="mx-8 mt-16" />
       ) : (
         <>
           {isError ? (
-            <h5 className="m-3">Error: Could not load groups.</h5>
+            <h5 className="mx-8 mt-16">Error: Could not load groups.</h5>
           ) : (
             <>
               {/* Header */}
-              <Row className="mb-6">
-                <Link to="/groups">
-                  <Row>
-                    <img src={LeftArrowIcon} className="max-w-[24px]" />
-                    <label className="font-normal text-gray-600 hover:cursor-pointer">
-                      Back to Groups
-                    </label>
-                  </Row>
-                </Link>
-              </Row>
-              <Row className="mb-6 w-full justify-between">
-                <h2 className="m-0 self-center text-3xl font-semibold">
-                  {data!.name}
-                </h2>
-                <button className="rounded-xl border border-secondary px-3 py-2 shadow-md1">
-                  <img src={SettingsIcon} className="max-w-[24px]" />
-                </button>
-              </Row>
-              {/* Tab Buttons */}
-              <div>
-                <nav aria-label="Tabs" role="tablist">
-                  <TabButton index={1} icon={PostIcon} title="FEED" />
-                  <TabButton index={2} icon={GraphIcon} title="GRAPH" />
-                  <TabButton index={3} icon={TableIcon} title="TABLE" />
-                </nav>
+              <div className="mx-8 h-[23vh] pt-16">
+                <Row className="mb-6">
+                  <Link to="/groups">
+                    <Row>
+                      <img src={LeftArrowIcon} className="max-w-[24px]" />
+                      <label className="font-normal text-gray-600 hover:cursor-pointer">
+                        Back to Groups
+                      </label>
+                    </Row>
+                  </Link>
+                </Row>
+                <Row className="mb-6 w-full justify-between">
+                  <h2 className="m-0 self-center text-3xl font-semibold">
+                    {data!.name}
+                  </h2>
+                  <button className="rounded-xl border border-secondary px-3 py-2 shadow-md1">
+                    <img src={SettingsIcon} className="max-w-[24px]" />
+                  </button>
+                </Row>
+                {/* Tab Buttons */}
+                <div>
+                  <nav aria-label="Tabs" role="tablist">
+                    <TabButton index={1} icon={PostIcon} title="FEED" />
+                    <TabButton index={2} icon={GraphIcon} title="GRAPH" />
+                    <TabButton index={3} icon={TableIcon} title="TABLE" />
+                  </nav>
+                </div>
               </div>
               {/* Tab Panels */}
-              <div className="mt-4">
+              <div className="h-[77vh]">
                 <TabPanel index={1}>
                   <FeedPanel groupData={data!} />
                 </TabPanel>

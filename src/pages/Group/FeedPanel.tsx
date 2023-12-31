@@ -5,7 +5,7 @@ import GroupFeed from "./GroupFeed";
 
 export default function FeedPanel({ groupData }: { groupData: Group }) {
   return (
-    <Row className="gap-x-8">
+    <Row className="h-full gap-x-8 py-4">
       {/* Entry Feed */}
       <Column className="basis-3/5">
         <GroupFeed groupData={groupData} />

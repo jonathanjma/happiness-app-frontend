@@ -30,7 +30,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
   );
 
   return (
-    <div>
+    <div className="mx-8">
       {isLoading ? (
         <Spinner />
       ) : (
