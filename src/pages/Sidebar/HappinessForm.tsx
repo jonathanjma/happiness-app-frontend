@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useApi } from "../../contexts/ApiProvider";
-import { Happiness, NewHappiness } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
 import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
 import { Constants, QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { Happiness, NewHappiness } from "../../data/models/Happiness";
+import { formatDate } from "../../utils";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -32,7 +32,6 @@ export default function HappinessForm({ height }: { height: number }) {
     if (happiness === -1) {
       setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
     } else {
-      console.log(`changing networking state`);
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       clearTimeout(postHappinessTimeout.current);
       postHappinessTimeout.current = setTimeout(() => {
@@ -117,7 +116,6 @@ export default function HappinessForm({ height }: { height: number }) {
         setComment("");
       } else {
         setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-        console.log(`data from latest query: ${JSON.stringify(data[idx])}`);
         setHappiness(data[idx].value);
         setComment(data[idx].comment);
       }
