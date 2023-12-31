@@ -34,36 +34,36 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
               <div className="mb-1 text-sm font-semibold text-gray-600">
                 Account
               </div>
-              <a className="flex-none" href={"/profile/" + user!.id}>
-                <div className="mb-6 flex items-center rounded-xl">
-                  <div
-                    className="mr-2 items-center"
-                    onClick={() => setSelectedLink("")}
-                  >
-                    <img
-                      className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
-                      src={user!.profile_picture}
-                      alt="profile"
-                    />
-                  </div>
-                  <div className="mr-2 text-secondary">
-                    <div className="text-base font-semibold">
-                      {user!.username}
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      Logging since {user!.created.substring(0, 4)}
-                    </div>
-                  </div>
-                  <button
-                    className={
-                      "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
-                    }
-                    onClick={useUser().logoutUser}
-                  >
-                    <label>Log Out</label>
-                  </button>
+              {/*<a className="flex-none" href={"/profile/" + user!.id}>*/}
+              <div className="mb-6 flex items-center rounded-xl">
+                <div
+                  className="mr-2 items-center"
+                  onClick={() => setSelectedLink("")}
+                >
+                  <img
+                    className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                    src={user!.profile_picture}
+                    alt="profile"
+                  />
                 </div>
-              </a>
+                <div className="mr-2 text-secondary">
+                  <div className="text-base font-semibold">
+                    {user!.username}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Logging since {user!.created.substring(0, 4)}
+                  </div>
+                </div>
+                <button
+                  className={
+                    "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
+                  }
+                  onClick={useUser().logoutUser}
+                >
+                  <label>Log Out</label>
+                </button>
+              </div>
+              {/*</a>*/}
               <HappinessForm height={height} />
               <div className="flex grow flex-col">
                 <nav className="relative w-full grow">

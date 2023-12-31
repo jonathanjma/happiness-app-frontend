@@ -1,33 +1,67 @@
 import { Group } from "../../data/models/Group";
 import Spinner from "../../components/Spinner";
 import { useApi } from "../../contexts/ApiProvider";
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { QueryKeys } from "../../constants";
-import { Happiness } from "../../data/models/Happiness";
+import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import FeedCard from "./FeedCard";
 import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function GroupFeed({ groupData }: { groupData: Group }) {
   const { api } = useApi();
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
 
-  // placeholder query
-  const { isLoading, data, isError } = useQuery<Happiness[]>(
-    QueryKeys.FETCH_GROUP_HAPPINESS,
+  const [bottomRef, bottomInView] = useInView();
+
+  const fetcher = async (page: number): Promise<HappinessPagination> => {
+    const res = await api.get<Happiness[]>(
+      "/group/" + groupData.id + "/happiness/count",
+      { page: page },
+    );
+
+    res.data.sort(
+      // reverse sort days
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
+
+    return {
+      data: res.data,
+      page: page,
+    };
+  };
+
+  // infinite query for fetching entries
+  const { isLoading, data, isError, fetchNextPage, hasNextPage } =
+    useInfiniteQuery<HappinessPagination>(
+      QueryKeys.FETCH_GROUP_HAPPINESS + " infinite query",
+      ({ pageParam = 1 }) => fetcher(pageParam),
+      {
+        getNextPageParam: (lastPage) => {
+          // no more pages left if the last page is empty
+          if (lastPage.data.length === 0) return false;
+          return lastPage.page + 1; // increment page number to fetch
+        },
+        refetchOnWindowFocus: false,
+      },
+    );
+
+  // combine all entries in React Query pages object
+  const allEntries = useMemo(
     () =>
-      api
-        .get<Happiness[]>("/group/" + groupData.id + "/happiness", {
-          start: "2023-12-20",
-        })
-        .then((res) =>
-          res.data.sort(
-            // reverse sort
-            (a, b) =>
-              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-          ),
-        ),
+      data?.pages.reduce(
+        (acc: Happiness[], page) => [...acc, ...page.data],
+        [],
+      ),
+    [data],
   );
+
+  // load more entries when bottom reached
+  useEffect(() => {
+    if (bottomInView) fetchNextPage();
+  }, [bottomInView]);
 
   return (
     <div className="mx-8">
@@ -38,12 +72,12 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
           {isError ? (
             <h5 className="text-gray-400">Error: Could not load entries.</h5>
           ) : (
-            <>
-              {data!.length === 0 ? (
+            <div>
+              {allEntries!.length === 0 ? (
                 <h5 className="text-gray-400">No entries yet!</h5>
               ) : (
                 <>
-                  {data!.map((entry) => (
+                  {allEntries!.map((entry) => (
                     <FeedCard
                       key={entry.id}
                       data={entry}
@@ -53,15 +87,19 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
                   ))}
                 </>
               )}
-              {selectedEntry && (
-                <HappinessViewerModal
-                  happiness={selectedEntry}
-                  id="happiness-viewer"
-                />
-              )}
-            </>
+              <div ref={bottomRef} className="m-3">
+                {hasNextPage ? (
+                  <Spinner text="Loading entries..." />
+                ) : (
+                  <p className="">No more entries!</p>
+                )}
+              </div>
+            </div>
           )}
         </>
+      )}
+      {selectedEntry && (
+        <HappinessViewerModal happiness={selectedEntry} id="happiness-viewer" />
       )}
     </div>
   );
