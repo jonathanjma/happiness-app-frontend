@@ -83,7 +83,7 @@ export default function Group() {
                   <Link to="/groups">
                     <Row>
                       <img src={LeftArrowIcon} className="max-w-[24px]" />
-                      <label className="font-normal text-gray-600 hover:cursor-pointer">
+                      <label className="font-normal text-gray-600">
                         Back to Groups
                       </label>
                     </Row>

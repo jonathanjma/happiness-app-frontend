@@ -46,3 +46,7 @@
 .feed_height {
     height: calc(100vh - 220px) !important;
 }
+
+label:hover {
+    cursor: unset;
+}
