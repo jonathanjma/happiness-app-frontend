@@ -92,12 +92,12 @@ export default function HappinessForm({ height }: { height: number }) {
             new Date(
               new Date().getFullYear(),
               new Date().getMonth(),
-              new Date().getDate() - ,
-            ,
+              new Date().getDate() - 1,
+            ),
           ),
-          end: formatDate(new Date(),
+          end: formatDate(new Date()),
         })
-        .then((res) => res.data,
+        .then((res) => res.data),
   });
 
   // react to data
