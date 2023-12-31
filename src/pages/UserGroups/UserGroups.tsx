@@ -5,11 +5,13 @@ import Spinner from "../../components/Spinner";
 import GroupCard from "./GroupCard";
 import Button from "../../components/Button";
 import Row from "../../components/layout/Row";
+import { QueryKeys } from "../../constants";
 
 export default function UserGroups() {
   const { api } = useApi();
-  const { isLoading, data, isError } = useQuery<UserGroups>("user_groups", () =>
-    api.get<UserGroups>("/user/groups").then((res) => res.data),
+  const { isLoading, data, isError } = useQuery<UserGroups>(
+    QueryKeys.FETCH_USER_GROUPS,
+    () => api.get<UserGroups>("/user/groups").then((res) => res.data),
   );
 
   return (
@@ -25,11 +27,11 @@ export default function UserGroups() {
       ) : (
         <>
           {isError ? (
-            <p className="m-3">Error: Could not load groups.</p>
+            <h5 className="m-3">Error: Could not load groups.</h5>
           ) : (
             <>
               {data!.groups.length === 0 ? (
-                <p className="m-3">You are not a member of any groups.</p>
+                <h5 className="m-3">You are not a member of any groups.</h5>
               ) : (
                 <div className="grid w-full grid-cols-2 gap-6">
                   {data!.groups.map((group) => (

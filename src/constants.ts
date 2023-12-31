@@ -9,6 +9,9 @@ export enum Constants {
 export enum QueryKeys {
   FETCH_HAPPINESS = "fetchHappiness",
   FETCH_COMMENTS = "fetchComments",
+  FETCH_USER_GROUPS = "fetchUserGroups",
+  FETCH_GROUP_INFO = "fetchGroupInfo",
+  FETCH_GROUP_HAPPINESS = "fetchGroupHappiness",
 }
 
 export enum MutationKeys {

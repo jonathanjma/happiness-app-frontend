@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -9,16 +8,8 @@ import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import Group from "./pages/Group/Group";
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
 
 export default function App() {
-  useEffect(() => {
-    // @ts-ignore
-    import("preline");
-    TimeAgo.addDefaultLocale(en);
-  }, []);
-
   return (
     <BrowserRouter>
       <ApiProvider>

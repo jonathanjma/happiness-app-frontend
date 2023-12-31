@@ -104,8 +104,8 @@ export default function Comments({
         <div className="overflow-auto" ref={commentsContainer}>
           {Array(3)
             .fill(0)
-            .map((_, __) => (
-              <CommentCardSkeleton />
+            .map((_, i) => (
+              <CommentCardSkeleton key={i} />
             ))}
         </div>
       </>

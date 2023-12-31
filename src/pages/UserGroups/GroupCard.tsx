@@ -7,7 +7,7 @@ export default function GroupCard({ groupData }: { groupData: Group }) {
   const navigate = useNavigate();
 
   return (
-    <Card className="border-yellow bg-light_yellow shadow-sm1">
+    <Card className="shadow-md2 border-yellow bg-light_yellow">
       <div className="p-6">
         <Row className="mb-6 justify-between">
           {/* Group metadata */}
@@ -34,7 +34,7 @@ export default function GroupCard({ groupData }: { groupData: Group }) {
         </Row>
         {/* Open group button */}
         <button
-          className="w-full rounded-lg border border-gray-100 bg-brand_off_white py-3 text-sm font-semibold text-secondary shadow-sm1"
+          className="shadow-md2 w-full rounded-lg border border-gray-100 bg-brand_off_white py-3 text-sm font-semibold text-secondary"
           onClick={() => navigate("/groups/" + groupData.id)}
         >
           Open

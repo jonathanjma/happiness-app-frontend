@@ -8,9 +8,10 @@ import LeftArrowIcon from "../../assets/arrow_left.svg";
 import PostIcon from "../../assets/post.svg";
 import GraphIcon from "../../assets/graph.svg";
 import TableIcon from "../../assets/table.svg";
-import Feed from "./Feed";
+import FeedPanel from "./FeedPanel";
 import Row from "../../components/layout/Row";
 import React from "react";
+import { QueryKeys } from "../../constants";
 
 function TabButton({
   index,
@@ -62,7 +63,7 @@ export default function Group() {
   const { groupID } = useParams();
   const { api } = useApi();
   const { isLoading, data, isError } = useQuery<Group>(
-    "get group " + groupID,
+    QueryKeys.FETCH_GROUP_INFO,
     () => api.get<Group>("/group/" + groupID).then((res) => res.data),
   );
 
@@ -73,22 +74,20 @@ export default function Group() {
       ) : (
         <>
           {isError ? (
-            <p className="m-3 text-xl font-medium">
-              Error: Could not load groups.
-            </p>
+            <h5 className="m-3">Error: Could not load groups.</h5>
           ) : (
             <>
               {/* Header */}
-              <div className="mb-6">
+              <Row className="mb-6">
                 <Link to="/groups">
                   <Row>
                     <img src={LeftArrowIcon} className="max-w-[24px]" />
-                    <label className="font-normal text-gray-600">
+                    <label className="font-normal text-gray-600 hover:cursor-pointer">
                       Back to Groups
                     </label>
                   </Row>
                 </Link>
-              </div>
+              </Row>
               <Row className="mb-6 w-full justify-between">
                 <h2 className="m-0 self-center text-3xl font-semibold">
                   {data!.name}
@@ -108,7 +107,7 @@ export default function Group() {
               {/* Tab Panels */}
               <div className="mt-4">
                 <TabPanel index={1}>
-                  <Feed groupData={data!} />
+                  <FeedPanel groupData={data!} />
                 </TabPanel>
                 <TabPanel index={2}>
                   <p>Graph View</p>
