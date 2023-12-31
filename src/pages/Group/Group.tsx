@@ -78,7 +78,7 @@ export default function Group() {
           ) : (
             <>
               {/* Header */}
-              <div className="mx-8 h-[23vh] pt-16">
+              <div className="mx-8 h-[220px] pt-16">
                 <Row className="mb-6">
                   <Link to="/groups">
                     <Row>
@@ -107,7 +107,7 @@ export default function Group() {
                 </div>
               </div>
               {/* Tab Panels */}
-              <div className="h-[77vh]">
+              <div className="feed_height">
                 <TabPanel index={1}>
                   <FeedPanel groupData={data!} />
                 </TabPanel>

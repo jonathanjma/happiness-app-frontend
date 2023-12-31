@@ -43,11 +43,6 @@
     display: none;
 }
 
-.font-subtitle-2 {
-    color: var(--text-secondary, #808080);
-    font-family: Inter;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    /* 171.429% */
+.feed_height {
+    height: calc(100vh - 220px) !important;
 }
