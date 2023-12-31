@@ -26,7 +26,7 @@ export default function HappinessCard({
   return (
     <Card className={"my-2 min-w-[130px] " + classes}>
       <div className="p-2" onClick={click}>
-        <p className="mb-6 text-sm text-dark_gray">
+        <p className="mb-6 text-sm text-gray-600">
           {date.toLocaleString("en-us", { weekday: "long" })}
           <br />
           {isToday ? (
@@ -35,8 +35,8 @@ export default function HappinessCard({
             date.toLocaleString("en-us", { month: "short", day: "numeric" })
           )}
         </p>
-        <p className="text-sm text-dark_gray">Score</p>
-        <h1 className="text-dark_gray">
+        <p className="text-sm text-gray-600">Score</p>
+        <h1 className="text-gray-600">
           {data.value !== -1 ? data.value.toFixed(1) : "-"}
         </h1>
       </div>

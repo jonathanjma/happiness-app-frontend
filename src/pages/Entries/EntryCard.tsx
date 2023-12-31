@@ -33,7 +33,7 @@ export default function EntryCard({
 }: {
   happiness: Happiness;
   className?: string;
-  onChangeHappinessNumber: (value: number) => voi;
+  onChangeHappinessNumber: (value: number) => void;
   onChangeCommentText: (value: string) => void;
   onDeleteHappiness: () => void;
   editing: boolean;
@@ -68,7 +68,7 @@ export default function EntryCard({
       >
         {/* Header text */}
         <Row className="items-center">
-          <p className="text-dark_gray">You don't have a private entry</p>
+          <p className="text-gray-600">You don't have a private entry</p>
           <span className="w-3" />
           <p
             className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
@@ -86,7 +86,7 @@ export default function EntryCard({
         <Row>
           <Column>
             <h4>Public Entry</h4>
-            <h5 className=" text-dark_gray">
+            <h5 className=" text-gray-600">
               {new Date(happiness.timestamp).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",

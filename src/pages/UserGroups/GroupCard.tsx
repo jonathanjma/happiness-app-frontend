@@ -1,22 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { Group } from "../../data/models/Group";
 import Card from "../../components/Card";
+import Row from "../../components/layout/Row";
 
 export default function GroupCard({ groupData }: { groupData: Group }) {
   const navigate = useNavigate();
 
   return (
-    <Card className="border-yellow2 bg-light_yellow shadow-sm1">
+    <Card className="border-yellow bg-light_yellow shadow-sm1">
       <div className="p-6">
-        <div className="mb-6 flex justify-between">
+        <Row className="mb-6 justify-between">
           {/* Group metadata */}
           <div>
-            <p className="text-sm font-normal text-secondary">
+            <label className="font-normal text-secondary">
               {groupData.users.length} members
-            </p>
-            <p className="text-3xl font-semibold text-secondary">
-              {groupData.name}
-            </p>
+            </label>
+            <h2 className="font-semibold text-secondary">{groupData.name}</h2>
           </div>
           {/* Profile pictures for 3 members */}
           <div className="flex -space-x-4 self-center">
@@ -32,7 +31,7 @@ export default function GroupCard({ groupData }: { groupData: Group }) {
               />
             ))}
           </div>
-        </div>
+        </Row>
         {/* Open group button */}
         <button
           className="w-full rounded-lg border border-gray-100 bg-brand_off_white py-3 text-sm font-semibold text-secondary shadow-sm1"

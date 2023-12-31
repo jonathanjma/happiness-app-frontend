@@ -12,9 +12,6 @@ module.exports = {
       "4xl": ["2.25rem", "2.75rem"] /* h1 */
     },
     colors: {
-      dark_gray: "#575F68",
-      light_gray: "#808080",
-      light_yellow: "#F7EFD7",
       "gray-50": "#F5F5F5",
       "gray-100": "#E5E5E5",
       "gray-200": "#E4E0E0",
@@ -22,9 +19,9 @@ module.exports = {
       "gray-400": "#808080",
       "gray-600": "#575F68",
       "gray-800": "#212121",
+      light_yellow: "#F7EFD7",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
-      yellow2: "#E5C877",
       secondary: "#664810",
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",

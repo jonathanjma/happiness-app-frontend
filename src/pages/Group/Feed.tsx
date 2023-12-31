@@ -22,8 +22,8 @@ export default function Feed({ groupData }: { groupData: Group }) {
               className="max-w-[42px] rounded-full"
             />
             <div>
-              <p className="font-medium text-dark_gray">{user.username}</p>
-              <p className="font-medium text-dark_gray">{user.created}</p>
+              <p className="font-medium text-gray-600">{user.username}</p>
+              <p className="font-medium text-gray-600">{user.created}</p>
             </div>
           </Row>
         ))}

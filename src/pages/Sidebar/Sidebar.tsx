@@ -31,7 +31,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
         <div className="flex h-full flex-col">
           <div className="m-4 flex grow flex-col">
             <div className="m-4 flex grow flex-col">
-              <div className="mb-1 text-sm font-semibold text-dark_gray">
+              <div className="mb-1 text-sm font-semibold text-gray-600">
                 Account
               </div>
               <a className="flex-none" href={"/profile/" + user!.id}>
@@ -50,7 +50,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                     <div className="text-base font-semibold">
                       {user!.username}
                     </div>
-                    <div className="text-xs text-light_gray">
+                    <div className="text-xs text-gray-400">
                       Logging since {user!.created.substring(0, 4)}
                     </div>
                   </div>
@@ -77,13 +77,13 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                           href={entry.route}
                           selectedClass={[
                             "bg-yellow font-semibold text-secondary shadow-md1 ",
-                            "bg-light_yellow font-medium text-dark_gray ",
+                            "bg-light_yellow font-medium text-gray-600 ",
                           ]}
                           className={
                             "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
                             (selectedLink === entry.title
                               ? "bg-yellow text-secondary shadow-md1"
-                              : "bg-light_yellow text-dark_gray") +
+                              : "bg-light_yellow text-gray-600") +
                             (entry.title === "Settings" && height >= 750
                               ? " absolute bottom-0 w-[256px]"
                               : "")
