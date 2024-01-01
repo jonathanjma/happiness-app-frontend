@@ -1,16 +1,16 @@
 import { useQuery } from "react-query";
+import IconWarningOutline from "../../assets/IconWarningOutline";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
 import Comments from "../../components/Comments";
 import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
 import { Happiness } from "../../data/models/Happiness";
-import { Constants } from "../../constants";
-import IconWarningOutline from "../../assets/IconWarningOutline";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -145,7 +145,7 @@ export default function EntryCard({
             {editing && (
               <Row className="mt-1 gap-1">
                 {happiness.value === -1 ||
-                networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                  networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <svg
@@ -180,7 +180,7 @@ export default function EntryCard({
       <ConfirmationModal
         id="delete-confirm-modal"
         title="Deleting happiness"
-        {/* TODO fix confirmation modal to parse date correct;y */}
+        // fix comment form
         body={`You are deleting happiness for ${new Date(
           happiness.timestamp,
         ).toDateString()}, are you sure you want to continue?`}

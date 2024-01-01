@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import PrivateEntriesAuthenticate from "./PrivateEntriesAuthenticate";
-import PrivateEntriesView from "./PrivateEntriesView";
+import { useState } from "react";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
+import PrivateEntriesAuthenticate from "./PrivateEntriesAuthenticate";
+import PrivateEntriesView from "./PrivateEntriesView";
 
 export default function PrivateEntries() {
   const passwordKey = sessionStorage.getItem(Constants.PASSWORD_KEY);
