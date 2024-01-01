@@ -3,13 +3,13 @@ import Column from "../../components/layout/Column";
 import { Happiness } from "../../data/models/Happiness";
 import Card from "../../components/Card";
 import TimeAgo from "javascript-time-ago";
-import { formatDate, modifyDateDay } from "../../utils";
 import CommentIcon from "../../assets/comment.svg";
 import { useQuery } from "react-query";
 import { Comment } from "../../data/models/Comment";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
+import { dateOrTodayYesterday } from "./GroupFeed";
 
 export default function FeedCard({
   data,
@@ -21,12 +21,6 @@ export default function FeedCard({
   onClick: () => void;
 }) {
   const timeAgo = new TimeAgo("en-US");
-  const getDate = (date: string, otherwise: string) => {
-    if (date === formatDate(new Date())) return "Today";
-    else if (date === formatDate(modifyDateDay(new Date(), -1)))
-      return "Yesterday";
-    else return otherwise;
-  };
 
   const { api } = useApi();
   const commentsResult = useQuery<Comment[]>(
@@ -55,7 +49,7 @@ export default function FeedCard({
                   className="font-normal text-gray-400"
                   title={data.timestamp}
                 >
-                  {getDate(
+                  {dateOrTodayYesterday(
                     data.timestamp,
                     timeAgo.format(new Date(data.timestamp + "T23:59:59")),
                   )}

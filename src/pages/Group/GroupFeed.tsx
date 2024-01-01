@@ -6,13 +6,21 @@ import { QueryKeys } from "../../constants";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import FeedCard from "./FeedCard";
 import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
+
+export const dateOrTodayYesterday = (date: string, otherwise: string) => {
+  if (date === formatDate(new Date())) return "Today";
+  else if (date === formatDate(modifyDateDay(new Date(), -1)))
+    return "Yesterday";
+  else return otherwise;
+};
 
 export default function GroupFeed({ groupData }: { groupData: Group }) {
   const { api } = useApi();
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
-
+  const [feedElements, setFeedElements] = useState<React.ReactElement[]>([]);
   const [bottomRef, bottomInView] = useInView();
 
   const fetcher = async (page: number): Promise<HappinessPagination> => {
@@ -48,15 +56,47 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       },
     );
 
-  // combine all entries in React Query pages object
-  const allEntries = useMemo(
-    () =>
-      data?.pages.reduce(
-        (acc: Happiness[], page) => [...acc, ...page.data],
-        [],
-      ),
-    [data],
-  );
+  useEffect(() => {
+    if (data === undefined) return;
+
+    const newPageElements = [];
+    const numPages = data!.pages.length;
+    const lastPage = data!.pages[numPages - 1].data;
+    const secondLastPage =
+      numPages > 1 ? data.pages[numPages - 2].data : undefined;
+    let prevDate = secondLastPage
+      ? secondLastPage[secondLastPage.length - 1].timestamp
+      : "";
+
+    for (let entry of lastPage) {
+      // add date seperator between entry cards with different dates
+      if (prevDate !== entry.timestamp) {
+        newPageElements.push(
+          <h5 key={entry.timestamp} className="mb-4 text-gray-400">
+            {dateOrTodayYesterday(
+              entry.timestamp,
+              dateFromStr(entry.timestamp).toLocaleDateString("en-us", {
+                year: "2-digit",
+                month: "2-digit",
+                day: "2-digit",
+              }),
+            )}
+          </h5>,
+        );
+      }
+      // add entries on last page to feed
+      newPageElements.push(
+        <FeedCard
+          key={entry.id}
+          data={entry}
+          isNew={false}
+          onClick={() => setSelectedEntry(entry)}
+        />,
+      );
+      prevDate = entry.timestamp;
+    }
+    setFeedElements([...feedElements, ...newPageElements]);
+  }, [data]);
 
   // load more entries when bottom reached
   useEffect(() => {
@@ -73,19 +113,10 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
             <h5 className="text-gray-400">Error: Could not load entries.</h5>
           ) : (
             <div>
-              {allEntries!.length === 0 ? (
+              {feedElements.length === 0 ? (
                 <h5 className="text-gray-400">No entries yet!</h5>
               ) : (
-                <>
-                  {allEntries!.map((entry) => (
-                    <FeedCard
-                      key={entry.id}
-                      data={entry}
-                      isNew={true}
-                      onClick={() => setSelectedEntry(entry)}
-                    />
-                  ))}
-                </>
+                <>{feedElements}</>
               )}
               <div ref={bottomRef} className="m-3">
                 {hasNextPage ? (
