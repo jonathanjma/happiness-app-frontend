@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useApi } from "../../contexts/ApiProvider";
-import { Happiness, NewHappiness } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
 import { Constants, QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { Happiness, NewHappiness } from "../../data/models/Happiness";
+import { formatDate } from "../../utils";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -38,7 +38,6 @@ export default function HappinessForm({ height }: { height: number }) {
     if (happiness === -1) {
       setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
     } else {
-      console.log(`changing networking state`);
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       clearTimeout(postHappinessTimeout.current);
       postHappinessTimeout.current = setTimeout(() => {

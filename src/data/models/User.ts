@@ -1,4 +1,5 @@
 import { Setting } from "./Setting";
+import { Group } from "./Group";
 
 export interface User {
   id: number;
@@ -13,4 +14,8 @@ export interface SimpleUser {
   id: number;
   username: string;
   profile_picture: string;
+}
+
+export interface UserGroups {
+  groups: Group[];
 }
