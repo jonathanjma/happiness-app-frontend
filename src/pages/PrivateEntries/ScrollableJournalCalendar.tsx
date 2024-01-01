@@ -199,26 +199,35 @@ export default function ScrollableJournalCalendar({
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-              {allEntries!.map((entry) =>
-                selectedEntry && entry.id === selectedEntry.id ? (
-                  <EntryPreviewCard
-                    key={selectedEntry?.id}
-                    data={selectedEntry}
-                    click={() => { }}
-                    selected={true}
-                  />
+              {allEntries!.map((entry, index): JSX.Element =>
+                selectedEntry && entry.timestamp === selectedDate ? (
+                  <>
+                    {index === 1 && <div className="h-4" />}
+                    <EntryPreviewCard
+                      key={selectedEntry?.timestamp}
+                      journal={selectedEntry}
+                      click={() => { }}
+                      selected={true}
+                    />
+                    {index !== 0 && <div className="h-4" />}
+                  </>
+
                 ) : (
-                  <EntryPreviewCard
-                    key={entry.id}
-                    data={entry}
-                    selected={entry.id === selectedEntry?.id}
-                    click={() => {
-                      if (entry.timestamp !== selectedDate) {
-                        setSelectedDate(entry.timestamp);
-                        setEditing(false);
-                      }
-                    }}
-                  />
+                  <>
+                    {index === 1 && <div className="h-4" />}
+                    <EntryPreviewCard
+                      key={entry.timestamp}
+                      journal={entry}
+                      selected={false}
+                      click={() => {
+                        if (entry.timestamp !== selectedDate) {
+                          setSelectedDate(entry.timestamp);
+                          setEditing(false);
+                        }
+                      }}
+                    />
+                    {index !== 0 && <div className="h-4" />}
+                  </>
                 ),
               )}
               <div ref={bottomRef}>
