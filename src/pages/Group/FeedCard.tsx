@@ -27,7 +27,7 @@ export default function FeedCard({
     [QueryKeys.FETCH_COMMENTS, { id: data.id }],
     () =>
       api.get<Comment[]>(`/happiness/${data.id}/comments`).then((res) => {
-        console.log("hi");
+        // console.log("hi");
         return res.data;
       }),
   );
@@ -36,7 +36,7 @@ export default function FeedCard({
     <>
       <Card className="mb-4 border-0 p-4 shadow-md2 hover:cursor-pointer">
         <div data-hs-overlay="#happiness-viewer" onClick={onClick}>
-          {/* Header */}
+          {/* Header- user details, unread indicator, and score */}
           <Row className="mb-4 items-center gap-x-2">
             <img
               src={data.author.profile_picture}
@@ -63,12 +63,12 @@ export default function FeedCard({
             </Column>
             <h3 className="text-gray-600">{data.value.toFixed(1)}</h3>
           </Row>
-          {/* Body */}
+          {/* Body- entry comment */}
           <p className="line-clamp-3 p-0 font-normal text-gray-600">
             {data.comment}
           </p>
           <hr className="my-4 border-gray-100" />
-          {/* Footer */}
+          {/* Footer- discussion comment info */}
           <Row className="items-center justify-between">
             {commentsResult.isLoading ? (
               <Spinner />

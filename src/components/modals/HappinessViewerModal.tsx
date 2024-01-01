@@ -4,6 +4,7 @@ import Comments from "../Comments";
 import Column from "../layout/Column";
 import Row from "../layout/Row";
 import Modal from "./Modal";
+import { dateFromStr } from "../../utils";
 
 export default function HappinessViewerModal({
   happiness,
@@ -37,7 +38,7 @@ export default function HappinessViewerModal({
               {happiness.author.username}
             </p>
             <label className="leading-4 text-gray-400 ">
-              {new Date(happiness.timestamp).toLocaleDateString("en-us", {
+              {dateFromStr(happiness.timestamp).toLocaleDateString("en-us", {
                 year: "2-digit",
                 month: "2-digit",
                 day: "2-digit",
