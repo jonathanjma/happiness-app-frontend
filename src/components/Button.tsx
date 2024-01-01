@@ -28,11 +28,11 @@ export default function Button({
   switch (variation) {
     case "FILLED":
       className +=
-        "bg-[#F7EFD7] hadow-lg border-1 border-solid border-[rgba(229,200,119,0.30)] shadow-button  " +
+        "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)] " +
         additions;
       break;
     case "OUTLINED":
-      className += " border-secondary border-1 shadow-button " + additions;
+      className += " border-secondary border-1 " + additions;
       break;
     case "TEXT":
       className += additions;
@@ -50,7 +50,7 @@ export default function Button({
           <div className="w-2.5" />
         </>
       )}
-      <label className=" font-semibold text-secondary hover:cursor-pointer  ">
+      <label className=" font-semibold text-secondary hover:cursor-pointer">
         {label}
       </label>
     </button>

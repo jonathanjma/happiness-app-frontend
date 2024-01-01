@@ -1,13 +1,13 @@
 import { useQuery } from "react-query";
 import EditIcon from "../../assets/edit.svg";
 import Button from "../../components/Button";
+import Comments from "../../components/Comments";
 import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { useApi } from "../../contexts/ApiProvider";
 import { Comment } from "../../data/models/Comment";
 import { Happiness } from "../../data/models/Happiness";
-import Comments from "./Comments";
 import { Constants } from "../../constants";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
@@ -174,12 +174,13 @@ export default function EntryCard({
         <div className="h-8" />
         {/* Comments */}
         <Column className="h-0 w-full flex-1 items-stretch">
-          <Comments commentsResult={commentsResult} />
+          <Comments associatedHappinessId={happiness.id} modalVariant={false} />
         </Column>
       </Column>
       <ConfirmationModal
         id="delete-confirm-modal"
         title="Deleting happiness"
+        {/* TODO fix confirmation modal to parse date correct;y */}
         body={`You are deleting happiness for ${new Date(
           happiness.timestamp,
         ).toDateString()}, are you sure you want to continue?`}
