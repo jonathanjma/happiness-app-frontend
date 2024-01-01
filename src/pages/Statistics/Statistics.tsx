@@ -107,8 +107,8 @@ export default function Statistics() {
     refetch();
   }, [data, start, end, graphTitle]);
 
-  console.log(start);
-  console.log(end);
+  // console.log(start);
+  // console.log(end);
 
   return (
     <>

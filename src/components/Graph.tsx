@@ -119,7 +119,7 @@ export default function Graph({
   // console.log(happinessData);
   // console.log(datesList);
 
-  console.log(graphLabels);
+  // console.log(graphLabels);
   // formattedValues is a list of objects that represent the dataset for the graph
   const formattedValues = usernameList.map((name, idx) => ({
     label: name,
