@@ -8,6 +8,8 @@ import { formatDate } from "../../utils";
 import Row from "../../components/layout/Row";
 import Column from "../../components/layout/Column";
 import DateRangeSwitcher from "../../components/DateRangeSwitcher";
+import HappinessCalendar from "../../components/HappinessCalendar";
+import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 
 /**
  * The page for displaying statistics for the current user
@@ -55,6 +57,16 @@ export default function Statistics() {
         })
         .then((res) => res.data),
   });
+
+  // // currently figuring out selectedEntry
+  // const [selectedEntry, setSelectedEntry] = useState();
+  // const [selectedDay, setSelectedDay] = useState(
+  //   new Date(
+  //     new Date().getFullYear(),
+  //     new Date().getMonth(),
+  //     new Date().getDate(),
+  //   ),
+  // );
 
   // Changes selected date range between current week and current month when radioValue variable changes.
   useEffect(() => {
@@ -126,16 +138,35 @@ export default function Statistics() {
         {isError || isLoading || data === undefined ? (
           <></>
         ) : (
-          <div className="h-[600px] w-3/5">
-            <Graph
-              entries={data}
-              graphTitle={graphTitle}
-              graphSubTitle={graphSubTitle}
-              showDay={radioValue === 1}
-              uniqDays={true}
-              range={[start, end]}
-            />
-          </div>
+          <Row className="w-full">
+            <div className={"h-[600px]"}>
+              <Graph
+                entries={data}
+                graphTitle={graphTitle}
+                graphSubTitle={graphSubTitle}
+                showDay={radioValue === 1}
+                uniqDays={true}
+                range={[start, end]}
+              />
+            </div>
+            {/* <div
+              className={
+                (radioValue === 1 ? "min-w-[50px]" : "min-w-[350px]") + " w-full ml-8"
+              }
+            > */}
+            <div className="ml-8">
+              <HappinessCalendar
+                startDate={start}
+                variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
+                selectedEntry={null}
+                onSelectEntry={null}
+              />
+            </div>
+            {/* <HappinessViewerModal
+              happiness={data[0]}
+              id="show-happiness-modal"
+            /> */}
+          </Row>
         )}
       </div>
     </>

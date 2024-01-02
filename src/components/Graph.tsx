@@ -152,7 +152,7 @@ export default function Graph({
   return (
     <>
       <div className="flex w-full justify-center">
-        <div className="@lg:min-h-[500px] mb-4 flex min-h-[380px] w-full max-w-[1000px] flex-wrap justify-center rounded-[10px] bg-brand_off_white py-8 shadow-lg">
+        <div className="@lg:min-h-[500px] mb-4 flex min-h-[380px] w-full flex-wrap justify-center rounded-[10px] bg-brand_off_white py-8 shadow-lg">
           <h4 className="flex w-full justify-center text-black">
             {graphTitle}
           </h4>
