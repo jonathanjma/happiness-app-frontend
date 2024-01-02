@@ -1,9 +1,8 @@
 import DOMPurify from "dompurify";
+import { useNavigate } from "react-router-dom";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
 import { parseYYYYmmddFormat } from "../../utils";
-
-const BASE_FRONTEND_URL = import.meta.env.VITE_BASE_URL;
 
 export default function SearchResult({ happiness, keyword, selected }: {
   happiness: Happiness;
@@ -18,6 +17,8 @@ export default function SearchResult({ happiness, keyword, selected }: {
     .replace(new RegExp(`${keyword}`, 'g'), highlightedKeyword)
     .substring(comment.indexOf(keyword) - 20);
   const sanitizedContent = DOMPurify.sanitize(highlightedComment);
+
+  const navigate = useNavigate();
 
   return (
     <Row className={`items-center w-full ${selected ? "bg-gray-200" : "bg-white"} rounded-2xl`}>
@@ -35,7 +36,7 @@ export default function SearchResult({ happiness, keyword, selected }: {
       {selected &&
         <button className="bg-gray-50 rounded-lg p-1 h-10 mr-4 min-w-[120px]"
           onClick={() => {
-            window.open(BASE_FRONTEND_URL + `/home?date=${happiness.timestamp}`);
+            navigate(`/home?date=${happiness.timestamp}`);
           }}
         >
           <label className="text-gray-400 hover:cursor-pointer">

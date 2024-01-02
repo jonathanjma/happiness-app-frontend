@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/IconClose";
 import IconFilter from "../../assets/IconFilter";
 import Button from "../../components/Button";
@@ -13,8 +14,6 @@ import { Happiness } from "../../data/models/Happiness";
 import { formatDate, parseYYYYmmddFormat } from "../../utils";
 import SearchResult from "./SearchResult";
 
-const BASE_FRONTEND_URL = import.meta.env.VITE_BASE_URL;
-
 export default function SearchBar() {
   const [text, setText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -26,6 +25,8 @@ export default function SearchBar() {
   const [filterShowing, setFilterShowing] = useState(false);
   const [resultsShowing, setResultsShowing] = useState(false);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(-1);
+
+  const navigate = useNavigate();
 
   // handle showing and hiding filter and results
   const handleToggleFilter = () => {
@@ -79,7 +80,7 @@ export default function SearchBar() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         if (resultsShowing && selectedEntryIndex >= 0 && data && selectedEntryIndex < data.length) {
-          window.open(BASE_FRONTEND_URL + `/home?date=${data[selectedEntryIndex].timestamp}`);
+          navigate(`/home?date=${data[selectedEntryIndex].timestamp}`);
         } else {
           handleShowResults();
         }
