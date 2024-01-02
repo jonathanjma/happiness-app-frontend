@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import HappinessCard from "./HappinessCard";
-import { useApi } from "../../contexts/ApiProvider";
+import { useLocation } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import { QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
-import { useUser } from "../../contexts/UserProvider";
-import { QueryKeys } from "../../constants";
-import { useInView } from "react-intersection-observer";
-import { useLocation } from "react-router-dom";
+import HappinessCard from "./HappinessCard";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
@@ -179,7 +179,7 @@ export default function ScrollableCalendar({
   return (
     <div
       ref={scrollRef}
-      className="scroll-hidden h-full w-[194px] overflow-auto"
+      className="scroll-hidden h-full overflow-auto"
     >
       {isLoading ? (
         <Spinner className="m-3" />
@@ -201,7 +201,7 @@ export default function ScrollableCalendar({
                   <HappinessCard
                     key={selectedEntry?.id}
                     data={selectedEntry}
-                    click={() => {}}
+                    click={() => { }}
                     selected={true}
                   />
                 ) : (

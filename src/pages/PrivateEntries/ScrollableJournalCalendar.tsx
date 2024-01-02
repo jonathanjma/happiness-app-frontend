@@ -182,7 +182,7 @@ export default function ScrollableJournalCalendar({
   return (
     <div
       ref={scrollRef}
-      className="scroll-hidden h-full w-[194px] overflow-auto"
+      className="scroll-hidden h-full overflow-auto"
     >
       {isLoading ? (
         <Spinner className="m-3" />
