@@ -166,7 +166,7 @@ export default function Statistics() {
             </div>
             {viewingEntry &&
               <HappinessViewerModal
-                happiness={data[0]}
+                happiness={viewingEntry}
                 id="show-happiness-modal"
               />
             }

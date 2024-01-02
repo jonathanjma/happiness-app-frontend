@@ -102,7 +102,7 @@ const DayCell = ({ happiness, isSelected, onClick, showWeekday = false, openModa
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
 
   return (
-    <button onClick={onClick} id={`#${openModalId}`} className="hover:cursor-pointer">
+    <button onClick={onClick} data-hs-overlay={`#${openModalId}`} className="hover:cursor-pointer">
       <div
         className={`rounded-lg border-[1.5px] w-10 h-10 ${isSelected || isToday ? 'border-yellow' : 'border-light_yellow'}  p-1 flex flex-col items-center justify-center`}
         style={{ background: `linear-gradient(to top, ${fillColor} 0%, ${fillColor} ${happinessPercent}%, transparent ${happinessPercent}%, transparent 100%)` }}
