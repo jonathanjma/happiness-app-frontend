@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import { useIsMutating, useQuery, useQueryClient } from "react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "react-query";
+import DateRangeSwitcher from "../../components/DateRangeSwitcher";
 import Graph from "../../components/Graph";
-import { useApi } from "../../contexts/ApiProvider";
+import HappinessCalendar from "../../components/HappinessCalendar";
+import Row from "../../components/layout/Row";
+import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 import { QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
-import Row from "../../components/layout/Row";
-import Column from "../../components/layout/Column";
-import DateRangeSwitcher from "../../components/DateRangeSwitcher";
-import HappinessCalendar from "../../components/HappinessCalendar";
-import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 
 /**
  * The page for displaying statistics for the current user
@@ -20,6 +19,7 @@ export default function Statistics() {
   const [radioValue, setRadioValue] = useState(1);
   const [graphTitle, setGraphTitle] = useState("Weekly Happiness");
   const [graphSubTitle, setGraphSubTitle] = useState("");
+  const [viewingEntry, setViewingEntry] = useState<Happiness | undefined>(undefined);
   const [start, setStart] = useState(
     new Date(
       new Date().getFullYear(),
@@ -105,11 +105,11 @@ export default function Statistics() {
         " " +
         (radioValue === 1
           ? start.getDate() +
-            "-" +
-            (start.getMonth() === end.getMonth()
-              ? ""
-              : end.toLocaleString("default", { month: "long" }) + " ") +
-            end.getDate()
+          "-" +
+          (start.getMonth() === end.getMonth()
+            ? ""
+            : end.toLocaleString("default", { month: "long" }) + " ") +
+          end.getDate()
           : start.getFullYear()),
     );
   }, [data, radioValue, start, end]);
@@ -154,18 +154,22 @@ export default function Statistics() {
                 (radioValue === 1 ? "min-w-[50px]" : "min-w-[350px]") + " w-full ml-8"
               }
             > */}
-            <div className="ml-8">
+            <div className={`ml-8 ${radioValue === 1 ? "min-w-[50px]" : "min-w-[340px] justify-self-end"}`}>
               <HappinessCalendar
                 startDate={start}
                 variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
-                selectedEntry={null}
-                onSelectEntry={null}
+                onSelectEntry={(entry: Happiness) => {
+                  setViewingEntry(entry);
+                }}
+                openModalId="show-happiness-modal"
               />
             </div>
-            {/* <HappinessViewerModal
-              happiness={data[0]}
-              id="show-happiness-modal"
-            /> */}
+            {viewingEntry &&
+              <HappinessViewerModal
+                happiness={data[0]}
+                id="show-happiness-modal"
+              />
+            }
           </Row>
         )}
       </div>

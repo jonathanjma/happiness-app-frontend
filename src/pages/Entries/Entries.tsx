@@ -83,7 +83,7 @@ export default function Entries() {
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">
-      <div className="w-[162px] min-w-[162px]">
+      <div className="min-w-[162px]">
         <ScrollableCalendar
           selectedEntry={selectedEntry}
           setSelectedEntry={setSelectedEntry}

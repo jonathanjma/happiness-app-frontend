@@ -5,11 +5,12 @@ import { Happiness } from "../data/models/Happiness";
 import { formatDate, getWeekdayFromNumber, parseYYYmmddFormat } from "../utils";
 import Row from "./layout/Row";
 
-export default function HappinessCalendar({ startDate, variation, selectedEntry, onSelectEntry }: {
+export default function HappinessCalendar({ startDate, variation, selectedEntry = undefined, onSelectEntry = () => { }, openModalId = "" }: {
   startDate: Date,
   variation: "MONTHLY" | "WEEKLY",
-  selectedEntry: Happiness,
-  onSelectEntry: (selectedEntry: Happiness) => void;
+  selectedEntry?: Happiness | undefined,
+  onSelectEntry?: (selectedEntry: Happiness) => void;
+  openModalId?: string;
 }) {
   const { api } = useApi();
   let endDate = new Date(startDate);
@@ -72,10 +73,11 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
           return <Row className="w-full justify-center">
             <DayCell
               happiness={matchingHappiness}
-              isSelected={selectedEntry && formatDate(date) === selectedEntry.timestamp}
+              isSelected={selectedEntry !== undefined && formatDate(date) === selectedEntry.timestamp}
               onClick={() => { onSelectEntry(matchingHappiness); }}
               key={matchingHappiness.id}
               showWeekday={variation === "WEEKLY"}
+              openModalId={openModalId}
             />
           </Row>;
         }
@@ -87,11 +89,12 @@ export default function HappinessCalendar({ startDate, variation, selectedEntry,
   </div>;
 }
 
-const DayCell = ({ happiness, isSelected, onClick, showWeekday = false }: {
+const DayCell = ({ happiness, isSelected, onClick, showWeekday = false, openModalId }: {
   happiness: Happiness;
   isSelected: boolean;
   onClick: () => void;
   showWeekday?: boolean;
+  openModalId: string;
 }) => {
   const happinessPercent = happiness.value * 10;
   const cellNumber = parseYYYmmddFormat(happiness.timestamp).getDate();
@@ -99,22 +102,24 @@ const DayCell = ({ happiness, isSelected, onClick, showWeekday = false }: {
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
 
   return (
-    <div
-      className={`rounded-lg border-[1.5px] w-10 h-10 ${isSelected || isToday ? 'border-yellow' : 'border-light_yellow'}  p-1 flex flex-col items-center justify-center`}
-      style={{ background: `linear-gradient(to top, ${fillColor} 0%, ${fillColor} ${happinessPercent}%, transparent ${happinessPercent}%, transparent 100%)` }}
-      onClick={onClick}
-    >
-      <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>
-        {showWeekday ?
-          parseYYYmmddFormat(happiness.timestamp).toLocaleDateString("en-us", { weekday: "short" })
-          : cellNumber}
-      </p>
-      {isToday &&
-        <div
-          className="absolute left-1/2 transform translate-y-full rounded-[18px] bg-yellow -translate-x-1/2 w-16 h-3"
-        />
-      }
-    </div>
+    <button onClick={onClick} id={`#${openModalId}`} className="hover:cursor-pointer">
+      <div
+        className={`rounded-lg border-[1.5px] w-10 h-10 ${isSelected || isToday ? 'border-yellow' : 'border-light_yellow'}  p-1 flex flex-col items-center justify-center`}
+        style={{ background: `linear-gradient(to top, ${fillColor} 0%, ${fillColor} ${happinessPercent}%, transparent ${happinessPercent}%, transparent 100%)` }}
+        onClick={onClick}
+      >
+        <p className={`text-xs ${isToday ? "text-secondary" : "text-gray-600"} font-semibold`}>
+          {showWeekday ?
+            parseYYYmmddFormat(happiness.timestamp).toLocaleDateString("en-us", { weekday: "short" })
+            : cellNumber}
+        </p>
+        {isToday &&
+          <div
+            className="absolute left-1/2 transform translate-y-full rounded-[18px] bg-yellow -translate-x-1/2 w-16 h-3"
+          />
+        }
+      </div>
+    </button>
   );
 };
 
