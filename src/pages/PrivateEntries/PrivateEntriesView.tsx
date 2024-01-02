@@ -29,8 +29,6 @@ export default function PrivateEntriesView() {
           }}
           onChangeJournalText={() => { }}
           onDeleteJournal={() => { }}
-          editing={true}
-          setEditing={() => { }}
           networkingState="Updated"
           setNetworkingState={() => { }}
         />
