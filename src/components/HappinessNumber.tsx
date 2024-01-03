@@ -101,7 +101,7 @@ export default function HappinessNumber({
       {/* Input */}
       <Column>
         <input
-          type="number"
+          type="text"
           step={.5}
           max={10}
           min={0}
@@ -149,7 +149,7 @@ export default function HappinessNumber({
       {/* Input */}
       <Column>
         <input
-          type="number"
+          type="text"
           step={.5}
           max={10}
           min={0}
