@@ -133,11 +133,12 @@ export default function ScrollableCalendar({
     [data],
   );
 
+  // Initialize a default selected entry
   useEffect(() => {
-    if (data && !madeFirstSelection) {
-      setSelectedEntry(data.pages[0].data.find((h) => h.timestamp === formatDate(startDate)));
+    if (!madeFirstSelection) {
+      setSelectedDate(formatDate(startDate));
     }
-  }, [data]);
+  }, [startDate]);
 
   // load more entries when bottom reached
   useEffect(() => {
@@ -173,14 +174,8 @@ export default function ScrollableCalendar({
 
   // display details of selected entry
   useEffect(() => {
-    if (allEntries) {
-      for (const entry of allEntries) {
-        if (entry.timestamp === selectedDate) {
-          setSelectedEntry(entry);
-          return;
-        }
-      }
-    }
+    const matchingEntry = allEntries?.find((entry) => entry.timestamp === selectedDate);
+    setSelectedEntry((entry) => matchingEntry ?? entry);
   }, [selectedDate, allEntries]);
 
   return (
