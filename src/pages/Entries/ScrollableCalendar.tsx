@@ -138,7 +138,8 @@ export default function ScrollableCalendar({
   // Initialize a default selected entry
   // TODO current issue appears to be if you search for something, select it,
   // then search for the same thing and select the same thing the preview card
-  // isn't selected on screen.
+  // isn't selected on screen in the same session.
+  // This is somewhat niche so I think we can fix it after launch.
   useEffect(() => {
     if (!madeFirstSelection) {
       setSelectedDate(formatDate(startDate));
