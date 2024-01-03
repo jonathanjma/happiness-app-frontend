@@ -139,6 +139,7 @@ export default function ScrollableCalendar({
   useEffect(() => {
     if (!madeFirstSelection) {
       setSelectedDate(formatDate(startDate));
+      setMadeFirstSelection(true);
     }
   }, [startDate]);
 
