@@ -196,28 +196,18 @@ export default function ScrollableCalendar({
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-              {allEntries!.map((entry) =>
-                selectedEntry && entry.id === selectedEntry.id ? (
-                  <HappinessCard
-                    key={selectedEntry?.id}
-                    data={selectedEntry}
-                    click={() => { }}
-                    selected={true}
-                  />
-                ) : (
-                  <HappinessCard
-                    key={entry.id}
-                    data={entry}
-                    selected={entry.id === selectedEntry?.id}
-                    click={() => {
-                      if (entry.timestamp !== selectedDate) {
-                        setSelectedDate(entry.timestamp);
-                        setEditing(false);
-                      }
-                    }}
-                  />
-                ),
-              )}
+              {allEntries && allEntries.map((entry) =>
+                <HappinessCard
+                  key={entry.id}
+                  data={entry}
+                  selected={entry.id === selectedEntry?.id}
+                  click={() => {
+                    if (entry.timestamp !== selectedDate) {
+                      setSelectedDate(entry.timestamp);
+                      setEditing(false);
+                    }
+                  }}
+                />)}
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

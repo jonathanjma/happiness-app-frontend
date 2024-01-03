@@ -10,6 +10,7 @@ export enum Constants {
 export enum QueryKeys {
   FETCH_HAPPINESS = "fetchHappiness",
   FETCH_COMMENTS = "fetchComments",
+  FETCH_JOURNAL = "fetchJournal",
 }
 
 export enum MutationKeys {

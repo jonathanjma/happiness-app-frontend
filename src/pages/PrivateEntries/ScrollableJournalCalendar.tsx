@@ -109,7 +109,7 @@ export default function ScrollableJournalCalendar({
     fetchPreviousPage,
     hasPreviousPage,
   } = useInfiniteQuery<JournalPagination>(
-    QueryKeys.FETCH_HAPPINESS + " infinite query",
+    QueryKeys.FETCH_JOURNAL + " infinite query",
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
@@ -199,37 +199,24 @@ export default function ScrollableJournalCalendar({
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-              {allEntries!.map((entry, index): JSX.Element =>
-                selectedEntry && entry.timestamp === selectedDate ? (
-                  <>
-                    {index === 1 && <div className="h-4" />}
-                    <EntryPreviewCard
-                      key={selectedEntry?.timestamp}
-                      journal={selectedEntry}
-                      click={() => { }}
-                      selected={true}
-                    />
-                    {index !== 0 && <div className="h-4" />}
-                  </>
 
-                ) : (
-                  <>
-                    {index === 1 && <div className="h-4" />}
-                    <EntryPreviewCard
-                      key={entry.timestamp}
-                      journal={entry}
-                      selected={false}
-                      click={() => {
-                        if (entry.timestamp !== selectedDate) {
-                          setSelectedDate(entry.timestamp);
-                          setEditing(false);
-                        }
-                      }}
-                    />
-                    {index !== 0 && <div className="h-4" />}
-                  </>
-                ),
-              )}
+              {allEntries && allEntries.map((entry) =>
+                <>
+                  <EntryPreviewCard
+                    key={entry.timestamp}
+                    journal={entry}
+                    click={() => {
+                      if (entry.timestamp !== selectedDate) {
+                        setSelectedDate(entry.timestamp);
+                        setEditing(false);
+                      }
+                    }}
+                    selected={entry.timestamp === selectedEntry?.timestamp}
+                  />
+                  <div className="h-4" />
+                </>
+              )
+              }
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"
