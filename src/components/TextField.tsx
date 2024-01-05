@@ -3,12 +3,13 @@ import React, { useRef, useState } from "react";
 import Row from "./layout/Row";
 
 interface TextFieldProps {
-  title?: string;
+  label?: string;
   type?: React.HTMLInputTypeAttribute;
   defaultText?: string;
   hint?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
+  innerElements?: React.ReactElement;
   innerIcon?: React.ReactElement;
   hasError?: boolean;
   isEnabled?: boolean;
@@ -19,12 +20,13 @@ interface TextFieldProps {
 }
 
 export default function TextField({
-  title,
+  label,
   type = "text",
   defaultText = "",
   hint = "",
   supportingText = "",
   supportingIcon,
+  innerElements,
   innerIcon,
   hasError = false,
   isEnabled = true,
@@ -38,18 +40,22 @@ export default function TextField({
 
   return (
     <Column className={"w-[250px] gap-1 " + className}>
-      {title && <p className="text-gray-400">{title}</p>}
+      {label && <p className="font-normal text-gray-400">{label}</p>}
       <Row
         className={
-          "focus:shadow-form-selected items-center rounded-lg border-1 border-solid border-gray-300 py-1 hover:border-gray-400" +
+          "focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1" +
           (isFocused
             ? " shadow-form-selected border-yellow hover:border-yellow"
             : "") +
-          (hasError ? " border-error hover:border-error" : "")
+          (hasError
+            ? " border-error hover:border-error"
+            : " border-gray-300 hover:border-gray-400")
         }
       >
+        {innerElements}
+        {innerElements && <div className="mr-2"></div>}
         <input
-          className="ml-4 w-full focus:outline-none"
+          className="flex-grow focus:outline-none"
           ref={input}
           type={type}
           value={value}
@@ -70,19 +76,22 @@ export default function TextField({
             }
           }}
         />
-        <span className="my-0 mr-4 h-6 py-0">{innerIcon}</span>
+        <span className="h-6">{innerIcon}</span>
       </Row>
       {(supportingText || supportingIcon) && (
         <Row className="items-center gap-1">
           {supportingIcon}
           {supportingText && (
-            <label className={hasError ? " text-error" : " text-gray-400"}>
+            <label
+              className={
+                "font-normal" + (hasError ? " text-error" : " text-gray-400")
+              }
+            >
               {supportingText}
             </label>
           )}
         </Row>
       )}
-      {/* <div className=" border-1 border-solid rounded-lg border-gray-300 hover:border-gray-400 focus:border-yellow shadow-form-selected"></div> */}
     </Column>
   );
 }

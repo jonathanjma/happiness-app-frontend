@@ -8,6 +8,7 @@ import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import Group from "./pages/Group/Group";
+import CreateGroup from "./pages/CreateGroup/CreateGroup";
 
 export default function App() {
   return (
@@ -33,6 +34,10 @@ export default function App() {
                         <Route path="/home" element={<Entries />} />
                         <Route path="/groups" element={<UserGroups />} />
                         <Route path="/groups/:groupID" element={<Group />} />
+                        <Route
+                          path="/groups/create"
+                          element={<CreateGroup />}
+                        />
                         {/* <Route path="/statistics" element={<Statistics />} /> */}
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
                         {/* <Route path="/settings" element={<Settings />} /> */}

@@ -6,8 +6,10 @@ import GroupCard from "./GroupCard";
 import Button from "../../components/Button";
 import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 export default function UserGroups() {
+  const navigate = useNavigate();
   const { api } = useApi();
   const { isLoading, data, isError } = useQuery<UserGroups>(
     QueryKeys.FETCH_USER_GROUPS,
@@ -19,7 +21,11 @@ export default function UserGroups() {
       {/* Header */}
       <Row className="mb-8 w-full justify-between">
         <h2 className="self-center font-semibold">Your Groups</h2>
-        <Button label="New Group" variation="FILLED" />
+        <Button
+          label="New Group"
+          variation="FILLED"
+          onClick={() => navigate("/groups/create")}
+        />
       </Row>
       {/* Group cards */}
       {isLoading ? (

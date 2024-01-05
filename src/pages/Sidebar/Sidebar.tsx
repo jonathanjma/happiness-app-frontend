@@ -4,7 +4,7 @@ import { useUser } from "../../contexts/UserProvider";
 import EntriesIcon from "../../assets/book.svg";
 import JournalIcon from "../../assets/encrypted.svg";
 import StatsIcon from "../../assets/graph.svg";
-import GroupsIcon from "../../assets/groups.svg";
+import GroupsIcon from "../../assets/group.svg";
 import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
 import HappinessForm from "./HappinessForm";

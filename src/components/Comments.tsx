@@ -6,7 +6,7 @@ import { useUser } from "../contexts/UserProvider";
 import { Comment } from "../data/models/Comment";
 import { getDateObjFromUTCString } from "../utils";
 import CommentCard from "./CommentCard";
-import TextField from "./TextArea";
+import TextField from "./TextField";
 import Row from "./layout/Row";
 import CommentCardSkeleton from "./skeletons/CommentCardSkeleton";
 

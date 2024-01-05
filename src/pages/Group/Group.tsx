@@ -74,7 +74,7 @@ export default function Group() {
       ) : (
         <>
           {isError ? (
-            <h5 className="mx-8 mt-16">Error: Could not load groups.</h5>
+            <h5 className="mx-8 mt-16">Error: Could not load group.</h5>
           ) : (
             <>
               {/* Header */}
@@ -90,7 +90,7 @@ export default function Group() {
                   </Link>
                 </Row>
                 <Row className="mb-6 w-full justify-between">
-                  <h2 className="m-0 self-center text-3xl font-semibold">
+                  <h2 className="m-0 self-center font-semibold">
                     {data!.name}
                   </h2>
                   <button className="rounded-xl border border-secondary px-3 py-2 shadow-md1">
