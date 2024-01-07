@@ -115,7 +115,7 @@ export default function ScrollableJournalCalendar({
     fetchPreviousPage,
     hasPreviousPage,
   } = useInfiniteQuery<JournalPagination>(
-    [QueryKeys.FETCH_JOURNAL + " infinite query", { start: startDate }],
+    [QueryKeys.FETCH_JOURNAL + QueryKeys.INFINITE, { start: startDate }],
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
