@@ -25,13 +25,14 @@ export default function ScrollableCalendar({
   const [selectedDate, setSelectedDate] = useState<string>(
     formatDate(new Date()),
   );
+  const [madeFirstSelection, setMadeFirstSelection] = useState(false);
 
   // start calendar at today if novalid date argument provided, otherwise start at the provided date
   const startDateStr = new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
   const startDate =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
-      ? dateFromStr(startDateStr)
+      ? parseYYYYmmddFormat(startDateStr)
       : today;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -106,7 +107,9 @@ export default function ScrollableCalendar({
     fetchPreviousPage,
     hasPreviousPage,
   } = useInfiniteQuery<HappinessPagination>(
-    QueryKeys.FETCH_HAPPINESS + " infinite query",
+    [QueryKeys.FETCH_HAPPINESS + " infinite query", {
+      start: startDate,
+    }],
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
@@ -131,6 +134,18 @@ export default function ScrollableCalendar({
       ),
     [data],
   );
+
+  // Initialize a default selected entry
+  // TODO current issue appears to be if you search for something, select it,
+  // then search for the same thing and select the same thing the preview card
+  // isn't selected on screen in the same session.
+  // This is somewhat niche so I think we can fix it after launch.
+  useEffect(() => {
+    if (!madeFirstSelection) {
+      setSelectedDate(formatDate(startDate));
+      setMadeFirstSelection(true);
+    }
+  }, [startDate]);
 
   // load more entries when bottom reached
   useEffect(() => {
@@ -166,14 +181,8 @@ export default function ScrollableCalendar({
 
   // display details of selected entry
   useEffect(() => {
-    if (allEntries) {
-      for (const entry of allEntries) {
-        if (entry.timestamp === selectedDate) {
-          setSelectedEntry(entry);
-          return;
-        }
-      }
-    }
+    const matchingEntry = allEntries?.find((entry) => entry.timestamp === selectedDate);
+    setSelectedEntry((entry) => matchingEntry ?? entry);
   }, [selectedDate, allEntries]);
 
   return (

@@ -26,7 +26,7 @@ export default function Sidebar({ element }: { element: React.ReactElement; }) {
   const { height } = useWindowDimensions();
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full h-screen">
       <div className="scrollbar-y bottom-0 left-0 top-0 z-[60] hidden min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0">
         <div className="flex h-full flex-col">
           <div className="m-4 flex grow flex-col">
@@ -41,7 +41,7 @@ export default function Sidebar({ element }: { element: React.ReactElement; }) {
                     onClick={() => setSelectedLink("")}
                   >
                     <img
-                      className="mx-3 mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                      className="mx-auto block max-h-[40px] max-w-[40px] justify-center rounded-full sm:mx-0 sm:shrink-0"
                       src={user!.profile_picture}
                       alt="profile"
                     />
@@ -56,7 +56,7 @@ export default function Sidebar({ element }: { element: React.ReactElement; }) {
                   </div>
                   <button
                     className={
-                      "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
+                      "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary shadow-md1 outline-none"
                     }
                     onClick={useUser().logoutUser}
                   >

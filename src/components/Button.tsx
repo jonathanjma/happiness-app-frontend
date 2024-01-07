@@ -12,18 +12,22 @@ export default function Button({
   label,
   onClick,
   variation = "FILLED",
+  size = "LARGE",
   associatedModalId,
 }: {
   icon?: React.ReactElement;
   label: string;
   onClick?: () => void;
   variation?: "OUTLINED" | "FILLED" | "TEXT";
+  size?: "SMALL" | "LARGE";
   associatedModalId?: string;
 }) {
   const additions = icon ? "pl-3 pr-4.5" : "px-4.5";
 
   let className =
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 ";
+
+  className += (size === "LARGE" ? "h-12 " : "h-10 ");
 
   switch (variation) {
     case "FILLED":

@@ -1,17 +1,18 @@
 import React from "react";
 
-type CardProps = {
-  children: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>;
-
-export default function Card({ children, ...props }: CardProps) {
+// Simple card
+export default function Card({
+  children,
+  className = "",
+  ...rest
+}: React.HTMLProps<HTMLDivElement>) {
   return (
     <div
-      {...props}
       className={
         "flex flex-col rounded-2xl border border-[rgba(217,217,217,0.25)] " +
-        props.className
+        className
       }
+      {...rest}
     >
       {children}
     </div>
