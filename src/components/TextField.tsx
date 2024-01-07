@@ -1,5 +1,5 @@
-import Column from "./layout/Column";
 import { useRef, useState } from "react";
+import Column from "./layout/Column";
 import Row from "./layout/Row";
 interface TextFieldProps {
   title?: string;
@@ -30,7 +30,6 @@ export default function TextField({
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
-  console.log(`hasError = ${hasError}`);
   return (
     <Column className="w-[250px] gap-1">
       {title && <p className="text-gray-400">{title}</p>}

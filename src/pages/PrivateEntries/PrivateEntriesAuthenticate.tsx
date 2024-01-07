@@ -4,9 +4,9 @@ import Button from "../../components/Button";
 import TextField from "../../components/TextField";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { Constants } from "../../constants";
 
 export default function PrivateEntriesAuthenticate() {
   const [passwordText, setPasswordText] = useState("");
@@ -14,7 +14,6 @@ export default function PrivateEntriesAuthenticate() {
   const { api } = useApi();
   const { user } = useUser();
   const onSubmitPassword = async () => {
-    console.log(`${user?.username}:${passwordText}`);
     api
       .post(
         "/journal/key",
