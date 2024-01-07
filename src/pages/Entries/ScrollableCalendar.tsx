@@ -118,7 +118,6 @@ export default function ScrollableCalendar({
       getNextPageParam: (lastPage) => {
         return lastPage.page + 1; // increment page number to fetch
       },
-      refetchOnWindowFocus: false,
     },
   );
 

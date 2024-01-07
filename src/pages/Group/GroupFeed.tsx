@@ -34,69 +34,31 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
     return lastPage.page + 1; // increment page number to fetch
   };
 
-  const fetcher = (page: number, unreadReq: boolean) =>
-    api
-      .get<Happiness[]>(
-        `/group/${groupData.id}/happiness/${unreadReq ? "unread" : "count"}`,
-        {
-          page: page,
-        },
-      )
-      .then((res): HappinessPagination => {
-        return {
-          data: unreadReq
-            ? res.data
-            : res.data.sort(
-                (a, b) =>
-                  new Date(b.timestamp).getTime() -
-                  new Date(a.timestamp).getTime(),
-              ),
-          page: page,
-        };
-      });
+  const fetcher = async (page: number, unreadReq: boolean) => {
+    const res = await api.get<Happiness[]>(
+      `/group/${groupData.id}/happiness/${unreadReq ? "unread" : "count"}`,
+      {
+        page: page,
+      },
+    );
 
-  // infinite query for fetching unread entries
-  const {
-    isLoading: unreadIsLoading,
-    data: unreadData,
-    isError: unreadIsError,
-    fetchNextPage: unreadFetchNextPage,
-    hasNextPage: unreadHasNextPage,
-  } = useInfiniteQuery<HappinessPagination>({
-    queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS_UNREAD, groupData.id],
-    queryFn: ({ pageParam = 1 }) => fetcher(pageParam, true),
-    getNextPageParam: getNextPageParam,
-    refetchOnWindowFocus: false,
-  });
-
-  // infinite query for fetching entries
-  const { isLoading, data, isError, fetchNextPage, hasNextPage } =
-    useInfiniteQuery<HappinessPagination>({
-      queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS, groupData.id],
-      queryFn: ({ pageParam = 1 }) => fetcher(pageParam, false),
-      getNextPageParam: getNextPageParam,
-      refetchOnWindowFocus: false,
-      // loads first page of regular feed on initial load
-      // (add unreadHasNextPage !== undefined condition to disable this)
-      enabled: !unreadHasNextPage,
-    });
-
-  const onQueryUpdate = (unreadReq: boolean) => {
-    const pageData = unreadReq ? unreadData : data;
-    if (pageData === undefined) return;
+    if (!unreadReq) {
+      res.data.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      );
+    }
 
     const newPageElements = [];
-    const numPages = pageData!.pages.length;
-    const lastPage = pageData!.pages[numPages - 1].data;
-    const secondLastPage =
-      numPages > 1 ? pageData.pages[numPages - 2].data : undefined;
-    // get last entry on second to last page
-    let prevDate = secondLastPage
-      ? secondLastPage[secondLastPage.length - 1].timestamp
-      : "";
+    const pageData = unreadReq ? unreadData : feedData;
+    const lastPage = pageData
+      ? pageData.pages[pageData.pages.length - 1].data
+      : undefined;
+    // get last entry on last page
+    let prevDate = lastPage ? lastPage[lastPage.length - 1].timestamp : "";
 
-    for (let entry of lastPage) {
-      // add date seperator between entry cards with different dates
+    // add entries from last page to feed and add date seperator between entry cards with different dates
+    for (let entry of res.data) {
       if (prevDate !== entry.timestamp) {
         newPageElements.push(
           <h5 key={entry.timestamp} className="mb-4 text-gray-400">
@@ -111,7 +73,6 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
           </h5>,
         );
       }
-      // add entries on last page to feed
       newPageElements.push(
         <FeedCard
           key={entry.id}
@@ -123,24 +84,52 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       prevDate = entry.timestamp;
     }
 
+    // update feed
     if (unreadReq) setUnreadElements([...unreadElements, ...newPageElements]);
     else setFeedElements([...feedElements, ...newPageElements]);
+
+    return {
+      data: res.data,
+      page: page,
+    };
   };
 
-  // when infinite query data is updated
-  useEffect(() => {
-    onQueryUpdate(true);
-  }, [unreadData]);
-  useEffect(() => {
-    onQueryUpdate(false);
-  }, [data]);
+  // infinite query for fetching unread entries
+  const {
+    isLoading: unreadIsLoading,
+    data: unreadData,
+    isError: unreadIsError,
+    fetchNextPage: unreadFetchNextPage,
+    hasNextPage: unreadHasNextPage,
+  } = useInfiniteQuery<HappinessPagination>({
+    queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS_UNREAD, groupData.id],
+    queryFn: ({ pageParam = 1 }) => fetcher(pageParam, true),
+    getNextPageParam: getNextPageParam,
+  });
+
+  // infinite query for fetching entries
+  const {
+    isLoading: feedIsLoading,
+    data: feedData,
+    isError: feedIsError,
+    fetchNextPage: feedFetchNextPage,
+    hasNextPage: feedHasNextPage,
+  } = useInfiniteQuery<HappinessPagination>({
+    queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS, groupData.id],
+    queryFn: ({ pageParam = 1 }) => fetcher(pageParam, false),
+    getNextPageParam: getNextPageParam,
+    // loads first page of regular feed on initial load
+    // (add unreadHasNextPage !== undefined condition to disable this)
+    enabled: !unreadHasNextPage,
+  });
 
   // load more entries when bottom reached
   useEffect(() => {
     if (unreadInView && unreadHasNextPage) unreadFetchNextPage();
   }, [unreadInView]);
+
   useEffect(() => {
-    if (bottomInView && hasNextPage) fetchNextPage();
+    if (bottomInView && feedHasNextPage) feedFetchNextPage();
   }, [bottomInView]);
 
   return (
@@ -167,11 +156,11 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       {unreadHasNextPage !== undefined && !unreadHasNextPage && (
         <>
           <h5 className="my-4">Feed</h5>
-          {isLoading ? (
+          {feedIsLoading ? (
             <Spinner />
           ) : (
             <>
-              {isError ? (
+              {feedIsError ? (
                 <h5 className="text-gray-400">
                   Error: Could not load entries.
                 </h5>
@@ -179,7 +168,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
                 <div>
                   <>{feedElements}</>
                   <div ref={bottomRef} className="m-3">
-                    {hasNextPage ? (
+                    {feedHasNextPage ? (
                       <Spinner text="Loading entries..." />
                     ) : (
                       <p className="">No more entries!</p>
