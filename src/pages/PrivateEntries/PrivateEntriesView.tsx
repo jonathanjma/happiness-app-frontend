@@ -2,6 +2,7 @@ import { useState } from "react";
 import Row from "../../components/layout/Row";
 import { useUser } from "../../contexts/UserProvider";
 import { Journal } from "../../data/models/Journal";
+import { formatDate } from "../../utils";
 import PrivateEntryCard from "./PrivateEntryCard";
 import ScrollableJournalCalendar from "./ScrollableJournalCalendar";
 
@@ -24,7 +25,7 @@ export default function PrivateEntriesView() {
           journal={selectedEntry ?? {
             user_id: user!.id,
             data: "",
-            timestamp: new Date().toDateString(),
+            timestamp: formatDate(new Date()),
             id: -1,
           }}
           onChangeJournalText={() => { }}
