@@ -20,9 +20,9 @@ export const dateOrTodayYesterday = (date: string, otherwise: string) => {
 export default function GroupFeed({ groupData }: { groupData: Group }) {
   const { api } = useApi();
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
-  const [unreadFeedElements, setUnreadFeedElements] = useState<
-    React.ReactElement[]
-  >([]);
+  const [unreadElements, setUnreadElements] = useState<React.ReactElement[]>(
+    [],
+  );
   const [feedElements, setFeedElements] = useState<React.ReactElement[]>([]);
 
   const [unreadRef, unreadInView] = useInView();
@@ -56,18 +56,18 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       });
 
   // infinite query for fetching unread entries
-  // const {
-  //   isLoading: unreadIsLoading,
-  //   data: unreadData,
-  //   isError: unreadIsError,
-  //   fetchNextPage: unreadFetchNextPage,
-  //   hasNextPage: unreadHasNextPage,
-  // } = useInfiniteQuery<HappinessPagination>({
-  //   queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS_UNREAD, groupData.id],
-  //   queryFn: ({ pageParam = 1 }) => fetcher(pageParam, true),
-  //   getNextPageParam: getNextPageParam,
-  //   refetchOnWindowFocus: false,
-  // });
+  const {
+    isLoading: unreadIsLoading,
+    data: unreadData,
+    isError: unreadIsError,
+    fetchNextPage: unreadFetchNextPage,
+    hasNextPage: unreadHasNextPage,
+  } = useInfiniteQuery<HappinessPagination>({
+    queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS_UNREAD, groupData.id],
+    queryFn: ({ pageParam = 1 }) => fetcher(pageParam, true),
+    getNextPageParam: getNextPageParam,
+    refetchOnWindowFocus: false,
+  });
 
   // infinite query for fetching entries
   const { isLoading, data, isError, fetchNextPage, hasNextPage } =
@@ -76,11 +76,13 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       queryFn: ({ pageParam = 1 }) => fetcher(pageParam, false),
       getNextPageParam: getNextPageParam,
       refetchOnWindowFocus: false,
-      // enabled: !unreadHasNextPage,
+      // loads first page of regular feed on initial load
+      // (add unreadHasNextPage !== undefined condition to disable this)
+      enabled: !unreadHasNextPage,
     });
 
   const onQueryUpdate = (unreadReq: boolean) => {
-    const pageData = data; //unreadReq ? unreadData : data;
+    const pageData = unreadReq ? unreadData : data;
     if (pageData === undefined) return;
 
     const newPageElements = [];
@@ -114,55 +116,78 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
         <FeedCard
           key={entry.id}
           data={entry}
-          isNew={false}
+          isNew={unreadReq}
           onClick={() => setSelectedEntry(entry)}
         />,
       );
       prevDate = entry.timestamp;
     }
 
-    if (unreadReq)
-      setUnreadFeedElements([...unreadFeedElements, ...newPageElements]);
+    if (unreadReq) setUnreadElements([...unreadElements, ...newPageElements]);
     else setFeedElements([...feedElements, ...newPageElements]);
   };
 
   // when infinite query data is updated
   useEffect(() => {
+    onQueryUpdate(true);
+  }, [unreadData]);
+  useEffect(() => {
     onQueryUpdate(false);
   }, [data]);
 
   // load more entries when bottom reached
-  // useEffect(() => {
-  //   if (unreadInView) unreadFetchNextPage();
-  // }, [unreadInView]);
-
   useEffect(() => {
-    if (bottomInView) fetchNextPage();
+    if (unreadInView && unreadHasNextPage) unreadFetchNextPage();
+  }, [unreadInView]);
+  useEffect(() => {
+    if (bottomInView && hasNextPage) fetchNextPage();
   }, [bottomInView]);
 
   return (
     <div className="mx-8">
-      {isLoading ? (
+      {/* Unread feed */}
+      {unreadElements.length > 0 && <h5 className="mb-4">Unread</h5>}
+      {unreadIsLoading ? (
         <Spinner />
       ) : (
         <>
-          {isError ? (
+          {unreadIsError ? (
             <h5 className="text-gray-400">Error: Could not load entries.</h5>
           ) : (
             <div>
-              {feedElements.length === 0 ? (
-                <h5 className="text-gray-400">No entries yet!</h5>
-              ) : (
-                <>{feedElements}</>
-              )}
-              <div ref={bottomRef} className="m-3">
-                {hasNextPage ? (
-                  <Spinner text="Loading entries..." />
-                ) : (
-                  <p className="">No more entries!</p>
-                )}
+              <>{unreadElements}</>
+              <div ref={unreadRef} className="m-3">
+                {unreadHasNextPage && <Spinner text="Loading entries..." />}
               </div>
             </div>
+          )}
+        </>
+      )}
+      {/* Don't show regular feed until unread feed has been consumed */}
+      {unreadHasNextPage !== undefined && !unreadHasNextPage && (
+        <>
+          <h5 className="my-4">Feed</h5>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <>
+              {isError ? (
+                <h5 className="text-gray-400">
+                  Error: Could not load entries.
+                </h5>
+              ) : (
+                <div>
+                  <>{feedElements}</>
+                  <div ref={bottomRef} className="m-3">
+                    {hasNextPage ? (
+                      <Spinner text="Loading entries..." />
+                    ) : (
+                      <p className="">No more entries!</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
