@@ -13,20 +13,8 @@ interface TextFieldProps {
   isEnabled?: boolean;
   value: string;
   onChangeValue: React.Dispatch<React.SetStateAction<string>>;
-  className?: string;
-  onEnterPressed?: () => void;
 }
-/**
- * Generic TextField component for use for Happiness App
- * @param value text field content
- * @param onChangeValue action when the value changes
- * @param className style to default to if editingStyle, disabledStyle, or emptyStyle is null
- * @param disabledStyle style to use whenever the textarea is disabled
- * @param emptyStyle style to use when text field content is empty but the text field is not disabled
- * @param editingStyle style to use when the text field is not disabled and not empty
- * @param enabled a boolean value representing whether the textarea is enabled
- * @returns TextArea component
- */
+
 export default function TextField({
   title,
   type = "text",
@@ -39,13 +27,11 @@ export default function TextField({
   isEnabled = true,
   value,
   onChangeValue,
-  className = "",
-  onEnterPressed
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   return (
-    <Column className={"w-[250px] gap-1 " + className}>
+    <Column className="w-[250px] gap-1">
       {title && <p className="text-gray-400">{title}</p>}
       <Row
         className={
@@ -71,14 +57,8 @@ export default function TextField({
           onBlur={() => {
             setIsFocused(false);
           }}
-          placeholder={hint}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && onEnterPressed) {
-              onEnterPressed();
-            }
-          }}
         />
-        <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>
+        <span className="mr-4">{innerIcon}</span>
       </Row>
       {(supportingText || supportingIcon) && (
         <Row className="items-center gap-1">

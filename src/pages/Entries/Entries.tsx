@@ -84,14 +84,14 @@ export default function Entries() {
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">
-      <div className="w-[162px] min-w-[162px]">
+      <div className="pt-8">
         <ScrollableCalendar
           selectedEntry={selectedEntry}
           setSelectedEntry={setSelectedEntry}
           setEditing={setEditing}
         />
       </div>
-      <div className="h-full w-full px-8 pb-4 pt-8">
+      <div className="h-full w-full pr-8 pb-4 pt-8">
         <EntryCard
           happiness={
             selectedEntry ?? {
