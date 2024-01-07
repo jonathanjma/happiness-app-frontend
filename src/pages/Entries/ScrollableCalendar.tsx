@@ -28,7 +28,8 @@ export default function ScrollableCalendar({
   const [madeFirstSelection, setMadeFirstSelection] = useState(false);
 
   // start calendar at today if novalid date argument provided, otherwise start at the provided date
-  const startDateStr = new URLSearchParams(useLocation().search).get("date");
+  const location = useLocation();
+  const startDateStr = location.state?.date ?? new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
   const startDate =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())

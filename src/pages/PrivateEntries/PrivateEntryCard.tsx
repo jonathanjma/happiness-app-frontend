@@ -20,7 +20,6 @@ export default function PrivateEntryCard({
   journal,
   onChangeJournalText,
   networkingState,
-  setNetworkingState,
 }: {
   journal: Journal;
   className?: string;
@@ -52,7 +51,7 @@ export default function PrivateEntryCard({
         <p
           className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
           onClick={() => {
-            navigate(`home?date=${journal.timestamp}`);
+            navigate("/home", { state: { date: journal.timestamp } });
           }}
         >
           {data.length > 0 ? "View public entry" : "Create a public entry"}

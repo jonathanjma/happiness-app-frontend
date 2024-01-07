@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import IconClock from "../../assets/IconClock";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import EditIcon from "../../assets/edit.svg";
@@ -39,6 +40,7 @@ export default function EntryCard({
   networkingState: string;
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const navigate = useNavigate();
   return (
     <>
       <Column
@@ -54,7 +56,7 @@ export default function EntryCard({
           <p
             className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
             onClick={() => {
-              console.log("TODO open private entries page");
+              navigate("/journal", { state: { date: happiness.timestamp } });
             }}
           >
             Create a Private Entry

@@ -27,7 +27,8 @@ export default function ScrollableJournalCalendar({
   );
 
   // start calendar at today if novalid date argument provided, otherwise start at the provided date
-  const startDateStr = new URLSearchParams(useLocation().search).get("date");
+  const location = useLocation();
+  const startDateStr = location.state?.date ?? new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
   const startDate =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
@@ -39,6 +40,10 @@ export default function ScrollableJournalCalendar({
 
   const [topRef, topInView] = useInView();
   const [bottomRef, bottomInView] = useInView();
+
+  // For initializing the selection based on passed in date
+  const [madeFirstSelection, setMadeFirstSelection] = useState(false);
+
 
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
@@ -69,7 +74,7 @@ export default function ScrollableJournalCalendar({
     const itr = new Date(start);
     while (itr <= end) {
       if (
-        journalData.findIndex((x) => x.timestamp === formatDate(itr)) === -1
+        !journalData.find((x) => x.timestamp === formatDate(itr))
       ) {
         journalData.push({
           id: counter.current,
@@ -100,7 +105,7 @@ export default function ScrollableJournalCalendar({
     };
   };
 
-  // infinite query for fetching happiness
+  // infinite query for fetching journals
   const {
     isLoading,
     data,
@@ -110,7 +115,7 @@ export default function ScrollableJournalCalendar({
     fetchPreviousPage,
     hasPreviousPage,
   } = useInfiniteQuery<JournalPagination>(
-    QueryKeys.FETCH_JOURNAL + " infinite query",
+    [QueryKeys.FETCH_JOURNAL + " infinite query", { start: startDate }],
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
@@ -180,6 +185,14 @@ export default function ScrollableJournalCalendar({
     }
   }, [selectedDate, allEntries]);
 
+  // auto-select the start date as selected entry
+  useEffect(() => {
+    if (!madeFirstSelection) {
+      setSelectedDate(formatDate(startDate));
+      setMadeFirstSelection(true);
+    }
+  }, [startDate]);
+
   return (
     <div
       ref={scrollRef}
@@ -204,7 +217,7 @@ export default function ScrollableJournalCalendar({
               {allEntries && allEntries.map((entry) =>
                 <>
                   <EntryPreviewCard
-                    key={entry.timestamp}
+                    key={entry.id}
                     journal={entry}
                     click={() => {
                       if (entry.timestamp !== selectedDate) {
