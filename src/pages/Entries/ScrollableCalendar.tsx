@@ -7,7 +7,7 @@ import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
-import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
+import { dateFromStr, formatDate, modifyDateDay, parseYYYYmmddFormat } from "../../utils";
 import HappinessCard from "./HappinessCard";
 
 // Infinite scrollable calendar for viewing happiness entries

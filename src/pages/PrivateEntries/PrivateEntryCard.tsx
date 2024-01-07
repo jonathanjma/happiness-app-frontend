@@ -19,14 +19,12 @@ export default function PrivateEntryCard({
   className,
   journal,
   onChangeJournalText,
-  onDeleteJournal,
   networkingState,
   setNetworkingState,
 }: {
   journal: Journal;
   className?: string;
   onChangeJournalText: (value: string) => void;
-  onDeleteJournal: () => void;
   networkingState: string;
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
@@ -90,6 +88,7 @@ export default function PrivateEntryCard({
         onChange={(e) => {
           onChangeJournalText(e.target.value);
         }}
+        disabled={journal.id === -1}
       />
       {/* Editing status text */}
       <Row className="mt-1 gap-1">

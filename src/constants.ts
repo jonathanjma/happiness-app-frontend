@@ -15,4 +15,5 @@ export enum QueryKeys {
 
 export enum MutationKeys {
   MUTATE_HAPPINESS = "mutateHappiness",
+  MUTATE_JOURNAL = "mutateJournal",
 }

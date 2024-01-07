@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useMutation } from "react-query";
 import Row from "../../components/layout/Row";
+import { Constants, MutationKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Journal } from "../../data/models/Journal";
 import { formatDate } from "../../utils";
@@ -10,6 +13,43 @@ export default function PrivateEntriesView() {
   const [selectedEntry, setSelectedEntry] = useState<Journal | undefined>(undefined);
   const { user } = useUser();
   const [editing, setEditing] = useState(false);
+  const [networkingState, setNetworkingState] = useState(Constants.FINISHED_MUTATION_TEXT);
+  const journalUpdateTimeout = useRef<number | undefined>();
+  const { api } = useApi();
+
+  const journalMutation = useMutation({
+    mutationFn: (newJournal: Journal) =>
+      api.post(`/journal/`, {
+        data: newJournal.data,
+        timestamp: newJournal.timestamp
+      }, {
+        headers:
+        {
+          "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY)
+        }
+      }),
+    mutationKey: [MutationKeys.MUTATE_JOURNAL],
+    onSuccess: () => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+    },
+    onError: () => {
+      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+    }
+  });
+
+  const updateJournal = () => {
+    if (selectedEntry) journalMutation.mutate(selectedEntry);
+    else setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+  };
+
+  // TODO update backend based on selected entry change
+  useEffect(() => {
+    if (selectedEntry?.data.length && selectedEntry?.data.length > 0) {
+      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+      clearTimeout(journalUpdateTimeout.current);
+      journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
+    }
+  }, [selectedEntry]);
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">
@@ -28,9 +68,10 @@ export default function PrivateEntriesView() {
             timestamp: formatDate(new Date()),
             id: -1,
           }}
-          onChangeJournalText={() => { }}
-          onDeleteJournal={() => { }}
-          networkingState="Updated"
+          onChangeJournalText={(text) =>
+            setSelectedEntry((entry) => { return entry ? { ...entry, data: text } : undefined; })
+          }
+          networkingState={networkingState}
           setNetworkingState={() => { }}
         />
       </div>
