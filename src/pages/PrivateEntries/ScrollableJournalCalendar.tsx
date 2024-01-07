@@ -8,7 +8,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { JournalPagination } from "../../data/models/Happiness";
 import { Journal } from "../../data/models/Journal";
-import { dateFromStr, formatDate, modifyDateDay, parseYYYmmddFormat } from "../../utils";
+import { dateFromStr, formatDate, modifyDateDay, parseYYYYmmddFormat } from "../../utils";
 import EntryPreviewCard from "./EntryPreviewCard";
 
 export default function ScrollableJournalCalendar({
@@ -90,7 +90,7 @@ export default function ScrollableJournalCalendar({
 
     // ensure all dates are before today
     const relevantJournals = journalData.filter(
-      (x) => parseYYYmmddFormat(x.timestamp) <= today,
+      (x) => parseYYYYmmddFormat(x.timestamp) <= today,
     );
 
     // add page attribute so page number is remembered

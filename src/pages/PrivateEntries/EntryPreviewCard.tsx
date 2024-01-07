@@ -1,14 +1,14 @@
 import UnlockedIcon from "../../assets/UnlockedIcon";
 import Card from "../../components/Card";
 import { Journal } from "../../data/models/Journal";
-import { formatDate, parseYYYmmddFormat } from "../../utils";
+import { formatDate, parseYYYYmmddFormat } from "../../utils";
 
 export default function EntryPreviewCard({ click, selected, journal }: {
   click: () => void,
   selected: boolean,
   journal: Journal;
 }) {
-  const date = parseYYYmmddFormat(journal.timestamp);
+  const date = parseYYYYmmddFormat(journal.timestamp);
   const isToday =
     formatDate(new Date()) === journal.timestamp;
 

@@ -9,7 +9,7 @@ import Row from "../../components/layout/Row";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { Constants } from "../../constants";
 import { Happiness } from "../../data/models/Happiness";
-import { parseYYYmmddFormat } from "../../utils";
+import { parseYYYYmmddFormat } from "../../utils";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -152,7 +152,7 @@ export default function EntryCard({
         id="delete-confirm-modal"
         title="Deleting happiness"
         // fix comment form
-        body={`You are deleting happiness for ${parseYYYmmddFormat(
+        body={`You are deleting happiness for ${parseYYYYmmddFormat(
           happiness.timestamp,
         ).toDateString()}, are you sure you want to continue?`}
         denyText="Cancel"
