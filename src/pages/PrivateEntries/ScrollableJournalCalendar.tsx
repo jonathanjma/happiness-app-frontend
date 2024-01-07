@@ -11,12 +11,6 @@ import { Journal } from "../../data/models/Journal";
 import { dateFromStr, formatDate, modifyDateDay, parseYYYmmddFormat } from "../../utils";
 import EntryPreviewCard from "./EntryPreviewCard";
 
-/* 
-// TODO add authorization parameters  
-    const res = await api.get<Journal[]>("/journal/", {},
-      { headers: { "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY) } }); 
-*/
-// Infinite scrollable calendar for viewing journal entries 
 export default function ScrollableJournalCalendar({
   selectedEntry,
   setSelectedEntry,
@@ -59,8 +53,15 @@ export default function ScrollableJournalCalendar({
     );
     const end = modifyDateDay(startDate, -7 * page - (page > 0 ? 1 : 0));
 
-    const res = await api.get<Journal[]>("/journal/", {},
-      { headers: { "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY) } });
+    const res = await api.get<Journal[]>("/journal/dates/",
+      {
+        start: formatDate(start),
+        end: formatDate(end)
+      },
+      {
+        headers: { "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY) }
+      }
+    );
 
     const journalData = res.data;
 
