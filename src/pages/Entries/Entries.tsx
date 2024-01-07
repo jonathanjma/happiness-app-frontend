@@ -9,6 +9,7 @@ import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
 /**
  * The page for displaying entries with the scrollable calendar
+ * append `?date=YYYY-MM-DD` to the URL to jump to a certain date
  */
 export default function Entries() {
   const [selectedEntry, setSelectedEntry] = useState<Happiness | undefined>(

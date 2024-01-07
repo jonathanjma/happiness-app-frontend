@@ -29,6 +29,7 @@ module.exports = {
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",
       brand_off_white: "#FAFAFA",
+      error: "#EC7070",
     },
     extend: {
       padding: {
@@ -54,6 +55,8 @@ module.exports = {
       boxShadow: {
         sm1: "0px 2px 20px 0px rgba(0, 0, 0, 0.15)",
         md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
+        md2: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)",
+        "form-selected": "0px 0px 4px 2px rgba(240, 207, 120, 0.25)"
       },
     },
   },
