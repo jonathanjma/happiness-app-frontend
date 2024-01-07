@@ -12,6 +12,7 @@ export enum QueryKeys {
   FETCH_USER_GROUPS = "fetchUserGroups",
   FETCH_GROUP_INFO = "fetchGroupInfo",
   FETCH_GROUP_HAPPINESS = "fetchGroupHappiness",
+  FETCH_GROUP_HAPPINESS_UNREAD = "fetchGroupHappinessUnread",
 }
 
 export enum MutationKeys {

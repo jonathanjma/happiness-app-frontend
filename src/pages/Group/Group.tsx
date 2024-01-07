@@ -63,7 +63,7 @@ export default function Group() {
   const { groupID } = useParams();
   const { api } = useApi();
   const { isLoading, data, isError } = useQuery<Group>(
-    QueryKeys.FETCH_GROUP_INFO,
+    [QueryKeys.FETCH_GROUP_INFO, groupID],
     () => api.get<Group>("/group/" + groupID).then((res) => res.data),
   );
 
