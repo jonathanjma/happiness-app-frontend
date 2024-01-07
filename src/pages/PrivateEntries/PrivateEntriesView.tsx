@@ -42,7 +42,6 @@ export default function PrivateEntriesView() {
     else setNetworkingState(Constants.ERROR_MUTATION_TEXT);
   };
 
-  // TODO update backend based on selected entry change
   useEffect(() => {
     if (selectedEntry?.data.length && selectedEntry?.data.length > 0) {
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
