@@ -109,7 +109,7 @@ export default function ScrollableCalendar({
     fetchPreviousPage,
     hasPreviousPage,
   } = useInfiniteQuery<HappinessPagination>(
-    [QueryKeys.FETCH_HAPPINESS + QueryKeys.INFINITE, {
+    [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE, {
       start: startDate,
     }],
     ({ pageParam = 0 }) => fetcher(pageParam),

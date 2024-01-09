@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Row from "../../components/layout/Row";
-import { Constants, MutationKeys } from "../../constants";
+import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { Journal } from "../../data/models/Journal";
+import { Journal, SimpleJournal } from "../../data/models/Journal";
 import { formatDate } from "../../utils";
 import PrivateEntryCard from "./PrivateEntryCard";
 import ScrollableJournalCalendar from "./ScrollableJournalCalendar";
@@ -16,10 +16,11 @@ export default function PrivateEntriesView() {
   const [networkingState, setNetworkingState] = useState(Constants.FINISHED_MUTATION_TEXT);
   const journalUpdateTimeout = useRef<number | undefined>();
   const { api } = useApi();
+  const queryClient = useQueryClient();
 
   const journalMutation = useMutation({
     mutationFn: (newJournal: Journal) =>
-      api.post(`/journal/`, {
+      api.post<SimpleJournal>(`/journal/`, {
         data: newJournal.data,
         timestamp: newJournal.timestamp
       }, {
@@ -29,8 +30,18 @@ export default function PrivateEntriesView() {
         }
       }),
     mutationKey: [MutationKeys.MUTATE_JOURNAL],
-    onSuccess: () => {
+    onSuccess: (res) => {
+      const newJournal = res.data;
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      /* 
+      TODO in the future we can use set queries data to make the editing
+      experience smoother, but this introduces a lot of complexity with the
+      update function and how we are going to efficiently update infinite query
+      data. I will leave this as a task for after launch.
+      */
+      queryClient.invalidateQueries(
+        { queryKey: [QueryKeys.FETCH_JOURNAL] }
+      );
     },
     onError: () => {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);

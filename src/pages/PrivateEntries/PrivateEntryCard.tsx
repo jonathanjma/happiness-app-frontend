@@ -28,6 +28,7 @@ export default function PrivateEntryCard({
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { api } = useApi();
+  // data tto check if we have a public entry for this date or not
   const { data } = useQuery<Happiness[]>
     ([QueryKeys.FETCH_HAPPINESS, { date: journal.timestamp }], {
       queryFn: () => api.get<Happiness[]>("/happiness/", { start: journal.timestamp, end: journal.timestamp }).then((res) => res.data)
