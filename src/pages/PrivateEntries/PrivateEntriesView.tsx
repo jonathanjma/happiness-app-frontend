@@ -20,7 +20,7 @@ export default function PrivateEntriesView() {
 
   const journalMutation = useMutation({
     mutationFn: (newJournal: Journal) =>
-      api.post(`/journal/`, {
+      api.post("/journal/", {
         data: newJournal.data,
         timestamp: newJournal.timestamp
       }, {
@@ -46,18 +46,33 @@ export default function PrivateEntriesView() {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
     }
   });
+  const journalDeletion = useMutation({
+    mutationFn: (id: number) =>
+      api.delete(`/journal/?id=${id}`),
+    onSuccess: () => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.FETCH_JOURNAL] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.FETCH_JOURNAL_COUNT] });
+    },
+    onError: () => {
+      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+    }
+  });
 
   const updateJournal = () => {
-    if (selectedEntry) journalMutation.mutate(selectedEntry);
-    else setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+    if (selectedEntry && selectedEntry.data.trim() !== "") {
+      journalMutation.mutate(selectedEntry);
+    }
+    else if (selectedEntry && selectedEntry.id > 0) {
+      journalDeletion.mutate(selectedEntry.id);
+    }
+    else setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
   };
 
   useEffect(() => {
-    if (selectedEntry?.data.length && selectedEntry?.data.length > 0) {
-      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-      clearTimeout(journalUpdateTimeout.current);
-      journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
-    }
+    setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+    clearTimeout(journalUpdateTimeout.current);
+    journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
   }, [selectedEntry]);
 
   return (
