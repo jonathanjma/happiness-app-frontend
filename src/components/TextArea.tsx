@@ -49,7 +49,6 @@ export default function TextArea({
       : "") +
     (hasError ? " border-error hover:border-error" : " hover:border-gray-400 border-gray-300");
 
-  console.log(`borderStyle: ${borderStyle}`);
   return (
     <Column className={"w-[250px] gap-1 " + className}>
       {title && <p className="text-gray-400">{title}</p>}
