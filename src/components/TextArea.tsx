@@ -4,7 +4,6 @@ import Row from "./layout/Row";
 interface TextFieldProps {
   title?: string;
   type?: React.HTMLInputTypeAttribute;
-  defaultText?: string;
   hint?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
@@ -27,10 +26,9 @@ interface TextFieldProps {
  * @param enabled a boolean value representing whether the textarea is enabled
  * @returns TextArea component
  */
-export default function TextField({
+export default function TextArea({
   title,
   type = "text",
-  defaultText = "",
   hint = "",
   supportingText = "",
   supportingIcon,
@@ -90,7 +88,6 @@ export default function TextField({
           )}
         </Row>
       )}
-      {/* <div className=" border-1 border-solid rounded-lg border-gray-300 hover:border-gray-400 focus:border-yellow shadow-form-selected"></div> */}
     </Column>
   );
 }
