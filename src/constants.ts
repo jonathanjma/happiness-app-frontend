@@ -12,6 +12,7 @@ export enum QueryKeys {
   FETCH_HAPPINESS_COUNT = "fetchHappinessCount",
   FETCH_COMMENTS = "fetchComments",
   FETCH_JOURNAL = "fetchJournal",
+  FETCH_JOURNAL_COUNT = "fetchJournalCount",
   INFINITE = "infiniteQuery"
 }
 

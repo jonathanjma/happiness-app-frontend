@@ -1,3 +1,4 @@
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import IconClock from "../../assets/IconClock";
 import IconWarningOutline from "../../assets/IconWarningOutline";
@@ -8,7 +9,9 @@ import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
-import { Constants } from "../../constants";
+import EntryTextSkeleton from "../../components/skeletons/EntryTextSkeleton";
+import { Constants, QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { parseYYYYmmddFormat } from "../../utils";
 
@@ -41,6 +44,13 @@ export default function EntryCard({
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const navigate = useNavigate();
+  const { api } = useApi();
+  const { data: count } = useQuery([QueryKeys.FETCH_JOURNAL_COUNT], {
+    queryFn: () =>
+      api.get<Number>("/journal/dates/count/", { start: happiness.timestamp, end: happiness.timestamp })
+        .then((res) => res.data)
+  });
+
   return (
     <>
       <Column
@@ -50,8 +60,10 @@ export default function EntryCard({
         }
       >
         {/* Header text */}
-        <Row className="items-center">
-          <p className="text-dark_gray">You don't have a private entry</p>
+        {count ? <Row className="items-center">
+          <p className="text-dark_gray">{count.number > 0 ?
+            "You have a private entry for this date."
+            : "You don't have a private entry for this date."}</p>
           <span className="w-3" />
           <p
             className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
@@ -59,9 +71,10 @@ export default function EntryCard({
               navigate("/journal", { state: { date: happiness.timestamp } });
             }}
           >
-            Create a Private Entry
+            {count.number > 0 ? "View Private Entry" : "Create a Private Entry"}
           </p>
-        </Row>
+        </Row> : <EntryTextSkeleton />}
+
 
         <div className=" h-4" />
 

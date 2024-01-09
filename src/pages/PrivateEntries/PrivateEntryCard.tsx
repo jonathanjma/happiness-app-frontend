@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import EntryTextSkeleton from "../../components/skeletons/EntryTextSkeleton";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
@@ -57,7 +58,7 @@ export default function PrivateEntryCard({
         >
           {data.length > 0 ? "View public entry" : "Create a public entry"}
         </p>
-      </Row> : <span className="w-36 h-3 rounded-sm animate-pulse bg-gray-300" />}
+      </Row> : <EntryTextSkeleton />}
 
 
       <div className=" h-4" />
