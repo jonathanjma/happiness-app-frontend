@@ -1,4 +1,3 @@
-import { Journal } from "./Journal";
 import { User } from "./User";
 
 export interface Happiness {
@@ -19,12 +18,6 @@ export interface NewHappiness {
 // type of the paginated happiness data structure used for infinite scroll
 export interface HappinessPagination {
   data: Happiness[];
-  page: number;
-}
-
-// type of the paginated journal data structure used for infinite scroll
-export interface JournalPagination {
-  data: Journal[];
   page: number;
 }
 

@@ -6,8 +6,7 @@ import Spinner from "../../components/Spinner";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { JournalPagination } from "../../data/models/Happiness";
-import { Journal } from "../../data/models/Journal";
+import { Journal, JournalPagination } from "../../data/models/Journal";
 import { dateFromStr, formatDate, modifyDateDay, parseYYYYmmddFormat } from "../../utils";
 import EntryPreviewCard from "./EntryPreviewCard";
 
