@@ -235,7 +235,9 @@ export default function SearchBar() {
           <Row className="px-4 py-3 w-full bg-gray-50 border-t-1 border-gray-200">
             <label className="text-gray-400">Press ↑ or ↓ to navigate. Press ENTER or press button to open in Entries</label>
             <div className="flex flex-grow " />
-            <a className="underline text-sm text-gray-400 hover:cursor-pointer">{`View All${count ? ` ${count.number} ` : " "}Search Results`}</a>
+            <a className={`${!count || count?.number === 0 ? "" : "underline"} text-sm text-gray-400 hover:cursor-pointer`}>
+              {!count || count?.number === 0 ? "No search results" : `View All${count ? ` ${count.number} ` : " "}Search Results`}
+            </a>
           </Row>
         </Card>
       }
