@@ -3,6 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import Column from "../../components/layout/Column";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
@@ -206,18 +207,21 @@ export default function ScrollableCalendar({
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-              {allEntries && allEntries.map((entry) =>
-                <HappinessCard
-                  key={entry.id}
-                  data={entry}
-                  selected={entry.id === selectedEntry?.id}
-                  click={() => {
-                    if (entry.timestamp !== selectedDate) {
-                      setSelectedDate(entry.timestamp);
-                      setEditing(false);
-                    }
-                  }}
-                />)}
+              <Column className="gap-3">
+                {allEntries && allEntries.map((entry) =>
+                  <HappinessCard
+                    key={entry.id}
+                    data={entry}
+                    selected={entry.id === selectedEntry?.id}
+                    click={() => {
+                      if (entry.timestamp !== selectedDate) {
+                        setSelectedDate(entry.timestamp);
+                        setEditing(false);
+                      }
+                    }}
+                  />)}
+              </Column>
+
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

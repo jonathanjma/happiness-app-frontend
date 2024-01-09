@@ -1,20 +1,22 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useMutation } from "react-query";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import Button from "../../components/Button";
-import TextField from "../../components/TextField";
+import TextArea from "../../components/TextArea";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
-import { useUser } from "../../contexts/UserProvider";
 
-export default function PrivateEntriesAuthenticate() {
+export default function PrivateEntriesAuthenticate({ hasError, setHasError, setRetry }: {
+  hasError: boolean,
+  setHasError: React.Dispatch<React.SetStateAction<boolean>>;
+  setRetry: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [passwordText, setPasswordText] = useState("");
-  const [hasError, setHasError] = useState(false);
   const { api } = useApi();
-  const { user } = useUser();
-  const onSubmitPassword = async () => {
-    api
+  const submitPassword = useMutation({
+    mutationFn: () => api
       .post(
         "/journal/key",
         {
@@ -25,12 +27,16 @@ export default function PrivateEntriesAuthenticate() {
             'Password-Key': "None"
           }
         }
-      )
-      .then((res) => {
-        sessionStorage.setItem(Constants.PASSWORD_KEY, res.headers["password-key"]);
-        window.location.reload();
-      });
-  };
+      ),
+    onSuccess: (res) => {
+      sessionStorage.setItem(Constants.PASSWORD_KEY, res.headers["password-key"]);
+      setRetry((r) => !r);
+    },
+    onError: () => {
+      setHasError(true);
+      sessionStorage.removeItem(Constants.PASSWORD_KEY);
+    }
+  });
 
   return (
     <div className=" ml-24 mt-32  h-full w-full">
@@ -41,19 +47,22 @@ export default function PrivateEntriesAuthenticate() {
             Journals are private to you and you only.
           </p>
         </Column>
-        <TextField
+        <TextArea
           title="Password:"
           supportingText={hasError ? "Please enter the correct password" : ""}
           value={passwordText}
-          onChangeValue={setPasswordText}
-          hasError={true}
+          onChangeValue={(v) => {
+            setHasError(false);
+            setPasswordText(v);
+          }}
+          hasError={hasError}
           supportingIcon={
             hasError ? <IconWarningOutline color="#EC7070" /> : undefined
           }
           type="password"
         />
         <Row>
-          <Button onClick={onSubmitPassword} label="Enter" />
+          <Button onClick={() => { submitPassword.mutate(); }} label="Enter" />
           <Button label="Forgot Password?" variation="TEXT" />
         </Row>
       </Column>

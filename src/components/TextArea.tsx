@@ -42,16 +42,20 @@ export default function TextArea({
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
+
+  const borderStyle = "focus:shadow-form-selected items-center rounded-lg border-1 border-solid py-1 " +
+    (isFocused
+      ? " shadow-form-selected border-yellow hover:border-yellow"
+      : "") +
+    (hasError ? " border-error hover:border-error" : " hover:border-gray-400 border-gray-300");
+
+  console.log(`borderStyle: ${borderStyle}`);
   return (
     <Column className={"w-[250px] gap-1 " + className}>
       {title && <p className="text-gray-400">{title}</p>}
       <Row
         className={
-          "border-gray-300 focus:shadow-form-selected items-center rounded-lg border-1 border-solid py-1 hover:border-gray-400" +
-          (isFocused
-            ? " shadow-form-selected border-yellow hover:border-yellow"
-            : "") +
-          (hasError ? " border-error hover:border-error" : "")
+          borderStyle
         }
       >
         <input

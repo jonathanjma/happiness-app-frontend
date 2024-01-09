@@ -32,7 +32,7 @@ export default function HappinessCard({
         </p>
       )}
 
-      <Card className={" my-[6px] h-[108px] w-[108px] p-[1px] " + classes}>
+      <Card className={"h-[108px] w-[108px] p-[1px] " + classes}>
         <div className="flex flex-col p-3" onClick={click}>
           <Row>
             <Column>
@@ -50,7 +50,7 @@ export default function HappinessCard({
             <div className=" flex flex-1" />
           </Row>
 
-          <div className=" h-[1px]" />
+          <div className="h-2" />
           <label className="leading-4">Score</label>
           <h4 className=" font-semibold leading-8 text-secondary">
             {data.value !== -1 ? data.value.toFixed(1) : "-"}
