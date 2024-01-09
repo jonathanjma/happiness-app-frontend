@@ -4,7 +4,7 @@ import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { Journal, SimpleJournal } from "../../data/models/Journal";
+import { Journal } from "../../data/models/Journal";
 import { formatDate } from "../../utils";
 import PrivateEntryCard from "./PrivateEntryCard";
 import ScrollableJournalCalendar from "./ScrollableJournalCalendar";
@@ -20,7 +20,7 @@ export default function PrivateEntriesView() {
 
   const journalMutation = useMutation({
     mutationFn: (newJournal: Journal) =>
-      api.post<SimpleJournal>(`/journal/`, {
+      api.post(`/journal/`, {
         data: newJournal.data,
         timestamp: newJournal.timestamp
       }, {
@@ -30,8 +30,7 @@ export default function PrivateEntriesView() {
         }
       }),
     mutationKey: [MutationKeys.MUTATE_JOURNAL],
-    onSuccess: (res) => {
-      const newJournal = res.data;
+    onSuccess: () => {
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
       /* 
       TODO in the future we can use set queries data to make the editing

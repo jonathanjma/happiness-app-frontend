@@ -9,14 +9,4 @@ export interface Journal {
 export interface JournalPagination {
   data: Journal[];
   page: number;
-}
-
-export interface JournalInfinitePagination {
-  pages: JournalPagination[],
-  pageParams: any[];  // not really sure what type this is honestly
-}
-
-export interface SimpleJournal {
-  data: string;
-  timestamp: string;
-}
+} 
