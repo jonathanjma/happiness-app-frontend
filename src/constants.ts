@@ -9,6 +9,7 @@ export enum Constants {
 
 export enum QueryKeys {
   FETCH_HAPPINESS = "fetchHappiness",
+  FETCH_HAPPINESS_COUNT = "fetchHappinessCount",
   FETCH_COMMENTS = "fetchComments",
   FETCH_JOURNAL = "fetchJournal",
   INFINITE = "infiniteQuery"
