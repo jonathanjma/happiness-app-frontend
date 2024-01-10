@@ -10,15 +10,19 @@ import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import { dateOrTodayYesterday } from "./GroupFeed";
 import { dateFromStr } from "../../utils";
+import { useInView } from "react-intersection-observer";
+import { useState } from "react";
 
 export default function FeedCard({
   data,
   isNew,
   onClick,
+  trackRead,
 }: {
   data: Happiness;
   isNew: boolean;
   onClick: () => void;
+  trackRead: boolean;
 }) {
   const { api } = useApi();
   const commentsResult = useQuery<Comment[]>(
@@ -28,6 +32,20 @@ export default function FeedCard({
         .get<Comment[]>(`/happiness/${data.id}/comments`)
         .then((res) => res.data),
   );
+
+  const [isFirstUpdate, setIsFirst] = useState(true);
+
+  const [readBoundaryRef, inView] = useInView({
+    skip: !trackRead,
+    onChange: (status, entry) => {
+      // if going out of view and not the first update, don't want to trigger than as it will either be:
+      // off-screen (so not seen yet) or on-screen (doesn't matter since it's not off-screen yet)
+      if (!status && !isFirstUpdate) {
+        console.log(`${data.author.username} ${data.timestamp} read`);
+      }
+      if (isFirstUpdate) setIsFirst(false);
+    },
+  });
 
   return (
     <>
@@ -64,7 +82,8 @@ export default function FeedCard({
           <p className="line-clamp-3 p-0 font-normal text-gray-600">
             {data.comment}
           </p>
-          <hr className="my-4 border-gray-100" />
+          {/* Mark as read if user scrolls past this point */}
+          <hr ref={readBoundaryRef} className="my-4 border-gray-100" />
           {/* Footer: discussion comment info */}
           <Row className="items-center justify-between">
             {commentsResult.isLoading ? (

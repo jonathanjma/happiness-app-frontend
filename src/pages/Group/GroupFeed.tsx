@@ -96,6 +96,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
           allUnreadEntries!.findIndex((elt) => elt.id == entry.id) !== -1
         }
         onClick={() => setSelectedEntry(entry)}
+        trackRead={unreadReq}
       />
     );
 
