@@ -1,10 +1,9 @@
-import Column from "./layout/Column";
 import { useRef, useState } from "react";
+import Column from "./layout/Column";
 import Row from "./layout/Row";
 interface TextFieldProps {
   title?: string;
   type?: React.HTMLInputTypeAttribute;
-  defaultText?: string;
   hint?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
@@ -27,10 +26,9 @@ interface TextFieldProps {
  * @param enabled a boolean value representing whether the textarea is enabled
  * @returns TextArea component
  */
-export default function TextField({
+export default function TextArea({
   title,
   type = "text",
-  defaultText = "",
   hint = "",
   supportingText = "",
   supportingIcon,
@@ -44,17 +42,19 @@ export default function TextField({
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
-  console.log(`hasError = ${hasError}`);
+
+  const borderStyle = "focus:shadow-form-selected items-center rounded-lg border-1 border-solid py-1 " +
+    (isFocused
+      ? " shadow-form-selected border-yellow hover:border-yellow"
+      : "") +
+    (hasError ? " border-error hover:border-error" : " hover:border-gray-400 border-gray-300");
+
   return (
     <Column className={"w-[250px] gap-1 " + className}>
       {title && <p className="text-gray-400">{title}</p>}
       <Row
         className={
-          "border-gray-300 focus:shadow-form-selected items-center rounded-lg border-1 border-solid py-1 hover:border-gray-400" +
-          (isFocused
-            ? " shadow-form-selected border-yellow hover:border-yellow"
-            : "") +
-          (hasError ? " border-error hover:border-error" : "")
+          borderStyle
         }
       >
         <input
@@ -91,7 +91,6 @@ export default function TextField({
           )}
         </Row>
       )}
-      {/* <div className=" border-1 border-solid rounded-lg border-gray-300 hover:border-gray-400 focus:border-yellow shadow-form-selected"></div> */}
     </Column>
   );
 }

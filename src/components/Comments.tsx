@@ -6,7 +6,7 @@ import { useUser } from "../contexts/UserProvider";
 import { Comment } from "../data/models/Comment";
 import { getDateObjFromUTCString } from "../utils";
 import CommentCard from "./CommentCard";
-import TextField from "./TextArea";
+import TextArea from "./TextArea";
 import Row from "./layout/Row";
 import CommentCardSkeleton from "./skeletons/CommentCardSkeleton";
 
@@ -121,7 +121,7 @@ export default function Comments({
       {canAddComment && user &&
         <Row className="py-4 px-6 gap-4">
           <img className="w-10 h-10 rounded-full" src={user.profile_picture} />
-          <TextField
+          <TextArea
             className="flex flex-1"
             value={comment}
             onChangeValue={setComment}

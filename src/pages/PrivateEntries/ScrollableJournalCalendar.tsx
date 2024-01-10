@@ -3,22 +3,20 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import Spinner from "../../components/Spinner";
-import Column from "../../components/layout/Column";
-import { QueryKeys } from "../../constants";
+import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { Happiness, HappinessPagination } from "../../data/models/Happiness";
+import { Journal, JournalPagination } from "../../data/models/Journal";
 import { dateFromStr, formatDate, modifyDateDay, parseYYYYmmddFormat } from "../../utils";
-import HappinessCard from "./HappinessCard";
+import EntryPreviewCard from "./EntryPreviewCard";
 
-// Infinite scrollable calendar for viewing happiness entries
-export default function ScrollableCalendar({
+export default function ScrollableJournalCalendar({
   selectedEntry,
   setSelectedEntry,
-  setEditing,
+  setEditing
 }: {
-  selectedEntry: Happiness | undefined;
-  setSelectedEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+  selectedEntry: Journal | undefined;
+  setSelectedEntry: React.Dispatch<React.SetStateAction<Journal | undefined>>;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { api } = useApi();
@@ -26,7 +24,6 @@ export default function ScrollableCalendar({
   const [selectedDate, setSelectedDate] = useState<string>(
     formatDate(new Date()),
   );
-  const [madeFirstSelection, setMadeFirstSelection] = useState(false);
 
   // start calendar at today if novalid date argument provided, otherwise start at the provided date
   const location = useLocation();
@@ -34,7 +31,7 @@ export default function ScrollableCalendar({
   const today = modifyDateDay(new Date(), 0);
   const startDate =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
-      ? parseYYYYmmddFormat(startDateStr)
+      ? dateFromStr(startDateStr)
       : today;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -43,37 +40,45 @@ export default function ScrollableCalendar({
   const [topRef, topInView] = useInView();
   const [bottomRef, bottomInView] = useInView();
 
+  // For initializing the selection based on passed in date
+  const [madeFirstSelection, setMadeFirstSelection] = useState(false);
+
+
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
 
   // happiness data fetch function
   // where every page represents one week of happiness data
   //  and days with missing entries are represented with blank entries
-  const fetcher = async (page: number): Promise<HappinessPagination> => {
+  const fetcher = async (page: number): Promise<JournalPagination> => {
     const start = modifyDateDay(
       startDate,
       -7 * (page + 1) + (page >= 0 ? 0 : 1),
     );
     const end = modifyDateDay(startDate, -7 * page - (page > 0 ? 1 : 0));
 
-    const res = await api.get<Happiness[]>("/happiness/", {
-      start: formatDate(start),
-      end: formatDate(end),
-    });
+    const res = await api.get<Journal[]>("/journal/dates/",
+      {
+        start: formatDate(start),
+        end: formatDate(end)
+      },
+      {
+        headers: { "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY) }
+      }
+    );
 
-    let happinessData = res.data;
+    const journalData = res.data;
 
     // create empty happiness entries for missed days
-    let itr = new Date(start);
+    const itr = new Date(start);
     while (itr <= end) {
       if (
-        happinessData.findIndex((x) => x.timestamp === formatDate(itr)) === -1
+        !journalData.find((x) => x.timestamp === formatDate(itr))
       ) {
-        happinessData.push({
+        journalData.push({
           id: counter.current,
-          author: user!,
-          value: -1,
-          comment: "",
+          user_id: user!.id,
+          data: "",
           timestamp: formatDate(itr),
         });
         counter.current--;
@@ -82,24 +87,24 @@ export default function ScrollableCalendar({
     }
 
     // reverse sort days
-    happinessData.sort(
+    journalData.sort(
       (a, b) =>
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
 
     // ensure all dates are before today
-    happinessData = happinessData.filter(
-      (x) => dateFromStr(x.timestamp) <= today,
+    const relevantJournals = journalData.filter(
+      (x) => parseYYYYmmddFormat(x.timestamp) <= today,
     );
 
     // add page attribute so page number is remembered
     return {
-      data: happinessData,
+      data: relevantJournals,
       page: page,
     };
   };
 
-  // infinite query for fetching happiness
+  // infinite query for fetching journals
   const {
     isLoading,
     data,
@@ -108,10 +113,8 @@ export default function ScrollableCalendar({
     fetchNextPage,
     fetchPreviousPage,
     hasPreviousPage,
-  } = useInfiniteQuery<HappinessPagination>(
-    [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE, {
-      start: startDate,
-    }],
+  } = useInfiniteQuery<JournalPagination>(
+    [QueryKeys.FETCH_JOURNAL, QueryKeys.INFINITE, { start: startDate }],
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
@@ -131,23 +134,11 @@ export default function ScrollableCalendar({
   const allEntries = useMemo(
     () =>
       data?.pages.reduce(
-        (acc: Happiness[], page) => [...acc, ...page.data],
+        (acc: Journal[], page) => [...acc, ...page.data],
         [],
       ),
     [data],
   );
-
-  // Initialize a default selected entry
-  // TODO current issue appears to be if you search for something, select it,
-  // then search for the same thing and select the same thing the preview card
-  // isn't selected on screen in the same session.
-  // This is somewhat niche so I think we can fix it after launch.
-  useEffect(() => {
-    if (!madeFirstSelection) {
-      setSelectedDate(formatDate(startDate));
-      setMadeFirstSelection(true);
-    }
-  }, [startDate]);
 
   // load more entries when bottom reached
   useEffect(() => {
@@ -183,9 +174,23 @@ export default function ScrollableCalendar({
 
   // display details of selected entry
   useEffect(() => {
-    const matchingEntry = allEntries?.find((entry) => entry.timestamp === selectedDate);
-    setSelectedEntry((entry) => matchingEntry ?? entry);
+    if (allEntries) {
+      for (const entry of allEntries) {
+        if (entry.timestamp === selectedDate) {
+          setSelectedEntry(entry);
+          return;
+        }
+      }
+    }
   }, [selectedDate, allEntries]);
+
+  // auto-select the start date as selected entry
+  useEffect(() => {
+    if (!madeFirstSelection) {
+      setSelectedDate(formatDate(startDate));
+      setMadeFirstSelection(true);
+    }
+  }, [startDate]);
 
   return (
     <div
@@ -207,21 +212,24 @@ export default function ScrollableCalendar({
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-              <Column className="gap-3">
-                {allEntries && allEntries.map((entry) =>
-                  <HappinessCard
+
+              {allEntries && allEntries.map((entry) =>
+                <>
+                  <EntryPreviewCard
                     key={entry.id}
-                    data={entry}
-                    selected={entry.id === selectedEntry?.id}
+                    journal={entry}
                     click={() => {
                       if (entry.timestamp !== selectedDate) {
                         setSelectedDate(entry.timestamp);
                         setEditing(false);
                       }
                     }}
-                  />)}
-              </Column>
-
+                    selected={entry.timestamp === selectedEntry?.timestamp}
+                  />
+                  <div className="h-4" />
+                </>
+              )
+              }
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

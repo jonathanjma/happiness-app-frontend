@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/IconClose";
 import IconFilter from "../../assets/IconFilter";
@@ -43,7 +43,32 @@ export default function SearchBar() {
   };
 
   const { api } = useApi();
-  const { data } = useQuery<Happiness[]>({
+  const createQuery = (): Record<string, any> => {
+    const query: Record<string, any> = {};
+    if (text !== "") {
+      query.text = text;
+    }
+    if (!isNaN(new Date(startDate).getTime())) {
+      query.start = formatDate(parseYYYYmmddFormat(startDate));
+    }
+    if (!isNaN(new Date(endDate).getTime())) {
+      query.end = formatDate(parseYYYYmmddFormat(endDate));
+    }
+    if (query.start && !query.end) {
+      query.end = formatDate(new Date());
+    }
+    if (query.end && !query.start) {
+      query.start = "2000-01-01";
+    }
+    if (startValue !== 0 || endValue !== 10) {
+      query.low = startValue;
+      query.high = endValue;
+    }
+    return query;
+  };
+
+  const [{ data }, { data: count, }] = useQueries([{
+    // Query first 5 search results
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
       { start: formatDate(parseYYYYmmddFormat(startDate)) },
@@ -54,22 +79,27 @@ export default function SearchBar() {
       { text: text },
     ],
     queryFn: async () => {
-      const query: Record<string, any> = {
-        low: startValue,
-        high: endValue,
-        count: 5,
-        text: text,
-      };
-      if (!isNaN(new Date(startDate).getTime())) {
-        query.start = formatDate(parseYYYYmmddFormat(startDate));
-      }
-      if (!isNaN(new Date(endDate).getTime())) {
-        query.end = formatDate(parseYYYYmmddFormat(endDate));
-      }
+      const query = createQuery();
+      query.count = 5;
       const res = await api.get<Happiness[]>("/happiness/search", query);
       return res.data;
     }
-  });
+  }, {
+    // Find the number of total matching results
+    queryKey: [
+      QueryKeys.FETCH_HAPPINESS_COUNT,
+      { start: formatDate(parseYYYYmmddFormat(startDate)) },
+      { end: formatDate(parseYYYYmmddFormat(endDate)) },
+      { low: startValue },
+      { high: endValue },
+      { text: text },
+    ],
+    queryFn: async () => {
+      const query = createQuery();
+      const res = await api.get<Number>("/happiness/search/count", query);
+      return res.data;
+    }
+  }]);
 
 
   // Add keyboard listener for pressing enter and navigation between entries
@@ -182,7 +212,9 @@ export default function SearchBar() {
       {/* Results preview */}
       {resultsShowing &&
         <Card className="absolute translate-y-16 left-0 right-0 border-gray-200 shadow-md2 z-50">
-          {data && data.length === 0 ? <p className="mx-4 my-3 text-gray-400">No entries match the query</p> :
+          {data && data.length === 0 ? <p className="mx-4 my-3 text-gray-400">
+            {Object.keys(createQuery()).length === 0 ? "Type to search, or apply filters" : "No entries match the query"}
+          </p> :
             <>
               {data && data.map((h, index) =>
                 <div
@@ -203,7 +235,9 @@ export default function SearchBar() {
           <Row className="px-4 py-3 w-full bg-gray-50 border-t-1 border-gray-200">
             <label className="text-gray-400">Press ↑ or ↓ to navigate. Press ENTER or press button to open in Entries</label>
             <div className="flex flex-grow " />
-            <a className="underline text-sm text-gray-400 hover:cursor-pointer">View All Search Results</a>
+            <a className={`${!count || count?.number === 0 ? "" : "underline"} text-sm text-gray-400 hover:cursor-pointer`}>
+              {!count || count?.number === 0 ? "No search results" : `View All${count ? ` ${count.number} ` : " "}Search Results`}
+            </a>
           </Row>
         </Card>
       }

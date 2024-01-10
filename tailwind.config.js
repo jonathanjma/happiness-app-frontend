@@ -22,6 +22,7 @@ module.exports = {
       "gray-300": "#D5D5D5",
       "gray-400": "#808080",
       "gray-600": "#575F68",
+      "gray-800": "#212121",
       medium_yellow: "#F6E2AE",
       yellow: "#F0CF78",
       yellow2: "#E5C877",
@@ -29,7 +30,7 @@ module.exports = {
       transparent: "rgba(255,255,255,0)",
       white: "#FFFFFF",
       brand_off_white: "#FAFAFA",
-      error: "#EC7070",
+      error: "#EC7070"
     },
     extend: {
       padding: {
