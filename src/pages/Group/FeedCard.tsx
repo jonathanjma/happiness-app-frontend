@@ -35,13 +35,19 @@ export default function FeedCard({
 
   const [isFirstUpdate, setIsFirst] = useState(true);
 
+  // if we are not tracking reads the entry can be assumed to be read
+  const [isRead, setIsRead] = useState(!trackRead);
+
   const [readBoundaryRef, inView] = useInView({
-    skip: !trackRead,
+    skip: isRead,
     onChange: (status, entry) => {
       // if going out of view and not the first update, don't want to trigger than as it will either be:
       // off-screen (so not seen yet) or on-screen (doesn't matter since it's not off-screen yet)
       if (!status && !isFirstUpdate) {
         console.log(`${data.author.username} ${data.timestamp} read`);
+        // then() not needed since if the request fails it won't matter since this has no visual effect
+        api.post("/reads/", { happiness_id: data.id });
+        setIsRead(true);
       }
       if (isFirstUpdate) setIsFirst(false);
     },
