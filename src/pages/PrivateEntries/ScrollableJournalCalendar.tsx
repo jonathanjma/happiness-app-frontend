@@ -204,7 +204,7 @@ export default function ScrollableJournalCalendar({
           {isError ? (
             <p className="m-3">Error: Could not load happiness data.</p>
           ) : (
-            <div className="px-8">
+            <div className="mx-8 w-[108px]">
               <div ref={topRef} className="relative m-3 min-h-[100px]">
                 {hasPreviousPage ? (
                   <Spinner text="Loading entries..." />
