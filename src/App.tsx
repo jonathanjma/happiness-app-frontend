@@ -9,10 +9,12 @@ import UserProvider from "./contexts/UserProvider";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import Group from "./pages/Group/Group";
 import CreateGroup from "./pages/CreateGroup/CreateGroup";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster />
       <ApiProvider>
         <UserProvider>
           <Routes>

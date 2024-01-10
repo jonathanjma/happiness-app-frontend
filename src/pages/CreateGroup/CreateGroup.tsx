@@ -10,6 +10,7 @@ import { SimpleUser, User } from "../../data/models/User";
 import { useApi } from "../../contexts/ApiProvider";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { Group } from "../../data/models/Group";
+import toast from "react-hot-toast";
 
 export default function CreateGroup() {
   const { api } = useApi();
@@ -22,7 +23,7 @@ export default function CreateGroup() {
   const [nameError, setNameError] = useState("");
   const [userAddError, setUserAddError] = useState("");
 
-  // Create group, invite users, and navigate to group
+  // Create group, invite users, navigate to group, and show toast
   const createGroup = async () => {
     const newGroup = await api.post<Group>("/group/", {
       name: groupName,
@@ -31,6 +32,13 @@ export default function CreateGroup() {
       invite_users: groupUsers.map((u) => u.username),
     });
     navigate("/groups/" + newGroup.data.id);
+    toast.custom(
+      <div className="flex w-[400px] justify-center rounded-lg bg-light_yellow p-4">
+        <p className="p-0 font-semibold text-secondary">
+          Successfully Created Group
+        </p>
+      </div>,
+    );
   };
 
   // If group name provided, open creation confirmation dialog
