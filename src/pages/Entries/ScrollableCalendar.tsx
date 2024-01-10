@@ -148,7 +148,7 @@ export default function ScrollableCalendar({
     setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
-  // remain scrolled to same day in calendar new content prepended
+  // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
     // remember div scroll height before previous page fetch
     if (isFetchingPreviousPage) {

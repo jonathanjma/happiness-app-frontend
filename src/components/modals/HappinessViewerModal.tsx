@@ -5,6 +5,7 @@ import Column from "../layout/Column";
 import Row from "../layout/Row";
 import Modal from "./Modal";
 import { dateFromStr } from "../../utils";
+import { dateOrTodayYesterday } from "../../pages/Group/GroupFeed";
 
 export default function HappinessViewerModal({
   happiness,
@@ -38,11 +39,14 @@ export default function HappinessViewerModal({
               {happiness.author.username}
             </p>
             <label className="leading-4 text-gray-400 ">
-              {dateFromStr(happiness.timestamp).toLocaleDateString("en-us", {
-                year: "2-digit",
-                month: "2-digit",
-                day: "2-digit",
-              })}
+              {dateOrTodayYesterday(
+                happiness.timestamp,
+                dateFromStr(happiness.timestamp).toLocaleString("en-us", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }),
+              )}
             </label>
           </Column>
           <div className="flex flex-1" />

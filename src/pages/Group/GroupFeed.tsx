@@ -91,7 +91,10 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       <FeedCard
         key={entry.id * (unreadReq ? -1 : 1)}
         data={entry}
-        isNew={unreadReq}
+        isNew={
+          unreadReq ||
+          allUnreadEntries!.findIndex((elt) => elt.id == entry.id) !== -1
+        }
         onClick={() => setSelectedEntry(entry)}
       />
     );
@@ -99,11 +102,8 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
     // add date boundary if the previous entry has a different timestamp
     if (prevEntry === undefined || entry.timestamp !== prevEntry.timestamp) {
       return (
-        <>
-          <h5
-            key={entry.timestamp + " " + unreadReq}
-            className="mb-4 text-gray-400"
-          >
+        <div key={entry.timestamp + " " + unreadReq}>
+          <h5 className="mb-4 text-gray-400">
             {dateOrTodayYesterday(
               entry.timestamp,
               dateFromStr(entry.timestamp).toLocaleDateString("en-us", {
@@ -114,7 +114,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
             )}
           </h5>
           {feedCard}
-        </>
+        </div>
       );
     }
     return feedCard;

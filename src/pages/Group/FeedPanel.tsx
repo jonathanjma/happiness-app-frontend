@@ -21,7 +21,6 @@ export default function FeedPanel({ groupData }: { groupData: Group }) {
             />
             <Column className="justify-center">
               <p className="text-gray-600">{user.username}</p>
-              {/*<p className="font-normal text-gray-600">{user.created}</p>*/}
             </Column>
           </Row>
         ))}

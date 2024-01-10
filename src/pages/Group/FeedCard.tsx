@@ -2,7 +2,6 @@ import Row from "../../components/layout/Row";
 import Column from "../../components/layout/Column";
 import { Happiness } from "../../data/models/Happiness";
 import Card from "../../components/Card";
-import TimeAgo from "javascript-time-ago";
 import CommentIcon from "../../assets/comment.svg";
 import { useQuery } from "react-query";
 import { Comment } from "../../data/models/Comment";
@@ -10,6 +9,7 @@ import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import { dateOrTodayYesterday } from "./GroupFeed";
+import { dateFromStr } from "../../utils";
 
 export default function FeedCard({
   data,
@@ -20,23 +20,20 @@ export default function FeedCard({
   isNew: boolean;
   onClick: () => void;
 }) {
-  const timeAgo = new TimeAgo("en-US");
-
   const { api } = useApi();
   const commentsResult = useQuery<Comment[]>(
     [QueryKeys.FETCH_COMMENTS, { id: data.id }],
     () =>
-      api.get<Comment[]>(`/happiness/${data.id}/comments`).then((res) => {
-        // console.log("hi");
-        return res.data;
-      }),
+      api
+        .get<Comment[]>(`/happiness/${data.id}/comments`)
+        .then((res) => res.data),
   );
 
   return (
     <>
       <Card className="mb-4 border-0 p-4 shadow-md2 hover:cursor-pointer">
         <div data-hs-overlay="#happiness-viewer" onClick={onClick}>
-          {/* Header- user details, unread indicator, and score */}
+          {/* Header: user details, unread indicator, and score */}
           <Row className="mb-4 items-center gap-x-2">
             <img
               src={data.author.profile_picture}
@@ -45,13 +42,13 @@ export default function FeedCard({
             <Column className="flex-grow">
               <p className="text-gray-600">{data.author.username}</p>
               <Row className="gap-x-2">
-                <label
-                  className="font-normal text-gray-400"
-                  title={data.timestamp}
-                >
+                <label className="font-normal text-gray-400">
                   {dateOrTodayYesterday(
                     data.timestamp,
-                    timeAgo.format(new Date(data.timestamp + "T23:59:59")),
+                    dateFromStr(data.timestamp).toLocaleString("en-us", {
+                      month: "long",
+                      day: "numeric",
+                    }),
                   )}
                 </label>
                 {isNew && (
@@ -63,12 +60,12 @@ export default function FeedCard({
             </Column>
             <h3 className="text-gray-600">{data.value.toFixed(1)}</h3>
           </Row>
-          {/* Body- entry comment */}
+          {/* Body: entry comment */}
           <p className="line-clamp-3 p-0 font-normal text-gray-600">
             {data.comment}
           </p>
           <hr className="my-4 border-gray-100" />
-          {/* Footer- discussion comment info */}
+          {/* Footer: discussion comment info */}
           <Row className="items-center justify-between">
             {commentsResult.isLoading ? (
               <Spinner />
