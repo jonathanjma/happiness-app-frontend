@@ -9,7 +9,7 @@ module.exports = {
       xl: ["1.5rem", "2rem"] /* h4 */,
       "2xl": ["1.75rem", "2.25rem"] /* h3 */,
       "3xl": ["2rem", "2.25rem"] /* h2 */,
-      "4xl": ["2.25rem", "2.75rem"] /* h1 */
+      "4xl": ["2.25rem", "2.75rem"] /* h1 */,
     },
     colors: {
       "gray-50": "#F5F5F5",
@@ -51,9 +51,10 @@ module.exports = {
       },
       boxShadow: {
         md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
-        md2: "0px 2px 20px 0px rgba(0, 0, 0, 0.15)"
-      }
-    }
+        md2: "0px 2px 20px 0px rgba(0, 0, 0, 0.15)",
+        "form-selected": "0px 0px 4px 2px rgba(240, 207, 120, 0.25)"
+      },
+    },
   },
   content: ["./src/**/*.{js,ts,jsx,tsx}", "node_modules/preline/dist/*.js"],
   plugins: [require("preline/plugin")]

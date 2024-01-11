@@ -1,5 +1,6 @@
 export enum Constants {
   TOKEN = "token",
+  PASSWORD_KEY = "passwordKey",
   LOADING_MUTATION_TEXT = "Applying changes...",
   FINISHED_MUTATION_TEXT = "Updated",
   ERROR_MUTATION_TEXT = "Failed to apply changes, please try again later",
@@ -8,13 +9,19 @@ export enum Constants {
 
 export enum QueryKeys {
   FETCH_HAPPINESS = "fetchHappiness",
+  FETCH_HAPPINESS_COUNT = "fetchHappinessCount",
   FETCH_COMMENTS = "fetchComments",
   FETCH_USER_GROUPS = "fetchUserGroups",
   FETCH_GROUP_INFO = "fetchGroupInfo",
   FETCH_GROUP_HAPPINESS = "fetchGroupHappiness",
   FETCH_GROUP_HAPPINESS_UNREAD = "fetchGroupHappinessUnread",
+  FETCH_JOURNAL = "fetchJournal",
+  FETCH_JOURNAL_COUNT = "fetchJournalCount",
+  INFINITE = "infiniteQuery"
 }
 
 export enum MutationKeys {
   MUTATE_HAPPINESS = "mutateHappiness",
+  MUTATE_JOURNAL = "mutateJournal",
+  MUTATE_PASSWORD_KEY = "mutatePasswordKey",
 }

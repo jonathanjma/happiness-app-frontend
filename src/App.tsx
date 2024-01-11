@@ -6,6 +6,8 @@ import SignIn from "./pages/SignIn/SignIn";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
+import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
+import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import Group from "./pages/Group/Group";
 import CreateGroup from "./pages/CreateGroup/CreateGroup";
@@ -40,10 +42,10 @@ export default function App() {
                           path="/groups/create"
                           element={<CreateGroup />}
                         />
-                        {/* <Route path="/statistics" element={<Statistics />} /> */}
+                        <Route path="/journal" element={<PrivateEntries />} />
+                        <Route path="/statistics" element={<Statistics />} />
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
                         {/* <Route path="/settings" element={<Settings />} /> */}
-                        {/* <Route path="/history/:userID" element={<History />} /> */}
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>
                     }

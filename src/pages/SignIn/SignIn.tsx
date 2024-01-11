@@ -7,7 +7,7 @@ export default function SignIn() {
   const { loginUser } = useUser();
   return (
     <div>
-      <p className="text-black">username</p>
+      <p className="gray-800">username</p>
       <input type="username" onChange={(e) => setUsername(e.target.value)} />
       <p>Password</p>
       <input type="password" onChange={(e) => setPassword(e.target.value)} />
