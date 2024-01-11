@@ -33,6 +33,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
       api
         .get<Happiness[]>(`/group/${groupData.id}/happiness/unread`)
         .then((res) => res.data),
+    cacheTime: 0, // disable cache since this causes stale reads to be shown on initial load
   });
 
   // infinite query for fetching regular entries
@@ -133,7 +134,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
           )}
         </>
       )}
-      {/* Don't show regular feed until unread feed has been consumed */}
+      {/* Don't show regular feed until unread feed has been loaded */}
       {!unreadQuery.isLoading && (
         <>
           {feedQuery.isLoading ? (
