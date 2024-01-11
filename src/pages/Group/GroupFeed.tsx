@@ -1,7 +1,7 @@
 import { Group } from "../../data/models/Group";
 import Spinner from "../../components/Spinner";
 import { useApi } from "../../contexts/ApiProvider";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { QueryKeys } from "../../constants";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import FeedCard from "./FeedCard";
@@ -24,55 +24,39 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
 
   // for infinite scroll
-  const [unreadRef, unreadInView] = useInView();
   const [bottomRef, bottomInView] = useInView();
 
-  // used by React query to keep track of next page to fetch
-  const getNextPageParam = (lastPage: HappinessPagination) => {
-    // no more pages left if the last page is empty
-    if (lastPage.data.length === 0) return false;
-    return lastPage.page + 1; // increment page number to fetch
-  };
-
-  const fetcher = (page: number, unreadReq: boolean) =>
-    api
-      .get<Happiness[]>(
-        `/group/${groupData.id}/happiness/${unreadReq ? "unread" : "count"}`,
-        {
-          page: page,
-        },
-      )
-      .then((res): HappinessPagination => {
-        return {
-          data: res.data,
-          page: page,
-        };
-      });
-
-  // infinite query for fetching unread entries
-  const unreadQuery = useInfiniteQuery<HappinessPagination>({
+  // query for fetching unread entries
+  const unreadQuery = useQuery<Happiness[]>({
     queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS_UNREAD, groupData.id],
-    queryFn: ({ pageParam = 1 }) => fetcher(pageParam, true),
-    getNextPageParam: getNextPageParam,
+    queryFn: () =>
+      api
+        .get<Happiness[]>(`/group/${groupData.id}/happiness/unread`)
+        .then((res) => res.data),
   });
 
   // infinite query for fetching regular entries
   const feedQuery = useInfiniteQuery<HappinessPagination>({
     queryKey: [QueryKeys.FETCH_GROUP_HAPPINESS, groupData.id],
-    queryFn: ({ pageParam = 1 }) => fetcher(pageParam, false),
-    getNextPageParam: getNextPageParam,
+    queryFn: ({ pageParam = 1 }) =>
+      api
+        .get<Happiness[]>(`/group/${groupData.id}/happiness/count`, {
+          page: pageParam,
+        })
+        .then((res): HappinessPagination => {
+          return {
+            data: res.data,
+            page: pageParam,
+          };
+        }),
+    getNextPageParam: (lastPage: HappinessPagination) => {
+      // no more pages left if the last page is empty
+      if (lastPage.data.length === 0) return false;
+      return lastPage.page + 1; // increment page number to fetch
+    },
   });
 
   // flatten React query pagination object into single list
-  const allUnreadEntries = useMemo(
-    () =>
-      unreadQuery.data?.pages.reduce(
-        (acc: Happiness[], page) => [...acc, ...page.data],
-        [],
-      ),
-    [unreadQuery.data],
-  );
-
   const allFeedEntries = useMemo(
     () =>
       feedQuery.data?.pages.reduce(
@@ -93,7 +77,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
         data={entry}
         isNew={
           unreadReq ||
-          allUnreadEntries!.findIndex((elt) => elt.id == entry.id) !== -1
+          unreadQuery.data!.findIndex((elt) => elt.id == entry.id) !== -1
         }
         onClick={() => setSelectedEntry(entry)}
         trackRead={unreadReq}
@@ -123,10 +107,6 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
 
   // load more entries when bottom of infinite scroll reached
   useEffect(() => {
-    if (unreadInView && unreadQuery.hasNextPage) unreadQuery.fetchNextPage();
-  }, [unreadInView]);
-
-  useEffect(() => {
     if (bottomInView && feedQuery.hasNextPage) feedQuery.fetchNextPage();
   }, [bottomInView]);
 
@@ -140,26 +120,21 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
           {unreadQuery.isError ? (
             <h5 className="text-gray-400">Error: Could not load entries.</h5>
           ) : (
-            <div>
-              {allUnreadEntries!.length > 0 && <h5 className="mb-4">Unread</h5>}
-              {allUnreadEntries!.map((entry, i) =>
+            <>
+              {unreadQuery.data!.length > 0 && <h5 className="mb-4">Unread</h5>}
+              {unreadQuery.data!.map((entry, i) =>
                 entryToJsx(
                   entry,
-                  i > 0 ? allUnreadEntries![i - 1] : undefined,
+                  i > 0 ? unreadQuery.data![i - 1] : undefined,
                   true,
                 ),
               )}
-              <div ref={unreadRef} className="m-3">
-                {unreadQuery.hasNextPage && (
-                  <Spinner text="Loading entries..." />
-                )}
-              </div>
-            </div>
+            </>
           )}
         </>
       )}
       {/* Don't show regular feed until unread feed has been consumed */}
-      {unreadQuery.hasNextPage !== undefined && !unreadQuery.hasNextPage && (
+      {!unreadQuery.isLoading && (
         <>
           {feedQuery.isLoading ? (
             <Spinner />
