@@ -11,9 +11,11 @@ import { useApi } from "../../contexts/ApiProvider";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { Group } from "../../data/models/Group";
 import toast from "react-hot-toast";
+import { useUser } from "../../contexts/UserProvider";
 
 export default function CreateGroup() {
   const { api } = useApi();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const [groupName, setGroupName] = useState("");
@@ -45,7 +47,6 @@ export default function CreateGroup() {
   const validateName = () => {
     if (!groupName) setNameError("Name cannot be empty.");
     else {
-      // @ts-ignore
       window.HSOverlay.open(document.querySelector("#create-confirm")!);
     }
   };
@@ -55,9 +56,10 @@ export default function CreateGroup() {
     if (!curUserAdd) {
       setUserAddError("Username cannot be empty.");
     } else if (
-      groupUsers.find(
+      groupUsers.findIndex(
         (u) => u.username.toLowerCase() === curUserAdd.toLowerCase(),
-      ) !== undefined
+      ) !== -1 ||
+      curUserAdd.toLowerCase() === user!.username.toLowerCase()
     ) {
       setUserAddError("User is already a member.");
     } else {

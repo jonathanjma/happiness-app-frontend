@@ -13,6 +13,7 @@ import { dateFromStr } from "../../utils";
 import { useInView } from "react-intersection-observer";
 import { useState } from "react";
 
+// Card for happiness entries shown in group feed
 export default function FeedCard({
   data,
   isNew,
@@ -35,16 +36,17 @@ export default function FeedCard({
 
   const [isFirstUpdate, setIsFirst] = useState(true);
 
-  // if we are not tracking reads the entry can be assumed to be read
+  // if we are not tracking reads the entry can be assumed to have been read
   const [isRead, setIsRead] = useState(!trackRead);
 
-  const [readBoundaryRef, inView] = useInView({
+  // used to detect if the user has scrolled past this entry so it can be marked as read
+  const [readBoundaryRef] = useInView({
     skip: isRead,
-    onChange: (status, entry) => {
-      // if going out of view and not the first update, don't want to trigger than as it will either be:
+    onChange: (status) => {
+      // if going out of view and this is the first update, don't want to mark as read as it will either be:
       // off-screen (so not seen yet) or on-screen (doesn't matter since it's not off-screen yet)
       if (!status && !isFirstUpdate) {
-        console.log(`${data.author.username} ${data.timestamp} read`);
+        // console.log(`${data.author.username} ${data.timestamp} read`);
         // then() not needed since if the request fails it won't matter since this has no visual effect
         api.post("/reads/", { happiness_id: data.id });
         setIsRead(true);

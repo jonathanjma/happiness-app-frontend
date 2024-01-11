@@ -74,7 +74,9 @@ export default function Group() {
       ) : (
         <>
           {isError ? (
-            <h5 className="mx-8 mt-16">Error: Could not load group.</h5>
+            <p className="mx-8 mt-16 text-gray-400">
+              Error: Could not load group.
+            </p>
           ) : (
             <>
               {/* Header */}

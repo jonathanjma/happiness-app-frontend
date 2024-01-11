@@ -33,11 +33,13 @@ export default function UserGroups() {
       ) : (
         <>
           {isError ? (
-            <h5 className="m-3">Error: Could not load groups.</h5>
+            <p className="text-gray-400">Error: Could not load groups.</p>
           ) : (
             <>
               {data!.groups.length === 0 ? (
-                <h5 className="m-3">You are not a member of any groups.</h5>
+                <p className="text-gray-400">
+                  You are not a member of any groups.
+                </p>
               ) : (
                 <div className="grid w-full grid-cols-2 gap-6">
                   {data!.groups.map((group) => (

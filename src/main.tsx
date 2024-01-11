@@ -5,6 +5,12 @@ import App from "./App";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 
+declare global {
+  interface Window {
+    HSOverlay: any;
+  }
+}
+
 // @ts-ignore
 import("preline");
 TimeAgo.addDefaultLocale(en);

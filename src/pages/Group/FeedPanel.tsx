@@ -3,6 +3,7 @@ import Column from "../../components/layout/Column";
 import { Group } from "../../data/models/Group";
 import GroupFeed from "./GroupFeed";
 
+// Content for the feed tab panel on the groups page
 export default function FeedPanel({ groupData }: { groupData: Group }) {
   return (
     <Row className="h-full gap-x-8 py-4">

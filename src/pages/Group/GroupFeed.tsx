@@ -19,6 +19,8 @@ export const dateOrTodayYesterday = (date: string, otherwise: string) => {
   else return otherwise;
 };
 
+// The group feed first shows the user's unread entries in the group (which are marked as read as they are scrolled past)
+// followed by an infinite scroll of all the group's entries
 export default function GroupFeed({ groupData }: { groupData: Group }) {
   const { api } = useApi();
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
@@ -142,29 +144,33 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
           ) : (
             <>
               {feedQuery.isError ? (
-                <h5 className="text-gray-400">
-                  Error: Could not load entries.
-                </h5>
+                <p className="text-gray-400">Error: Could not load entries.</p>
               ) : (
-                <div>
-                  <h5 className="my-4">Feed</h5>
-                  <>
-                    {allFeedEntries!.map((entry, i) =>
-                      entryToJsx(
-                        entry,
-                        i > 0 ? allFeedEntries![i - 1] : undefined,
-                        false,
-                      ),
-                    )}
-                  </>
-                  <div ref={bottomRef} className="m-3">
-                    {feedQuery.hasNextPage ? (
-                      <Spinner text="Loading entries..." />
-                    ) : (
-                      <p className="">No more entries!</p>
-                    )}
-                  </div>
-                </div>
+                <>
+                  {allFeedEntries!.length > 0 ? (
+                    <div>
+                      <h5 className="my-4">Feed</h5>
+                      <>
+                        {allFeedEntries!.map((entry, i) =>
+                          entryToJsx(
+                            entry,
+                            i > 0 ? allFeedEntries![i - 1] : undefined,
+                            false,
+                          ),
+                        )}
+                      </>
+                      <div ref={bottomRef} className="m-3">
+                        {feedQuery.hasNextPage ? (
+                          <Spinner text="Loading entries..." />
+                        ) : (
+                          <p>No more entries!</p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-400">Nothing to see here!</p>
+                  )}
+                </>
               )}
             </>
           )}
