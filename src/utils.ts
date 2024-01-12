@@ -107,3 +107,25 @@ export function useWindowDimensions() {
 
   return windowDimensions;
 }
+
+/**
+ * A custom hook to detect if the user is online.
+ * @returns live boolean variable representing the user's connection state.
+ */
+export function useOnline() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const onlineHanlder = () => { setIsOnline(true); };
+    const offlineHanlder = () => { setIsOnline(false); };
+    window.addEventListener("online", onlineHanlder);
+    window.addEventListener("offline", offlineHanlder);
+
+    return () => {
+      window.removeEventListener("online", onlineHanlder);
+      window.removeEventListener("offline", offlineHanlder);
+    };
+  });
+
+  return isOnline;
+}

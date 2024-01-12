@@ -53,7 +53,7 @@ export default function LoginModal({ id }: { id: string; }) {
     >
       <Row className="gap-1 my-4 w-[500px]">
         <p>Don't have an account?</p>
-        <p className="text-secondary underline hover:cursor-pointer" onClick={
+        <p className="text-secondary underline hover:cursor-pointer font-semibold" onClick={
           () => {
             console.log(`TODO open create account modal`);
           }}>
