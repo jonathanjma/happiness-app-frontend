@@ -41,6 +41,10 @@ export default function LoginModal({ id }: { id: string; }) {
     setHasError(false);
   }, [username, password]);
 
+  const handleLogin = () => {
+    if (!hasError) loginMutation.mutate();
+  };
+
 
   return (
     <ClosableModal
@@ -69,6 +73,7 @@ export default function LoginModal({ id }: { id: string; }) {
         value={password}
         onChangeValue={setPassword}
         type="password"
+        onEnterPressed={handleLogin}
       />
       {hasError ? <p className="text-error my-4">
         Incorrect email, username or password.
@@ -77,9 +82,7 @@ export default function LoginModal({ id }: { id: string; }) {
         <Button
           label="Log In"
           size="LARGE"
-          onClick={
-            () => { if (!hasError) loginMutation.mutate(); }
-          }
+          onClick={handleLogin}
           icon={loginMutation.isLoading ? <Spinner variaton="SMALL" /> : undefined}
         />
         <Button label="Forgot password?" variation="TEXT" />

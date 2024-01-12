@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { useUser } from "../../contexts/UserProvider";
-import LoginModal from "./LoginModal";
+import SignUpModal from "./SignUpModal";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -24,7 +24,7 @@ export default function SignIn() {
         Log in
       </button>
       <Button label="Open modal" associatedModalId="sign-in-modal" />
-      <LoginModal id="sign-in-modal" />
+      <SignUpModal id="sign-in-modal" />
     </div>
   );
 }
