@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import IconWarningOutline from "../assets/IconWarningOutline";
 import Column from "./layout/Column";
 import Row from "./layout/Row";
 interface TextFieldProps {
@@ -9,6 +10,7 @@ interface TextFieldProps {
   supportingIcon?: React.ReactElement;
   innerIcon?: React.ReactElement;
   hasError?: boolean;
+  errorText?: string;
   isEnabled?: boolean;
   value: string;
   onChangeValue: React.Dispatch<React.SetStateAction<string>>;
@@ -16,15 +18,21 @@ interface TextFieldProps {
   onEnterPressed?: () => void;
 }
 /**
- * Generic TextField component for use for Happiness App
- * @param value text field content
- * @param onChangeValue action when the value changes
- * @param className style to default to if editingStyle, disabledStyle, or emptyStyle is null
- * @param disabledStyle style to use whenever the textarea is disabled
- * @param emptyStyle style to use when text field content is empty but the text field is not disabled
- * @param editingStyle style to use when the text field is not disabled and not empty
- * @param enabled a boolean value representing whether the textarea is enabled
- * @returns TextArea component
+ * TextArea component for Happiness App
+ * @param title the title of the text area
+ * @param type the type of the input element
+ * @param hint the hint text for the text area
+ * @param supportingText the supporting text for the text area
+ * @param supportingIcon the supporting icon for the text area, will only show if hasError is false
+ * @param innerIcon the inner icon for the text area
+ * @param hasError a boolean value indicating whether the text area has an error
+ * @param errorText text that will only show if there is an error, will show even if there is supporting text
+ * @param isEnabled a boolean value indicating whether the text area is enabled
+ * @param value the value of the text area
+ * @param onChangeValue the function to handle value changes
+ * @param className the class name for the text area
+ * @param onEnterPressed the function to handle enter key press
+ * @returns TextArea component 
  */
 export default function TextArea({
   title,
@@ -34,6 +42,7 @@ export default function TextArea({
   supportingIcon,
   innerIcon,
   hasError = false,
+  errorText = "",
   isEnabled = true,
   value,
   onChangeValue,
@@ -81,12 +90,17 @@ export default function TextArea({
         />
         <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>
       </Row>
-      {(supportingText || supportingIcon) && (
+      {(supportingText || supportingIcon || hasError) && (
         <Row className="items-center gap-1">
-          {supportingIcon}
+          {hasError ? <IconWarningOutline color="#EC7070" /> : supportingIcon}
           {supportingText && (
-            <label className={hasError ? " text-error" : " text-gray-400"}>
+            <label className="text-gray-400">
               {supportingText}
+            </label>
+          )}
+          {hasError && errorText && (
+            <label className="text-error">
+              {errorText}
             </label>
           )}
         </Row>

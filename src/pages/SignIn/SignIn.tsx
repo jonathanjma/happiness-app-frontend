@@ -8,9 +8,15 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const { loginUser } = useUser();
   useEffect(() => {
-    // @ts-ignore
-    window.HSOverlay.open(document.querySelector("#sign-in-modal"));
-  }, []);
+    const doThing = () => {
+      // @ts-ignore
+      window.HSOverlay.open(document.querySelector("#sign-in-modal"));
+    };
+    try {
+      setTimeout(doThing, 10);
+    } catch (_) { }
+
+  }, [document.querySelector("#sign-in-modal")]);
   return (
     <div>
       <p className="text-black">username</p>
