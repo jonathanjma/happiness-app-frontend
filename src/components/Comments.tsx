@@ -96,7 +96,9 @@ export default function Comments({
   if (commentsResult.isLoading) {
     return (
       <>
-        <h5 className={`my-1 ${modalVariant ? "text-gray-400" : "gray-800"}`}>
+        <h5
+          className={`my-1 ${modalVariant ? "text-gray-400" : "text-gray-800"}`}
+        >
           Comments loading...
         </h5>
         <div className="h-0.25 w-full bg-gray-200" />
@@ -118,7 +120,9 @@ export default function Comments({
 
   return (
     <>
-      <h5 className={`my-1 ${modalVariant ? "text-gray-400" : "gray-800"}`}>
+      <h5
+        className={`my-1 ${modalVariant ? "text-gray-400" : "text-gray-800"}`}
+      >
         {myComments.length === 0
           ? "Comments"
           : `Comments (${myComments.length})`}

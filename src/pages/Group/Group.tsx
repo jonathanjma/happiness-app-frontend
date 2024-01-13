@@ -1,10 +1,9 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { Group } from "../../data/models/Group";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import SettingsIcon from "../../assets/settings.svg";
-import LeftArrowIcon from "../../assets/arrow_left.svg";
 import PostIcon from "../../assets/post.svg";
 import GraphIcon from "../../assets/graph.svg";
 import TableIcon from "../../assets/table.svg";
@@ -12,6 +11,7 @@ import FeedPanel from "./FeedPanel";
 import Row from "../../components/layout/Row";
 import React from "react";
 import { QueryKeys } from "../../constants";
+import BackButton from "../../components/BackButton";
 
 function TabButton({
   index,
@@ -81,16 +81,11 @@ export default function Group() {
             <>
               {/* Header */}
               <div className="mx-8 h-[220px] pt-16">
-                <Row className="mb-6">
-                  <Link to="/groups">
-                    <Row>
-                      <img src={LeftArrowIcon} className="max-w-[24px]" />
-                      <label className="font-normal text-gray-600">
-                        Back to Groups
-                      </label>
-                    </Row>
-                  </Link>
-                </Row>
+                <BackButton
+                  relativeUrl="/groups"
+                  text="Back to Groups"
+                  className="mb-6"
+                />
                 <Row className="mb-6 w-full justify-between">
                   <h2 className="m-0 self-center font-semibold">
                     {data!.name}

@@ -1,6 +1,5 @@
 import Row from "../../components/layout/Row";
-import { Link, useNavigate } from "react-router-dom";
-import LeftArrowIcon from "../../assets/arrow_left.svg";
+import { useNavigate } from "react-router-dom";
 import RemoveIcon from "../../assets/close.svg";
 import React, { useState } from "react";
 import TextField from "../../components/TextField";
@@ -12,6 +11,8 @@ import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { Group } from "../../data/models/Group";
 import toast from "react-hot-toast";
 import { useUser } from "../../contexts/UserProvider";
+import ToastMessage from "../../components/ToastMessage";
+import BackButton from "../../components/BackButton";
 
 export default function CreateGroup() {
   const { api } = useApi();
@@ -33,19 +34,16 @@ export default function CreateGroup() {
     await api.put<Group>("/group/" + newGroup.data.id, {
       invite_users: groupUsers.map((u) => u.username),
     });
+    // won't be executed if any of the requests above fail with an error
     navigate("/groups/" + newGroup.data.id);
     toast.custom(
-      <div className="flex w-[400px] justify-center rounded-lg bg-light_yellow p-4">
-        <p className="p-0 font-semibold text-secondary">
-          Successfully Created Group
-        </p>
-      </div>,
+      <ToastMessage message="Successfully Created Group and Invited Users" />,
     );
   };
 
   // If group name provided, open creation confirmation dialog
   const validateName = () => {
-    if (!groupName) setNameError("Name cannot be empty.");
+    if (groupName.trim().length === 0) setNameError("Name cannot be empty.");
     else {
       window.HSOverlay.open(document.querySelector("#create-confirm")!);
     }
@@ -83,14 +81,7 @@ export default function CreateGroup() {
     <>
       <Column className="mx-8 mb-4 mt-16 gap-y-6">
         {/* Header */}
-        <Row>
-          <Link to="/groups">
-            <Row>
-              <img src={LeftArrowIcon} className="max-w-[24px]" />
-              <label className="font-normal text-gray-600">Back</label>
-            </Row>
-          </Link>
-        </Row>
+        <BackButton relativeUrl="/groups" text="Back" />
         <h2 className="font-semibold">Create a Group</h2>
         {/* Input Fields */}
         <TextField
@@ -107,6 +98,7 @@ export default function CreateGroup() {
           supportingText={userAddError}
           hasError={userAddError !== ""}
           onEnterPressed={addUser}
+          tooltip="(press enter to add user to list)"
           innerElements={
             groupUsers.length !== 0 ? (
               <>

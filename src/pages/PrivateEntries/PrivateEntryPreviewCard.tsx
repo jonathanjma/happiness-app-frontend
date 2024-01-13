@@ -3,7 +3,7 @@ import Card from "../../components/Card";
 import { Journal } from "../../data/models/Journal";
 import { formatDate, parseYYYYmmddFormat } from "../../utils";
 
-export default function EntryPreviewCard({
+export default function PrivateEntryPreviewCard({
   click,
   selected,
   journal,
@@ -35,7 +35,10 @@ export default function EntryPreviewCard({
           {date.toLocaleString("en-us", { weekday: "long" })}
         </label>
         <p className="z-10 font-semibold leading-5 text-gray-600">
-          {date.toLocaleDateString("en-us", { month: "short", day: "numeric" })}
+          {date.toLocaleDateString("en-us", {
+            month: "short",
+            day: "numeric",
+          })}
         </p>
         <div className="absolute translate-x-[36px] translate-y-[43px] overflow-hidden">
           <UnlockedIcon width={60} height={78} opacity={0.08} />

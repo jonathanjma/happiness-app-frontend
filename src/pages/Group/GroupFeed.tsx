@@ -69,6 +69,7 @@ export default function GroupFeed({ groupData }: { groupData: Group }) {
     [feedQuery.data],
   );
 
+  // convert happiness list from API to FeedCards and add date boundaries
   const entryToJsx = (
     entry: Happiness,
     prevEntry: Happiness | undefined,

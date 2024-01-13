@@ -13,7 +13,8 @@ import {
   modifyDateDay,
   parseYYYYmmddFormat,
 } from "../../utils";
-import EntryPreviewCard from "./EntryPreviewCard";
+import PrivateEntryPreviewCard from "./PrivateEntryPreviewCard";
+import Column from "../../components/layout/Column";
 
 export default function ScrollableJournalCalendar({
   selectedEntry,
@@ -212,11 +213,10 @@ export default function ScrollableJournalCalendar({
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-
-              {allEntries &&
-                allEntries.map((entry) => (
-                  <>
-                    <EntryPreviewCard
+              <Column className="gap-3">
+                {allEntries &&
+                  allEntries.map((entry) => (
+                    <PrivateEntryPreviewCard
                       key={entry.id}
                       journal={entry}
                       click={() => {
@@ -227,9 +227,8 @@ export default function ScrollableJournalCalendar({
                       }}
                       selected={entry.timestamp === selectedEntry?.timestamp}
                     />
-                    <div className="h-4" />
-                  </>
-                ))}
+                  ))}
+              </Column>
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

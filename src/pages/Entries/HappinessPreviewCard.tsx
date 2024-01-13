@@ -2,9 +2,10 @@ import Card from "../../components/Card";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
+import { dateFromStr } from "../../utils";
 
 // Shows the data and score of a happiness entry in the scrollable calendar
-export default function HappinessCard({
+export default function HappinessPreviewCard({
   data,
   selected,
   click,
@@ -13,12 +14,12 @@ export default function HappinessCard({
   selected: boolean;
   click: () => void;
 }) {
-  const date = new Date(data.timestamp + "T00:00:00");
+  const date = dateFromStr(data.timestamp);
   let classes = "elevation-01";
   const isToday =
     date.toLocaleDateString("sv") === new Date().toLocaleDateString("sv");
   if (selected) {
-    classes += " border-0 bg-yellow shadow-md2";
+    classes += " border-0 bg-yellow";
   } else if (data.value < 0) {
     classes += " bg-white";
   } else {
@@ -44,12 +45,11 @@ export default function HappinessCard({
               <label className="leading-4">
                 {date.toLocaleString("en-us", { weekday: "long" })}
               </label>
-              <p className="font-semibold  leading-5">
-                {" "}
+              <p className="font-semibold leading-5">
                 {date.toLocaleString("en-us", {
                   month: "short",
                   day: "numeric",
-                })}{" "}
+                })}
               </p>
             </Column>
             <div className="flex flex-1" />

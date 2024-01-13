@@ -185,9 +185,7 @@ export default function SearchBar() {
       </Row>
       {/* Filter card */}
       {filterShowing && (
-        <Card
-          className={`absolute left-0 right-0 z-50 translate-y-16 border-1 border-gray-200 bg-white py-3 shadow-md2`}
-        >
+        <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200 bg-white py-3">
           {/* Score */}
           <Column className="gap-1 p-4">
             <label className="text-gray-400">Score</label>
@@ -249,7 +247,7 @@ export default function SearchBar() {
 
       {/* Results preview */}
       {resultsShowing && (
-        <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200 shadow-md2">
+        <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200">
           {data && data.length === 0 ? (
             <p className="mx-4 my-3 text-gray-400">
               {Object.keys(createQuery()).length === 0

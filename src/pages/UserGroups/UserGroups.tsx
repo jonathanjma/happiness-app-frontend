@@ -12,7 +12,7 @@ export default function UserGroups() {
   const navigate = useNavigate();
   const { api } = useApi();
   const { isLoading, data, isError } = useQuery<UserGroups>(
-    QueryKeys.FETCH_USER_GROUPS,
+    [QueryKeys.FETCH_USER_GROUPS],
     () => api.get<UserGroups>("/group/user").then((res) => res.data),
   );
 

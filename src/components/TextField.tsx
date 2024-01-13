@@ -16,6 +16,7 @@ interface TextFieldProps {
   onChangeValue: React.Dispatch<React.SetStateAction<string>>;
   className?: string;
   onEnterPressed?: () => void;
+  tooltip?: string;
 }
 
 /**
@@ -43,6 +44,7 @@ export default function TextField({
   onChangeValue,
   className = "",
   onEnterPressed,
+  tooltip = "",
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -83,6 +85,7 @@ export default function TextField({
               onEnterPressed();
             }
           }}
+          title={tooltip}
         />
         <span className="h-6">{innerIcon}</span>
       </Row>

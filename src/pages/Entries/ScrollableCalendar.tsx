@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "react-query";
-import HappinessCard from "./HappinessCard";
+import HappinessPreviewCard from "./HappinessPreviewCard";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
@@ -214,7 +214,7 @@ export default function ScrollableCalendar({
               <Column className="gap-3">
                 {allEntries &&
                   allEntries.map((entry) => (
-                    <HappinessCard
+                    <HappinessPreviewCard
                       key={entry.id}
                       data={entry}
                       selected={entry.id === selectedEntry?.id}
@@ -227,7 +227,6 @@ export default function ScrollableCalendar({
                     />
                   ))}
               </Column>
-
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

@@ -18,7 +18,7 @@ export default function SearchResult({
   const highlightedKeyword = `<span class="text-gray-800 font-semibold text-md bg-yellow">${keyword}</span>`;
 
   const highlightedComment = comment
-    .replace(new RegExp(`${keyword}`, "g"), highlightedKeyword)
+    .replace(new RegExp(keyword, "g"), highlightedKeyword)
     .substring(comment.indexOf(keyword) - 20);
   const sanitizedContent = DOMPurify.sanitize(highlightedComment);
 

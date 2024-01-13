@@ -57,7 +57,7 @@ export default function FeedCard({
 
   return (
     <>
-      <Card className="mb-4 border-0 p-4 shadow-md2 hover:cursor-pointer">
+      <Card className="mb-4 border-0 p-4 hover:cursor-pointer">
         <div data-hs-overlay="#happiness-viewer" onClick={onClick}>
           {/* Header: user details, unread indicator, and score */}
           <Row className="mb-4 items-center gap-x-2">
