@@ -43,7 +43,7 @@ export default function SignUpModal({ id }: { id: string; }) {
   // if the user tried submit we need to show errors:
   const [triedSubmit, setTriedSubmit] = useState(false);
 
-  // check in general if password is god
+  // check in general if password is good
   const hasPasswordError = () =>
     !isLongEnough || !hasNumber || !hasUppercase;
 
