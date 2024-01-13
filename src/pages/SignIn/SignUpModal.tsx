@@ -144,7 +144,9 @@ export default function SignUpModal({ id }: { id: string; }) {
     if (username.trim().length === 0) {
       setUsernameError("Username cannot be empty.");
     }
-    console.log(`valid email: ${validEmail}`);
+
+    // have to check much of this manually since the use state variables are
+    // unreliable right after being set
     if (hasValidEmail &&
       !hasPasswordError() &&
       usernameError === "" &&
