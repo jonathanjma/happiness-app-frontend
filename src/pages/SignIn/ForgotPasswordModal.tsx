@@ -24,6 +24,8 @@ export default function ForgotPasswordModal({ id, onLoginClick }: {
     }),
     onSuccess: () => {
       console.log(`TODO toast once Jonathan's PR is merged`);
+      // @ts-ignore
+      window.HSOverlay.close(document.querySelector(`#${id}`));
     },
     onError: () => {
       if (isOnline) {
