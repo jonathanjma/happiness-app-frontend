@@ -17,11 +17,12 @@ export enum QueryKeys {
   FETCH_GROUP_HAPPINESS_UNREAD = "fetchGroupHappinessUnread",
   FETCH_JOURNAL = "fetchJournal",
   FETCH_JOURNAL_COUNT = "fetchJournalCount",
-  INFINITE = "infiniteQuery"
+  INFINITE = "infiniteQuery",
 }
 
 export enum MutationKeys {
   MUTATE_HAPPINESS = "mutateHappiness",
   MUTATE_JOURNAL = "mutateJournal",
+  MUTATE_GROUP = "mutateGroup",
   MUTATE_PASSWORD_KEY = "mutatePasswordKey",
 }

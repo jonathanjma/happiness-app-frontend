@@ -13,6 +13,8 @@ import toast from "react-hot-toast";
 import { useUser } from "../../contexts/UserProvider";
 import ToastMessage from "../../components/ToastMessage";
 import BackButton from "../../components/BackButton";
+import { useMutation } from "react-query";
+import { MutationKeys } from "../../constants";
 
 export default function CreateGroup() {
   const { api } = useApi();
@@ -26,16 +28,30 @@ export default function CreateGroup() {
   const [nameError, setNameError] = useState("");
   const [userAddError, setUserAddError] = useState("");
 
+  const newGroupMutation = useMutation({
+    mutationFn: () =>
+      api
+        .post<Group>("/group/", {
+          name: groupName,
+        })
+        .then((res) => res.data),
+    mutationKey: MutationKeys.MUTATE_GROUP,
+  });
+
+  const inviteUsersMutation = useMutation({
+    mutationFn: (groupId: number) =>
+      api.put<Group>("/group/" + groupId, {
+        invite_users: groupUsers.map((u) => u.username),
+      }),
+    mutationKey: MutationKeys.MUTATE_GROUP,
+  });
+
   // Create group, invite users, navigate to group, and show toast
   const createGroup = async () => {
-    const newGroup = await api.post<Group>("/group/", {
-      name: groupName,
-    });
-    await api.put<Group>("/group/" + newGroup.data.id, {
-      invite_users: groupUsers.map((u) => u.username),
-    });
+    const newGroup = await newGroupMutation.mutateAsync();
+    await inviteUsersMutation.mutateAsync(newGroup.id);
     // won't be executed if any of the requests above fail with an error
-    navigate("/groups/" + newGroup.data.id);
+    navigate("/groups/" + newGroup.id);
     toast.custom(
       <ToastMessage message="Successfully Created Group and Invited Users" />,
     );
