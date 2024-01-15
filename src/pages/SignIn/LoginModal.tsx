@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
-import TextArea from "../../components/TextArea";
+import TextField from "../../components/TextField";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
 import { Constants } from "../../constants";
@@ -64,14 +64,14 @@ export default function LoginModal({ id, onCreateAccountClick, onForgotPassword 
       </Row>
       <div className="bg-gray-100 h-[1px] w-full" />
       <div className="h-6" />
-      <TextArea
-        title="Username"
+      <TextField
+        label="Username"
         value={username}
         onChangeValue={setUsername}
       />
       <div className="h-4" />
-      <TextArea
-        title="Password:"
+      <TextField
+        label="Password:"
         value={password}
         onChangeValue={setPassword}
         type="password"

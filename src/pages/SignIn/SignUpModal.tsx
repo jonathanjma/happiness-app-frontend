@@ -5,7 +5,7 @@ import IconCheck from "../../assets/IconCheck";
 import IconWarningOutline from "../../assets/IconWarningOutline";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
-import TextArea from "../../components/TextArea";
+import TextField from "../../components/TextField";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
@@ -183,23 +183,23 @@ export default function SignUpModal({ id, onLoginClick }: {
       </Row>
       <div className="bg-gray-100 w-full h-[1px]" />
       <Column className="gap-4 my-6">
-        <TextArea
-          title="Username"
+        <TextField
+          label="Username"
           value={username}
           onChangeValue={setUsername}
           errorText={usernameError}
           hasError={usernameError !== ""}
         />
-        <TextArea
-          title="Email Address"
+        <TextField
+          label="Email Address"
           value={email}
           onChangeValue={setEmail}
           hasError={!validEmail}
           errorText="Email address is invalid."
         />
         <Column>
-          <TextArea
-            title="Password:"
+          <TextField
+            label="Password:"
             value={password}
             onChangeValue={setPassword}
             type="password"
@@ -226,8 +226,8 @@ export default function SignUpModal({ id, onLoginClick }: {
             </>
           }
         </Column>
-        <TextArea
-          title="Confirm Password:"
+        <TextField
+          label="Confirm Password:"
           value={confirmPassword}
           onChangeValue={setConfirmPassword}
           onEnterPressed={handleCreateAccount}

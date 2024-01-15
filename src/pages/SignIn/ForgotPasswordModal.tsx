@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
-import TextArea from "../../components/TextArea";
+import TextField from "../../components/TextField";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
 import { useApi } from "../../contexts/ApiProvider";
@@ -53,10 +53,10 @@ export default function ForgotPasswordModal({ id, onLoginClick }: {
       leftContent={<h4>Forgot password</h4>}
     >
       <div className=" bg-gray-100 w-[436px] h-[1px] mt-4 mb-6" />
-      <TextArea
+      <TextField
         value={email}
         onChangeValue={setEmail}
-        title="Enter your email"
+        label="Enter your email"
         onEnterPressed={handlePasswordReset}
         errorText={emailError}
         hasError={emailError !== ""}

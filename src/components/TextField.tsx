@@ -22,7 +22,7 @@ interface TextFieldProps {
 }
 
 /**
- * TextArea component for Happiness App
+ * TextField component for Happiness App
  * @param title the title of the text area
  * @param type the type of the input element
  * @param hint the hint text for the text area
