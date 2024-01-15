@@ -20,6 +20,7 @@ export default function SignUpModal({ id, onLoginClick }: {
   id: string;
   onLoginClick: () => void;
 }) {
+  // check if user is online to display proper error messages
   const isOnline = useOnline();
 
   // text fields
