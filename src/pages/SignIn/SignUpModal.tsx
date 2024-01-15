@@ -16,7 +16,10 @@ import { Token } from "../../data/models/Token";
 import { User } from "../../data/models/User";
 import { useOnline } from "../../utils";
 
-export default function SignUpModal({ id }: { id: string; }) {
+export default function SignUpModal({ id, onLoginClick }: {
+  id: string;
+  onLoginClick: () => void;
+}) {
   const isOnline = useOnline();
 
   // text fields
@@ -169,11 +172,11 @@ export default function SignUpModal({ id }: { id: string; }) {
 
   return (
     <ClosableModal id={id} leftContent={<h4>Sign Up</h4>}>
-      <Row className="w-[500px] gap-1 my-4">
+      <Row className="w-[436px] gap-1 my-4">
         <p>Already have an account?</p>
         <p
           className="underline text-secondary hover:cursor-pointer font-semibold"
-          onClick={() => { console.log("TODO open login modal"); }}>
+          onClick={onLoginClick}>
           Log In
         </p>
       </Row>
