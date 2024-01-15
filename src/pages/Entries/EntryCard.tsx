@@ -46,11 +46,18 @@ export default function EntryCard({
   const navigate = useNavigate();
   const { api } = useApi();
   // console.log(`happiness: ${JSON.stringify(happiness)}`);
-  const { data: count } = useQuery([QueryKeys.FETCH_JOURNAL_COUNT, { timestamp: happiness.timestamp }], {
-    queryFn: () =>
-      api.get<Number>("/journal/dates/count/", { start: happiness.timestamp, end: happiness.timestamp })
-        .then((res) => res.data)
-  });
+  const { data: count } = useQuery(
+    [QueryKeys.FETCH_JOURNAL_COUNT, { timestamp: happiness.timestamp }],
+    {
+      queryFn: () =>
+        api
+          .get<Number>("/journal/dates/count/", {
+            start: happiness.timestamp,
+            end: happiness.timestamp,
+          })
+          .then((res) => res.data),
+    },
+  );
 
   return (
     <>
@@ -61,21 +68,28 @@ export default function EntryCard({
         }
       >
         {/* Header text */}
-        {count ? <Row className="items-center">
-          <p className="text-dark_gray">{count.number > 0 ?
-            "You have a private entry for this date."
-            : "You don't have a private entry for this date."}</p>
-          <span className="w-3" />
-          <p
-            className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
-            onClick={() => {
-              navigate("/journal", { state: { date: happiness.timestamp } });
-            }}
-          >
-            {count.number > 0 ? "View Private Entry" : "Create a Private Entry"}
-          </p>
-        </Row> : <EntryTextSkeleton />}
-
+        {count ? (
+          <Row className="items-center">
+            <p className="text-gray-600">
+              {count.number > 0
+                ? "You have a private entry for this date."
+                : "You don't have a private entry for this date."}
+            </p>
+            <span className="w-3" />
+            <p
+              className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
+              onClick={() => {
+                navigate("/journal", { state: { date: happiness.timestamp } });
+              }}
+            >
+              {count.number > 0
+                ? "View Private Entry"
+                : "Create a Private Entry"}
+            </p>
+          </Row>
+        ) : (
+          <EntryTextSkeleton />
+        )}
 
         <div className=" h-4" />
 
@@ -83,7 +97,7 @@ export default function EntryCard({
         <Row>
           <Column>
             <h4>Public Entry</h4>
-            <h5 className=" text-dark_gray">
+            <h5 className=" text-gray-600">
               {new Date(happiness.timestamp).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
@@ -145,7 +159,7 @@ export default function EntryCard({
             {editing && (
               <Row className="mt-1 gap-1">
                 {happiness.value === -1 ||
-                  networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <IconClock />

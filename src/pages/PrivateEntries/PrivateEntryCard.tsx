@@ -30,36 +30,48 @@ export default function PrivateEntryCard({
 }) {
   const { api } = useApi();
   // data tto check if we have a public entry for this date or not
-  const { data } = useQuery<Happiness[]>
-    ([QueryKeys.FETCH_HAPPINESS, { date: journal.timestamp }], {
-      queryFn: () => api.get<Happiness[]>("/happiness/", { start: journal.timestamp, end: journal.timestamp }).then((res) => res.data)
-    });
+  const { data } = useQuery<Happiness[]>(
+    [QueryKeys.FETCH_HAPPINESS, { date: journal.timestamp }],
+    {
+      queryFn: () =>
+        api
+          .get<Happiness[]>("/happiness/", {
+            start: journal.timestamp,
+            end: journal.timestamp,
+          })
+          .then((res) => res.data),
+    },
+  );
 
   const navigate = useNavigate();
 
   return (
     <Column
       className={
-        "h-full flex-1 flex items-stretch rounded-2xl bg-white p-6 shadow-2xl " +
+        "flex h-full flex-1 items-stretch rounded-2xl bg-white p-6 shadow-2xl " +
         className
       }
     >
-      {data ? <Row className="items-center">
-        <p className="text-dark_gray">
-          {data.length > 0 ? "You have a public entry for this date."
-            : "You don't have a public entry."}
-        </p>
-        <span className="w-3" />
-        <p
-          className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
-          onClick={() => {
-            navigate("/home", { state: { date: journal.timestamp } });
-          }}
-        >
-          {data.length > 0 ? "View public entry" : "Create a public entry"}
-        </p>
-      </Row> : <EntryTextSkeleton />}
-
+      {data ? (
+        <Row className="items-center">
+          <p className="text-gray-600">
+            {data.length > 0
+              ? "You have a public entry for this date."
+              : "You don't have a public entry."}
+          </p>
+          <span className="w-3" />
+          <p
+            className="clickable-text font-semibold leading-4 text-secondary underline hover:cursor-pointer"
+            onClick={() => {
+              navigate("/home", { state: { date: journal.timestamp } });
+            }}
+          >
+            {data.length > 0 ? "View public entry" : "Create a public entry"}
+          </p>
+        </Row>
+      ) : (
+        <EntryTextSkeleton />
+      )}
 
       <div className=" h-4" />
 
@@ -67,7 +79,7 @@ export default function PrivateEntryCard({
       <Row>
         <Column>
           <h4>Private Entry</h4>
-          <h5 className=" text-dark_gray">
+          <h5 className=" text-gray-600">
             {new Date(journal.timestamp).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
@@ -84,7 +96,7 @@ export default function PrivateEntryCard({
       {/* Private entry and textbox  */}
       <textarea
         placeholder="Write about your day"
-        className="h-[420px] w-full resize-none rounded-lg bg-transparent focus:outline-none border-1 border-solid border-gray-200 p-5"
+        className="h-[420px] w-full resize-none rounded-lg border-1 border-solid border-gray-200 bg-transparent p-5 focus:outline-none"
         value={journal.data}
         onChange={(e) => {
           onChangeJournalText(e.target.value);

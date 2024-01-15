@@ -130,30 +130,34 @@ export default function HappinessForm({ height }: { height: number }) {
             "w-1/2 rounded-l-lg border p-1 " +
             (radioValue === 1
               ? "border-yellow bg-yellow text-secondary"
-              : "border-r-0.5 border-gray-100 bg-white text-dark_gray")
+              : "border-r-0.5 border-gray-100 bg-white text-gray-600")
           }
           onClick={() => {
             setRadioValue(1);
           }}
         >
-          <label className="hover:cursor-pointer text-base font-semibold">Yesterday</label>
+          <label className="text-base font-semibold hover:cursor-pointer">
+            Yesterday
+          </label>
         </button>
         <button
           className={
             "border-right w-1/2 rounded-r-lg border-1.5 p-1 " +
             (radioValue === 2
               ? "border-yellow bg-yellow text-secondary"
-              : "border-l-0.5 border-gray-100 bg-white text-dark_gray")
+              : "border-l-0.5 border-gray-100 bg-white text-gray-600")
           }
           onClick={() => {
             setRadioValue(2);
           }}
         >
-          <label className="hover:cursor-pointer text-base font-semibold">Today</label>
+          <label className="text-base font-semibold hover:cursor-pointer">
+            Today
+          </label>
         </button>
       </div>
       <div className="mb-4 rounded-xl bg-white p-4">
-        <div className="text-sm font-medium text-dark_gray">
+        <div className="text-sm font-medium text-gray-600">
           {selDate.toLocaleString("en-us", { weekday: "long" })}
         </div>
         <div className="flex w-full items-center">
@@ -183,7 +187,7 @@ export default function HappinessForm({ height }: { height: number }) {
             value={comment}
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
-            className={`mt-2 min-h-[112px] w-full resize-none overflow-hidden rounded-lg p-2 text-left text-sm font-medium text-dark_gray outline-none outline-1 outline-gray-100`}
+            className={`mt-2 min-h-[112px] w-full resize-none overflow-hidden rounded-lg p-2 text-left text-sm font-medium text-gray-600 outline-none outline-1 outline-gray-100`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
@@ -192,7 +196,7 @@ export default function HappinessForm({ height }: { height: number }) {
           />
         </div>
         <div className="mt-2 flex w-full text-sm">
-          <div className="w-1/2 font-medium text-dark_gray">
+          <div className="w-1/2 font-medium text-gray-600">
             {radioValue === 2
               ? selDate.toLocaleTimeString([], {
                   hour: "2-digit",
@@ -201,7 +205,7 @@ export default function HappinessForm({ height }: { height: number }) {
               : ""}
           </div>
           {/* Currently the time doesn't update so i need to fix that */}
-          <div className="w-1/2 text-right font-medium text-light_gray">
+          <div className="w-1/2 text-right font-medium text-gray-400">
             {networkingState}
           </div>
         </div>

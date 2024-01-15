@@ -7,6 +7,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
+
 /**
  * The page for displaying entries with the scrollable calendar
  * append `?date=YYYY-MM-DD` to the URL to jump to a certain date
@@ -91,7 +92,7 @@ export default function Entries() {
           setEditing={setEditing}
         />
       </div>
-      <div className="h-full w-full pr-8 pb-4 pt-8">
+      <div className="h-full w-full pb-4 pr-8 pt-8">
         <EntryCard
           happiness={
             selectedEntry ?? {
@@ -106,12 +107,12 @@ export default function Entries() {
           editing={editing}
           onChangeHappinessNumber={(value: number) => {
             setSelectedEntry((selected) =>
-              (selected ? { ...selected, value: value } : undefined)
+              selected ? { ...selected, value: value } : undefined,
             );
           }}
           onChangeCommentText={(text: string) => {
             setSelectedEntry((selected) =>
-              (selected ? { ...selected, comment: text } : undefined)
+              selected ? { ...selected, comment: text } : undefined,
             );
           }}
           setEditing={setEditing}
