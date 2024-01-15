@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import { useLocation } from "react-router-dom";
-import Spinner from "../../components/Spinner";
-import Column from "../../components/layout/Column";
-import { QueryKeys } from "../../constants";
+import HappinessPreviewCard from "./HappinessPreviewCard";
 import { useApi } from "../../contexts/ApiProvider";
-import { useUser } from "../../contexts/UserProvider";
+import Spinner from "../../components/Spinner";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
-import { dateFromStr, formatDate, modifyDateDay, parseYYYYmmddFormat } from "../../utils";
-import HappinessCard from "./HappinessCard";
+import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
+import { useUser } from "../../contexts/UserProvider";
+import { QueryKeys } from "../../constants";
+import { useInView } from "react-intersection-observer";
+import { useLocation } from "react-router-dom";
+import Column from "../../components/layout/Column";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
@@ -28,13 +28,15 @@ export default function ScrollableCalendar({
   );
   const [madeFirstSelection, setMadeFirstSelection] = useState(false);
 
-  // start calendar at today if novalid date argument provided, otherwise start at the provided date
+  // start calendar at today if no valid date argument provided, otherwise start at the provided date
   const location = useLocation();
-  const startDateStr = location.state?.date ?? new URLSearchParams(useLocation().search).get("date");
+  const startDateStr =
+    location.state?.date ??
+    new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
   const startDate =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
-      ? parseYYYYmmddFormat(startDateStr)
+      ? dateFromStr(startDateStr)
       : today;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -109,9 +111,13 @@ export default function ScrollableCalendar({
     fetchPreviousPage,
     hasPreviousPage,
   } = useInfiniteQuery<HappinessPagination>(
-    [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE, {
-      start: startDate,
-    }],
+    [
+      QueryKeys.FETCH_HAPPINESS,
+      QueryKeys.INFINITE,
+      {
+        start: startDate,
+      },
+    ],
     ({ pageParam = 0 }) => fetcher(pageParam),
     {
       getPreviousPageParam: (firstPage) => {
@@ -123,7 +129,6 @@ export default function ScrollableCalendar({
       getNextPageParam: (lastPage) => {
         return lastPage.page + 1; // increment page number to fetch
       },
-      refetchOnWindowFocus: false,
     },
   );
 
@@ -161,12 +166,12 @@ export default function ScrollableCalendar({
 
   // autoscroll past top loading message on load
   useEffect(() => {
-    // height of loading msg + margin is 100 + 12 = 112
-    scrollRef.current!.scrollTop = 112 + 1; // + 1 needed to avoid triggering top load
+    // height of loading msg + margin is 85 + 20 = 105
+    scrollRef.current!.scrollTop = 105 + 1; // + 1 needed to avoid triggering top load
     setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
-  // remain scrolled to same day in calendar new content prepended
+  // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
     // remember div scroll height before previous page fetch
     if (isFetchingPreviousPage) {
@@ -183,15 +188,14 @@ export default function ScrollableCalendar({
 
   // display details of selected entry
   useEffect(() => {
-    const matchingEntry = allEntries?.find((entry) => entry.timestamp === selectedDate);
+    const matchingEntry = allEntries?.find(
+      (entry) => entry.timestamp === selectedDate,
+    );
     setSelectedEntry((entry) => matchingEntry ?? entry);
   }, [selectedDate, allEntries]);
 
   return (
-    <div
-      ref={scrollRef}
-      className="scroll-hidden h-full overflow-auto"
-    >
+    <div ref={scrollRef} className="scroll-hidden h-full overflow-auto">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -200,7 +204,7 @@ export default function ScrollableCalendar({
             <p className="m-3">Error: Could not load happiness data.</p>
           ) : (
             <div className="mx-8 w-[108px]">
-              <div ref={topRef} className="relative m-3 min-h-[100px]">
+              <div ref={topRef} className="relative m-3 mb-5 min-h-[85px]">
                 {hasPreviousPage ? (
                   <Spinner text="Loading entries..." />
                 ) : (
@@ -208,20 +212,21 @@ export default function ScrollableCalendar({
                 )}
               </div>
               <Column className="gap-3">
-                {allEntries && allEntries.map((entry) =>
-                  <HappinessCard
-                    key={entry.id}
-                    data={entry}
-                    selected={entry.id === selectedEntry?.id}
-                    click={() => {
-                      if (entry.timestamp !== selectedDate) {
-                        setSelectedDate(entry.timestamp);
-                        setEditing(false);
-                      }
-                    }}
-                  />)}
+                {allEntries &&
+                  allEntries.map((entry) => (
+                    <HappinessPreviewCard
+                      key={entry.id}
+                      data={entry}
+                      selected={entry.id === selectedEntry?.id}
+                      click={() => {
+                        if (entry.timestamp !== selectedDate) {
+                          setSelectedDate(entry.timestamp);
+                          setEditing(false);
+                        }
+                      }}
+                    />
+                  ))}
               </Column>
-
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

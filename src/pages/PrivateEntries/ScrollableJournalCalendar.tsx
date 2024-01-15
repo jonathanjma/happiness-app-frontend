@@ -7,13 +7,19 @@ import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Journal, JournalPagination } from "../../data/models/Journal";
-import { dateFromStr, formatDate, modifyDateDay, parseYYYYmmddFormat } from "../../utils";
-import EntryPreviewCard from "./EntryPreviewCard";
+import {
+  dateFromStr,
+  formatDate,
+  modifyDateDay,
+  parseYYYYmmddFormat,
+} from "../../utils";
+import PrivateEntryPreviewCard from "./PrivateEntryPreviewCard";
+import Column from "../../components/layout/Column";
 
 export default function ScrollableJournalCalendar({
   selectedEntry,
   setSelectedEntry,
-  setEditing
+  setEditing,
 }: {
   selectedEntry: Journal | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Journal | undefined>>;
@@ -25,9 +31,11 @@ export default function ScrollableJournalCalendar({
     formatDate(new Date()),
   );
 
-  // start calendar at today if novalid date argument provided, otherwise start at the provided date
+  // start calendar at today if no valid date argument provided, otherwise start at the provided date
   const location = useLocation();
-  const startDateStr = location.state?.date ?? new URLSearchParams(useLocation().search).get("date");
+  const startDateStr =
+    location.state?.date ??
+    new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
   const startDate =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
@@ -43,7 +51,6 @@ export default function ScrollableJournalCalendar({
   // For initializing the selection based on passed in date
   const [madeFirstSelection, setMadeFirstSelection] = useState(false);
 
-
   // use negative ids for days with no happiness entry
   let counter = useRef(-1);
 
@@ -57,14 +64,17 @@ export default function ScrollableJournalCalendar({
     );
     const end = modifyDateDay(startDate, -7 * page - (page > 0 ? 1 : 0));
 
-    const res = await api.get<Journal[]>("/journal/dates/",
+    const res = await api.get<Journal[]>(
+      "/journal/dates/",
       {
         start: formatDate(start),
-        end: formatDate(end)
+        end: formatDate(end),
       },
       {
-        headers: { "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY) }
-      }
+        headers: {
+          "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY),
+        },
+      },
     );
 
     const journalData = res.data;
@@ -72,9 +82,7 @@ export default function ScrollableJournalCalendar({
     // create empty happiness entries for missed days
     const itr = new Date(start);
     while (itr <= end) {
-      if (
-        !journalData.find((x) => x.timestamp === formatDate(itr))
-      ) {
+      if (!journalData.find((x) => x.timestamp === formatDate(itr))) {
         journalData.push({
           id: counter.current,
           user_id: user!.id,
@@ -126,17 +134,13 @@ export default function ScrollableJournalCalendar({
       getNextPageParam: (lastPage) => {
         return lastPage.page + 1; // increment page number to fetch
       },
-      refetchOnWindowFocus: false,
     },
   );
 
   // combine all entries in React Query pages object
   const allEntries = useMemo(
     () =>
-      data?.pages.reduce(
-        (acc: Journal[], page) => [...acc, ...page.data],
-        [],
-      ),
+      data?.pages.reduce((acc: Journal[], page) => [...acc, ...page.data], []),
     [data],
   );
 
@@ -152,12 +156,12 @@ export default function ScrollableJournalCalendar({
 
   // autoscroll past top loading message on load
   useEffect(() => {
-    // height of loading msg + margin is 100 + 12 = 112
-    scrollRef.current!.scrollTop = 112 + 1; // + 1 needed to avoid triggering top load
+    // height of loading msg + margin is 85 + 20 = 105
+    scrollRef.current!.scrollTop = 105 + 1; // + 1 needed to avoid triggering top load
     setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
-  // remain scrolled to same day in calendar new content prepended
+  // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
     // remember div scroll height before previous page fetch
     if (isFetchingPreviousPage) {
@@ -193,10 +197,7 @@ export default function ScrollableJournalCalendar({
   }, [startDate]);
 
   return (
-    <div
-      ref={scrollRef}
-      className="scroll-hidden h-full overflow-auto"
-    >
+    <div ref={scrollRef} className="scroll-hidden h-full overflow-auto">
       {isLoading ? (
         <Spinner className="m-3" />
       ) : (
@@ -205,31 +206,29 @@ export default function ScrollableJournalCalendar({
             <p className="m-3">Error: Could not load happiness data.</p>
           ) : (
             <div className="mx-8 w-[108px]">
-              <div ref={topRef} className="relative m-3 min-h-[100px]">
+              <div ref={topRef} className="relative m-3 mb-5 min-h-[85px]">
                 {hasPreviousPage ? (
                   <Spinner text="Loading entries..." />
                 ) : (
                   <p className="absolute bottom-0">No more entries!</p>
                 )}
               </div>
-
-              {allEntries && allEntries.map((entry) =>
-                <>
-                  <EntryPreviewCard
-                    key={entry.id}
-                    journal={entry}
-                    click={() => {
-                      if (entry.timestamp !== selectedDate) {
-                        setSelectedDate(entry.timestamp);
-                        setEditing(false);
-                      }
-                    }}
-                    selected={entry.timestamp === selectedEntry?.timestamp}
-                  />
-                  <div className="h-4" />
-                </>
-              )
-              }
+              <Column className="gap-3">
+                {allEntries &&
+                  allEntries.map((entry) => (
+                    <PrivateEntryPreviewCard
+                      key={entry.id}
+                      journal={entry}
+                      click={() => {
+                        if (entry.timestamp !== selectedDate) {
+                          setSelectedDate(entry.timestamp);
+                          setEditing(false);
+                        }
+                      }}
+                      selected={entry.timestamp === selectedEntry?.timestamp}
+                    />
+                  ))}
+              </Column>
               <div ref={bottomRef}>
                 <Spinner
                   className="m-3 min-h-[100px]"

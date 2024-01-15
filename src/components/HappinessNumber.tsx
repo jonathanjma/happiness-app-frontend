@@ -15,7 +15,7 @@ export default function HappinessNumber({
   value,
   onChangeValue,
   editable,
-  setNetworkingState = () => { },
+  setNetworkingState = () => {},
   sidebarStyle = false,
 }: {
   value: number;
@@ -69,7 +69,7 @@ export default function HappinessNumber({
     setHappinessDisplay(value === -1 ? "--" : value.toFixed(1));
   }, [value]);
 
-  const Changer = ({ change }: { change: number; }) => (
+  const Changer = ({ change }: { change: number }) => (
     <div
       className={
         "flex flex-col items-center justify-center hover:cursor-pointer" +
@@ -94,15 +94,13 @@ export default function HappinessNumber({
     </div>
   );
 
-
-
   return sidebarStyle ? (
     <div className="flex">
       {/* Input */}
       <Column>
         <input
           type="text"
-          step={.5}
+          step={0.5}
           max={10}
           min={0}
           value={happinessDisplay}
@@ -135,7 +133,6 @@ export default function HappinessNumber({
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
-
       </Column>
       <div className="flex-col">
         {editable && <Changer change={0.5} />}
@@ -150,7 +147,7 @@ export default function HappinessNumber({
       <Column>
         <input
           type="text"
-          step={.5}
+          step={0.5}
           max={10}
           min={0}
           value={happinessDisplay}
@@ -183,7 +180,6 @@ export default function HappinessNumber({
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
-
       </Column>
       <div className="h-3" />
       {editable && <Changer change={-0.5} />}

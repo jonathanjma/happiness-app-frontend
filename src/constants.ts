@@ -11,14 +11,19 @@ export enum QueryKeys {
   FETCH_HAPPINESS = "fetchHappiness",
   FETCH_HAPPINESS_COUNT = "fetchHappinessCount",
   FETCH_COMMENTS = "fetchComments",
+  FETCH_USER_GROUPS = "fetchUserGroups",
+  FETCH_GROUP_INFO = "fetchGroupInfo",
+  FETCH_GROUP_HAPPINESS = "fetchGroupHappiness",
+  FETCH_GROUP_HAPPINESS_UNREAD = "fetchGroupHappinessUnread",
   FETCH_JOURNAL = "fetchJournal",
   FETCH_JOURNAL_COUNT = "fetchJournalCount",
-  INFINITE = "infiniteQuery"
+  INFINITE = "infiniteQuery",
 }
 
 export enum MutationKeys {
   MUTATE_HAPPINESS = "mutateHappiness",
   MUTATE_JOURNAL = "mutateJournal",
+  MUTATE_GROUP = "mutateGroup",
   MUTATE_PASSWORD_KEY = "mutatePasswordKey",
   CREATE_ACCOUNT = "createAccount",
   LOG_IN = "logIn",

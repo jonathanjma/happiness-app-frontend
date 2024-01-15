@@ -2,12 +2,14 @@ import { useRef, useState } from "react";
 import IconWarningOutline from "../assets/IconWarningOutline";
 import Column from "./layout/Column";
 import Row from "./layout/Row";
+
 interface TextFieldProps {
-  title?: string;
+  label?: string;
   type?: React.HTMLInputTypeAttribute;
   hint?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
+  innerElements?: React.ReactElement;
   innerIcon?: React.ReactElement;
   hasError?: boolean;
   errorText?: string;
@@ -16,7 +18,9 @@ interface TextFieldProps {
   onChangeValue: React.Dispatch<React.SetStateAction<string>>;
   className?: string;
   onEnterPressed?: () => void;
+  tooltip?: string;
 }
+
 /**
  * TextArea component for Happiness App
  * @param title the title of the text area
@@ -32,14 +36,16 @@ interface TextFieldProps {
  * @param onChangeValue the function to handle value changes
  * @param className the class name for the text area
  * @param onEnterPressed the function to handle enter key press
- * @returns TextArea component 
+ * @param tooltip string to use as tooltip
+ * @returns TextArea component
  */
-export default function TextArea({
-  title,
+export default function TextField({
+  label,
   type = "text",
   hint = "",
   supportingText = "",
   supportingIcon,
+  innerElements,
   innerIcon,
   hasError = false,
   errorText = "",
@@ -47,27 +53,29 @@ export default function TextArea({
   value,
   onChangeValue,
   className = "",
-  onEnterPressed
+  onEnterPressed,
+  tooltip = "",
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
 
-  const borderStyle = "focus:shadow-form-selected items-center rounded-lg border-1 border-solid py-1 " +
+  const borderStyle =
+    "focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 " +
     (isFocused
       ? " shadow-form-selected border-yellow hover:border-yellow"
       : "") +
-    (hasError ? " border-error hover:border-error" : " hover:border-gray-400 border-gray-300");
+    (hasError
+      ? " border-error hover:border-error"
+      : " border-gray-300 hover:border-gray-400");
 
   return (
     <Column className={"w-[250px] gap-1 " + className}>
-      {title && <p className="text-gray-400">{title}</p>}
-      <Row
-        className={
-          borderStyle
-        }
-      >
+      {label && <p className="font-normal text-gray-400">{label}</p>}
+      <Row className={borderStyle}>
+        {innerElements}
+        {innerElements && <div className="mr-2"></div>}
         <input
-          className="ml-4 w-full focus:outline-none"
+          className="flex-grow ml-4 focus:outline-none"
           ref={input}
           type={type}
           value={value}
@@ -87,6 +95,7 @@ export default function TextArea({
               onEnterPressed();
             }
           }}
+          title={tooltip}
         />
         <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>
       </Row>

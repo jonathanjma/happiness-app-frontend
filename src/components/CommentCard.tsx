@@ -9,8 +9,7 @@ import TimeAgo from "javascript-time-ago";
  * @param comment the comment to display in the card
  * @returns
  */
-export default function CommentCard({ comment }: { comment: Comment; }) {
-
+export default function CommentCard({ comment }: { comment: Comment }) {
   const timeAgo = new TimeAgo("en-US");
   return (
     <Row className="px-6 py-4">
@@ -20,9 +19,13 @@ export default function CommentCard({ comment }: { comment: Comment; }) {
       />
       <div className="w-4" />
       <Column className="gap-2">
-        <h6 className="text-gray-400 font-semibold leading-4">{comment.author.username}</h6>
-        <p className="text-gray-600 leading-5"> {comment.text} </p>
-        <label className=" text-gray-400 leading-4"> {timeAgo.format(new Date(comment.timestamp))} </label>
+        <h6 className="font-semibold leading-4 text-gray-400">
+          {comment.author.username}
+        </h6>
+        <p className="leading-5 text-gray-600"> {comment.text} </p>
+        <label className=" leading-4 text-gray-400">
+          {timeAgo.format(new Date(comment.timestamp))}
+        </label>
       </Column>
     </Row>
   );
