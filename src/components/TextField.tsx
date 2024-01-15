@@ -1,5 +1,5 @@
-import Column from "./layout/Column";
 import React, { useRef, useState } from "react";
+import Column from "./layout/Column";
 import Row from "./layout/Row";
 
 interface TextFieldProps {
@@ -87,7 +87,9 @@ export default function TextField({
           }}
           title={tooltip}
         />
-        <span className="h-6">{innerIcon}</span>
+        {innerIcon &&
+          <span className="h-6">{innerIcon}</span>
+        }
       </Row>
       {(supportingText || supportingIcon) && (
         <Row className="items-center gap-1">
