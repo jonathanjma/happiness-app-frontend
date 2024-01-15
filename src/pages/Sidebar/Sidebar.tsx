@@ -22,7 +22,6 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
   ];
 
   const [selectedLink, setSelectedLink] = useState("");
-  console.log(selectedLink);
 
   const { height } = useWindowDimensions();
 

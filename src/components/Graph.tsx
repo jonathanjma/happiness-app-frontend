@@ -1,5 +1,6 @@
 import LineChart from "./LineChart";
 import { User } from "../data/models/User";
+import { useState } from "react";
 import { Happiness } from "../data/models/Happiness";
 import {
   ChartConfiguration,
@@ -11,6 +12,8 @@ import {
 } from "chart.js";
 import { Chart, ChartData, registerables } from "chart.js";
 import { formatDate, parseYYYYmmddFormat } from "../utils";
+import { ChartEvent } from "chart.js/dist/core/core.plugins";
+import { ActiveElement } from "chart.js/dist/plugins/plugin.tooltip";
 Chart.register(...registerables);
 
 /**
@@ -20,7 +23,8 @@ Chart.register(...registerables);
  * @param graphSubTitle the subtitle of the graph, displayed above graph and below graph title
  * @param showDay boolean determining whether to show day of week as label instead of date
  * @param uniqDays if true, shows only the days with happiness entered over all users, otherwise shows all dates in given range
- * @param range two-element list containing the start and end date objects for the graph (required if uniqDays = false)
+ * @param range two-element list containing the start and end date objects for the graph (required if uniqDays = false
+ * @param onSelectEntry function describing what happens when a specific happiness value is clicked
  * @returns
  */
 
@@ -31,6 +35,7 @@ export default function Graph({
   showDay = false,
   uniqDays = true,
   range,
+  onSelectEntry,
 }: {
   entries: Happiness[];
   graphTitle?: string;
@@ -38,6 +43,7 @@ export default function Graph({
   showDay?: boolean;
   uniqDays?: boolean;
   range: Date[];
+  onSelectEntry: (selectedEntry: Happiness) => void;
 }) {
   if (entries.length === 0) {
     console.log("empty entries");
@@ -119,19 +125,14 @@ export default function Graph({
   // console.log(happinessData);
   // console.log(datesList);
 
-  // console.log(graphLabels);
   // formattedValues is a list of objects that represent the dataset for the graph
   const formattedValues = usernameList.map((name, idx) => ({
     label: name,
     lineTension: 0.4,
     data: datesList.map((date) => {
-      // console.log(date);
-      // console.log(name);
-      // console.log(entries);
       const filtered = entries.filter(
         (entry) => entry.timestamp === date && entry.author.username === name,
       );
-      // console.log(filtered);
       return filtered.length === 1 ? filtered[0].value : NaN;
     }),
     borderColor: colors[idx % colors.length],
@@ -142,6 +143,21 @@ export default function Graph({
     pointHitRadius: 15,
   }));
 
+  const onClick = (evt: ChartEvent, elt: ActiveElement[]) => {
+    if (elt[0].index === undefined) return;
+    const foundEntry = entries.find(
+      (h) =>
+        h.timestamp === datesList[elt[0].index] &&
+        h.author.username === usernameList[elt[0].datasetIndex],
+    );
+    if (foundEntry) {
+      onSelectEntry(foundEntry);
+      console.log("ok");
+      // @ts-ignore
+      window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
+    }
+  };
+
   // chartData is the object passed to the LineChart component to create the graph. It contains...
   // labels: list of names for each x-axis value
   // datasets: list of data elements for graph
@@ -151,11 +167,9 @@ export default function Graph({
   };
   return (
     <>
-      <div className="flex w-full justify-center">
-        <div className="@lg:min-h-[500px] mb-4 flex min-h-[380px] w-full flex-wrap justify-center rounded-[10px] bg-brand_off_white py-8 shadow-lg">
-          <h4 className="flex w-full justify-center text-black">
-            {graphTitle}
-          </h4>
+      <div className="flex w-full flex-1 justify-center">
+        <div className="@lg:min-h-[500px] mb-4 flex min-h-[380px] w-full flex-1 flex-wrap justify-center rounded-[10px] bg-brand_off_white py-8 shadow-lg">
+          <h4 className="flex justify-center text-black">{graphTitle}</h4>
           <h5 className="flex w-full justify-center text-gray-400">
             {graphSubTitle}
           </h5>
@@ -165,7 +179,9 @@ export default function Graph({
                 No data for selected period.
               </div>
             ) : (
-              <LineChart chartData={chartData} />
+              <div className="flex flex-1">
+                <LineChart chartData={chartData} onClick={onClick} />
+              </div>
             )}
           </div>
         </div>

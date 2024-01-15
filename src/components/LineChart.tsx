@@ -1,16 +1,33 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 // don't delete below import!
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { Happiness } from "../data/models/Happiness";
 import { ChartData } from "chart.js";
 import { ChartType } from "chart.js";
+import { ChartEvent } from "chart.js/dist/core/core.plugins";
+import { getElementAtEvent } from "react-chartjs-2";
+import { ActiveElement } from "chart.js/dist/plugins/plugin.tooltip";
 
 export default function LineChart({
   chartData,
+  onClick,
 }: {
   chartData: ChartData<"line", number[], string>;
+  onClick: (evt: ChartEvent, element: ActiveElement[]) => void;
 }) {
+  // const chartRef = useRef(null);
+
+  //   useEffect(() => {
+  //     const chart = chartRef.current;
+
+  //     if (chart) {
+  //       console.log("ChartJS", chart);
+  //       // @ts-ignore
+  //       console.log(chart.chartInstance);
+  //     }
+  //   }, []);
+
   // function change_data(element) {
   //     if (element.length > 0) {
   //       let index = element[0].index;
@@ -21,13 +38,18 @@ export default function LineChart({
   // }
 
   return (
-    <div className="container flex w-full">
+    <div className="container">
       <Line
+        // ref={chartRef}
+        redraw={true}
+        updateMode="show"
         data={chartData}
         options={{
-          // onClick: (evt, element) => {
-          //   change_data(element);
-          // },
+          animation: {
+            duration: 0,
+          },
+          onClick: onClick,
+          responsive: true,
           maintainAspectRatio: false,
           plugins: {
             colors: {
