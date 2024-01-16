@@ -93,12 +93,21 @@ export default function HappinessTable({ group, startDate, endDate = formatDate(
                   (happiness) => happiness.timestamp === formatDate(date)
                     && happiness.author.username === user.username
                 );
-                return <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center ${happiness ? "hover:cursor-pointer" : ""}`}
+                let dataStyle = "px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center ";
+                if (happiness) {
+                  dataStyle += "hover:cursor-pointer ";
+                  if (happiness.comment) {
+                    console.log(`ADDED STYLE`);
+                    dataStyle += " has_comment";
+                  }
+                }
+                return <td className={dataStyle}
                   onClick={() => {
-                    console.log(`clicked`);
-                    setSelectedHappiness(happiness);
                     // @ts-ignore
                     window.HSOverlay.open(document.querySelector("#view-happiness"));
+                  }}
+                  onMouseEnter={() => {
+                    setSelectedHappiness(happiness);
                   }}
                 >
                   {happiness?.value}
