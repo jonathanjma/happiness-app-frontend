@@ -8,6 +8,13 @@ interface Action {
   label: string;
   onClick?: () => void;
 }
+
+/**
+ * `SmallHappinessCard` is a functional component that displays a small card with information about the Happiness object.
+ *
+ * @param {Happiness} happiness - An object of type `Happiness` which contains the details of a happiness event. It has properties like `value`, `timestamp`, and `author` which contains the `username`.
+ * @param {Action[]} actions - An optional array of `Action` objects. This will create buttons as seen in design
+ */
 export default function SmallHappinessCard({ happiness, actions = [] }: { happiness: Happiness, actions?: Action[]; }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
