@@ -75,7 +75,7 @@ export default function TextField({
         {innerElements}
         {innerElements && <div className="mr-2"></div>}
         <input
-          className="flex-grow ml-4 focus:outline-none"
+          className="flex-grow focus:outline-none"
           ref={input}
           type={type}
           value={value}
@@ -97,7 +97,8 @@ export default function TextField({
           }}
           title={tooltip}
         />
-        <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>
+        {innerIcon && <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>}
+
       </Row>
       {(supportingText || supportingIcon || hasError) && (
         <Row className="items-center gap-1">
