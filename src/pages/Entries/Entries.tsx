@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
-import SmallHappinessCard from "../../components/SmallHappinessCard";
 import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
@@ -94,15 +93,6 @@ export default function Entries() {
         />
       </div>
       <div className="h-full w-full pb-4 pr-8 pt-8">
-        <SmallHappinessCard happiness={selectedEntry ?? {
-          id: -1,
-          value: -1,
-          comment: "",
-          timestamp: Date.now().toString(),
-          author: user!,
-        }}
-          actions={[{ label: "View in feed" }, { label: "Expand" }]}
-        />
         <EntryCard
           happiness={
             selectedEntry ?? {
