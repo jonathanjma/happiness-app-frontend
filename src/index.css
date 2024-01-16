@@ -34,7 +34,7 @@
     }
 
     label {
-        @apply text-sm font-medium;
+        @apply text-sm font-medium leading-4;
     }
 
     caption {

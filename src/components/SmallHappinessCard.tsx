@@ -1,4 +1,3 @@
-import TimeAgo from "javascript-time-ago";
 import { Happiness } from "../data/models/Happiness";
 import { parseYYYYmmddFormat } from "../utils";
 import Card from "./Card";
@@ -7,14 +6,13 @@ import Row from "./layout/Row";
 
 interface Action {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 export default function SmallHappinessCard({ happiness, actions = [] }: { happiness: Happiness, actions?: Action[]; }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const happinessDate = parseYYYYmmddFormat(happiness.timestamp);
-  const timeAgo = new TimeAgo("en-us");
 
   return (
     <Card className="p-4">
@@ -31,17 +29,17 @@ export default function SmallHappinessCard({ happiness, actions = [] }: { happin
                 month: "long",
                 day: "numeric",
                 year: "numeric"
-              }) : timeAgo.format(happinessDate)
+              }) : "Today"
           }</label>
         </Column>
         <div className="flex flex-grow" />
         <Row className="gap-3">
           {actions.map((action) =>
             <div
-              className="px-3 py-1 bg-gray-50 rounded-[4px]"
+              className="px-3 py-1 bg-gray-50 rounded-[4px] hover:cursor-pointer"
               onClick={action.onClick}
             >
-              <label>{action.label}</label>
+              <label className="text-gray-400">{action.label}</label>
             </div>
           )}
         </Row>
