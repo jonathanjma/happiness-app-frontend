@@ -95,7 +95,7 @@ export default function HappinessTable({ group, startDate, endDate = formatDate(
                 );
                 let dataStyle = "px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center ";
                 if (happiness) {
-                  dataStyle += "hover:cursor-pointer ";
+                  dataStyle += "hover:cursor-pointer hover:bg-yellow ";
                   if (happiness.comment) {
                     console.log(`ADDED STYLE`);
                     dataStyle += " has_comment";
