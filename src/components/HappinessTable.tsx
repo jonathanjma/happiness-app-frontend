@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Group } from "../data/models/Group";
 import { Happiness } from "../data/models/Happiness";
 import { formatDate, parseYYYYmmddFormat } from "../utils";
+import HappinessViewerModal from "./modals/HappinessViewerModal";
 /**
  * 
  * @param startDate a string in the YYYY-MM-DD format representing the start of 
@@ -19,6 +21,8 @@ export default function HappinessTable({ group, startDate, endDate = formatDate(
   endDate?: string;
 }) {
   const { api } = useApi();
+  const [selectedHappiness, setSelectedHappiness] = useState<Happiness | undefined>(undefined);
+
   const start = parseYYYYmmddFormat(startDate);
   const end = endDate ? parseYYYYmmddFormat(endDate) : new Date();
 
@@ -48,46 +52,63 @@ export default function HappinessTable({ group, startDate, endDate = formatDate(
     return <p className="text-error mt-8 ml-8">Error loading happiness data</p>;
   }
 
+
   return (
-    <table className="table-auto border-collapse border-secondary rounded-md">
-      <thead>
-        {/* Month header */}
-        <tr>
-          <th></th>
-          <th>
-            {start.toLocaleDateString("en-us", { month: "long" })}
-          </th>
-        </tr>
-        {/* Weekdays */}
-        <tr>
-          <th></th>
-          {dateList.map((date) =>
-            <th>{date.toLocaleDateString("en-us", { weekday: "short" })}</th>
+    <>
+      {selectedHappiness &&
+        <HappinessViewerModal
+          happiness={selectedHappiness}
+          id="view-happiness"
+        />
+      }
+      <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-center">
+              {start.toLocaleDateString("en-us", { month: "long" })}
+            </th>
+            {dateList.map((date) =>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                {date.toLocaleDateString("en-us", { weekday: "short" })}
+              </th>
+            )}
+          </tr>
+          <tr>
+            <th className="border-r border-gray-200"></th>
+            {dateList.map((date) =>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                {date.toLocaleDateString("en-us", { day: "numeric" })}
+              </th>
+            )}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {group.users.map((user) =>
+            <tr className="hover:bg-light_yellow">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                {user.username}
+              </td>
+              {dateList.map((date) => {
+                const happiness = data?.find(
+                  (happiness) => happiness.timestamp === formatDate(date)
+                    && happiness.author.username === user.username
+                );
+                return <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center ${happiness ? "hover:cursor-pointer" : ""}`}
+                  onClick={() => {
+                    console.log(`clicked`);
+                    setSelectedHappiness(happiness);
+                    // @ts-ignore
+                    window.HSOverlay.open(document.querySelector("#view-happiness"));
+                  }}
+                >
+                  {happiness?.value}
+                </td>;
+              })}
+            </tr>
           )}
-        </tr>
-        {/* Numeric days */}
-        <tr>
-          <th></th>
-          {dateList.map((date) =>
-            <th>{date.toLocaleDateString("en-us", { day: "numeric" })}</th>
-          )}
-        </tr>
-      </thead>
-      {/* Group data */}
-      {group.users.map((user) =>
-        <tr>
-          <td>{user.username}</td>
-          {dateList.map((date) =>
-            <td>
-              {data?.find(
-                (happiness) => happiness.timestamp === formatDate(date)
-                  && happiness.author.username === user.username
-              )?.value ??
-                "NA"}
-            </td>
-          )}
-        </tr>
-      )}
-    </table>
+        </tbody>
+      </table>
+    </>
+
   );
 }
