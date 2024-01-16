@@ -199,7 +199,7 @@ export default function SignUpModal({ id, onLoginClick }: {
         />
         <Column>
           <TextField
-            label="Password:"
+            label="Password"
             value={password}
             onChangeValue={setPassword}
             type="password"
@@ -227,7 +227,7 @@ export default function SignUpModal({ id, onLoginClick }: {
           }
         </Column>
         <TextField
-          label="Confirm Password:"
+          label="Confirm Password"
           value={confirmPassword}
           onChangeValue={setConfirmPassword}
           onEnterPressed={handleCreateAccount}

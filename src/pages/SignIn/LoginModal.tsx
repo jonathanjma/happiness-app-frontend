@@ -71,7 +71,7 @@ export default function LoginModal({ id, onCreateAccountClick, onForgotPassword 
       />
       <div className="h-4" />
       <TextField
-        label="Password:"
+        label="Password"
         value={password}
         onChangeValue={setPassword}
         type="password"
