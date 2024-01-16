@@ -45,7 +45,7 @@ export default function SmallHappinessCard({ happiness, actions = [] }: { happin
         </Row>
       </Row>
       <div className="h-4" />
-      <p className="text-gray-600 truncate leading-5 max-h-[60px]">{happiness.comment}</p>
+      <p className="text-gray-600 max-lines-3">{happiness.comment}</p>
     </Card>
   );
 }
