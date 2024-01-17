@@ -68,6 +68,7 @@ export default function LoginModal({ id, onCreateAccountClick, onForgotPassword 
         label="Username"
         value={username}
         onChangeValue={setUsername}
+        type="username"
       />
       <div className="h-4" />
       <TextField
