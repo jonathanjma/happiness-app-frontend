@@ -34,7 +34,7 @@
     }
 
     label {
-        @apply text-sm font-medium;
+        @apply text-sm font-medium leading-4;
     }
 
     caption {
@@ -65,4 +65,12 @@ input[type=number] {
 
 label:hover {
     cursor: unset;
+}
+
+.max-lines-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
 }

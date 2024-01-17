@@ -7,10 +7,10 @@ import StatsIcon from "../../assets/graph.svg";
 import GroupsIcon from "../../assets/group.svg";
 import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
-import HappinessForm from "./HappinessForm";
 import { useWindowDimensions } from "../../utils";
+import HappinessForm from "./HappinessForm";
 
-export default function Sidebar({ element }: { element: React.ReactElement }) {
+export default function Sidebar({ element }: { element: React.ReactElement; }) {
   const { user } = useUser();
 
   const navConfig = [
@@ -56,7 +56,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                 </div>
                 <button
                   className={
-                    "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm text-sm font-semibold text-secondary shadow-md1 outline-none"
+                    "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary shadow-md1 outline-none"
                   }
                   onClick={useUser().logoutUser}
                 >
