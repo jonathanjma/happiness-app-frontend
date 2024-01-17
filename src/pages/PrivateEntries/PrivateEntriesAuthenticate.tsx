@@ -55,7 +55,7 @@ export default function PrivateEntriesAuthenticate({
           </p>
         </Column>
         <TextField
-          label="Password:"
+          label="Password"
           supportingText={hasError ? "Please enter the correct password" : ""}
           value={passwordText}
           onChangeValue={(v) => {

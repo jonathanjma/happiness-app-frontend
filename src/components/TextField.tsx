@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
+import IconWarningOutline from "../assets/IconWarningOutline";
 import Column from "./layout/Column";
 import Row from "./layout/Row";
 
@@ -6,11 +7,14 @@ interface TextFieldProps {
   label?: string;
   type?: React.HTMLInputTypeAttribute;
   hint?: string;
+  autocomplete?: string;
+  inputID?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
   innerElements?: React.ReactElement;
   innerIcon?: React.ReactElement;
   hasError?: boolean;
+  errorText?: string;
   isEnabled?: boolean;
   value: string;
   onChangeValue: React.Dispatch<React.SetStateAction<string>>;
@@ -20,31 +24,41 @@ interface TextFieldProps {
 }
 
 /**
- * Generic TextField component for use for Happiness App
- * @param value text field content
- * @param onChangeValue action when the value changes
- * @param className style to default to if editingStyle, disabledStyle, or emptyStyle is null
- * @param disabledStyle style to use whenever the textarea is disabled
- * @param emptyStyle style to use when text field content is empty but the text field is not disabled
- * @param editingStyle style to use when the text field is not disabled and not empty
- * @param enabled a boolean value representing whether the textarea is enabled
+ * TextField component for Happiness App
+ * @param title the title of the text area
+ * @param type the type of the input element
+ * @param hint the hint text for the text area
+ * @param supportingText the supporting text for the text area
+ * @param supportingIcon the supporting icon for the text area, will only show if hasError is false
+ * @param innerIcon the inner icon for the text area
+ * @param hasError a boolean value indicating whether the text area has an error
+ * @param errorText text that will only show if there is an error, will show even if there is supporting text
+ * @param isEnabled a boolean value indicating whether the text area is enabled
+ * @param value the value of the text area
+ * @param onChangeValue the function to handle value changes
+ * @param className the class name for the text area
+ * @param onEnterPressed the function to handle enter key press
+ * @param tooltip string to use as tooltip
  * @returns TextArea component
  */
 export default function TextField({
   label,
   type = "text",
-  hint = "",
+  hint,
+  autocomplete,
+  inputID,
   supportingText = "",
   supportingIcon,
   innerElements,
   innerIcon,
   hasError = false,
+  errorText = "",
   isEnabled = true,
   value,
   onChangeValue,
   className = "",
   onEnterPressed,
-  tooltip = "",
+  tooltip,
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -66,8 +80,10 @@ export default function TextField({
         {innerElements && <div className="mr-2"></div>}
         <input
           className="flex-grow focus:outline-none"
+          id={inputID}
           ref={input}
           type={type}
+          autoComplete={autocomplete}
           value={value}
           disabled={!isEnabled}
           onChange={(e) => {
@@ -87,21 +103,16 @@ export default function TextField({
           }}
           title={tooltip}
         />
-        {innerIcon &&
-          <span className="h-6">{innerIcon}</span>
-        }
+        {innerIcon && <span className="my-0 mr-4 h-6 py-0">{innerIcon}</span>}
       </Row>
-      {(supportingText || supportingIcon) && (
+      {(supportingText || supportingIcon || hasError) && (
         <Row className="items-center gap-1">
-          {supportingIcon}
+          {hasError ? <IconWarningOutline color="#EC7070" /> : supportingIcon}
           {supportingText && (
-            <label
-              className={
-                "font-normal" + (hasError ? " text-error" : " text-gray-400")
-              }
-            >
-              {supportingText}
-            </label>
+            <label className="text-gray-400">{supportingText}</label>
+          )}
+          {hasError && errorText && (
+            <label className="text-error">{errorText}</label>
           )}
         </Row>
       )}

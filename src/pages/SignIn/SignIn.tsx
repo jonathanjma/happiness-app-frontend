@@ -1,22 +1,41 @@
-import { useState } from "react";
-import { useUser } from "../../contexts/UserProvider";
+import Button from "../../components/Button";
+import ForgotPasswordModal from "./ForgotPasswordModal";
+import LoginModal from "./LoginModal";
+import SignUpModal from "./SignUpModal";
 
 export default function SignIn() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const { loginUser } = useUser();
+  const openLogin = () => {
+    //@ts-ignore
+    window.HSOverlay.open(document.querySelector("#login-modal"));
+  };
+
+  const openSignUp = () => {
+    // @ts-ignore
+    window.HSOverlay.open(document.querySelector("#sign-up-modal"));
+  };
+
+  const openForgotPassword = () => {
+    // @ts-ignore
+    window.HSOverlay.open(document.querySelector("#forgot-pass-modal"));
+  };
+
   return (
-    <div>
-      <p className="gray-800">username</p>
-      <input type="username" onChange={(e) => setUsername(e.target.value)} />
-      <p>Password</p>
-      <input type="password" onChange={(e) => setPassword(e.target.value)} />
-      <button
-        className="self-start"
-        onClick={() => loginUser(username, password)}
-      >
-        Log in
-      </button>
+    <div className="m-8">
+      <Button
+        label="Get Started"
+        associatedModalId="sign-in-modal"
+        onClick={openSignUp}
+      />
+      <ForgotPasswordModal
+        id="forgot-pass-modal"
+        onLoginClick={openLogin}
+      />
+      <SignUpModal id="sign-up-modal" onLoginClick={openLogin} />
+      <LoginModal
+        id="login-modal"
+        onCreateAccountClick={openSignUp}
+        onForgotPassword={openForgotPassword}
+      />
     </div>
   );
 }

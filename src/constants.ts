@@ -25,4 +25,6 @@ export enum MutationKeys {
   MUTATE_JOURNAL = "mutateJournal",
   MUTATE_GROUP = "mutateGroup",
   MUTATE_PASSWORD_KEY = "mutatePasswordKey",
+  CREATE_ACCOUNT = "createAccount",
+  LOG_IN = "logIn",
 }

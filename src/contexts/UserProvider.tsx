@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useApi } from "./ApiProvider";
-import { User } from "../data/models/User";
 import { Constants } from "../constants";
 import { Token } from "../data/models/Token";
+import { User } from "../data/models/User";
+import { useApi } from "./ApiProvider";
 
 export enum UserState {
   Loading,
@@ -17,15 +17,17 @@ interface ContextUser {
   loginUser: (username: string, password: string) => void;
   logoutUser: () => void;
   deleteUser: () => void;
+  getUserFromToken: () => void;
 }
 
 const UserContext = createContext<ContextUser>({
   user: undefined,
   state: UserState.Loading,
-  createUser: (_: string, __: string) => {},
-  loginUser: (_: string, __: string) => {},
-  logoutUser: () => {},
-  deleteUser: () => {},
+  createUser: (_: string, __: string) => { },
+  loginUser: (_: string, __: string) => { },
+  logoutUser: () => { },
+  deleteUser: () => { },
+  getUserFromToken: () => { },
 });
 
 /**
@@ -121,6 +123,7 @@ export default function UserProvider({
         logoutUser,
         createUser,
         deleteUser,
+        getUserFromToken,
       }}
     >
       {children}
