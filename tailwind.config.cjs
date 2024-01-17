@@ -10,6 +10,7 @@ module.exports = {
       "2xl": ["1.75rem", "2.25rem"] /* h3 */,
       "3xl": ["2rem", "2.25rem"] /* h2 */,
       "4xl": ["2.25rem", "2.75rem"] /* h1 */,
+      "5xl": ["3rem", "3.75rem"]
     },
     colors: {
       "gray-50": "#F5F5F5",

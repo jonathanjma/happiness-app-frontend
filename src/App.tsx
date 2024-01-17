@@ -2,7 +2,6 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import Entries from "./pages/Entries/Entries";
-import SignIn from "./pages/SignIn/SignIn";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import ApiProvider from "./contexts/ApiProvider";
 import UserProvider from "./contexts/UserProvider";
@@ -12,6 +11,7 @@ import UserGroups from "./pages/UserGroups/UserGroups";
 import Group from "./pages/Group/Group";
 import CreateGroup from "./pages/CreateGroup/CreateGroup";
 import { Toaster } from "react-hot-toast";
+import Welcome from "./pages/Welcome/Welcome";
 
 export default function App() {
   return (
@@ -24,7 +24,7 @@ export default function App() {
               path="/"
               element={
                 <PublicRoute>
-                  <SignIn />
+                  <Welcome />
                 </PublicRoute>
               }
             />
