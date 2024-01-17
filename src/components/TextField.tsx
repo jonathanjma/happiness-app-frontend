@@ -7,6 +7,8 @@ interface TextFieldProps {
   label?: string;
   type?: React.HTMLInputTypeAttribute;
   hint?: string;
+  autocomplete?: string;
+  inputID?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
   innerElements?: React.ReactElement;
@@ -42,7 +44,9 @@ interface TextFieldProps {
 export default function TextField({
   label,
   type = "text",
-  hint = "",
+  hint,
+  autocomplete,
+  inputID,
   supportingText = "",
   supportingIcon,
   innerElements,
@@ -54,7 +58,7 @@ export default function TextField({
   onChangeValue,
   className = "",
   onEnterPressed,
-  tooltip = "",
+  tooltip,
 }: TextFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -76,8 +80,10 @@ export default function TextField({
         {innerElements && <div className="mr-2"></div>}
         <input
           className="flex-grow focus:outline-none"
+          id={inputID}
           ref={input}
           type={type}
+          autoComplete={autocomplete}
           value={value}
           disabled={!isEnabled}
           onChange={(e) => {
@@ -97,21 +103,16 @@ export default function TextField({
           }}
           title={tooltip}
         />
-        {innerIcon && <span className="mr-4 my-0 py-0 h-6">{innerIcon}</span>}
-
+        {innerIcon && <span className="my-0 mr-4 h-6 py-0">{innerIcon}</span>}
       </Row>
       {(supportingText || supportingIcon || hasError) && (
         <Row className="items-center gap-1">
           {hasError ? <IconWarningOutline color="#EC7070" /> : supportingIcon}
           {supportingText && (
-            <label className="text-gray-400">
-              {supportingText}
-            </label>
+            <label className="text-gray-400">{supportingText}</label>
           )}
           {hasError && errorText && (
-            <label className="text-error">
-              {errorText}
-            </label>
+            <label className="text-error">{errorText}</label>
           )}
         </Row>
       )}

@@ -16,7 +16,10 @@ import { Token } from "../../data/models/Token";
 import { User } from "../../data/models/User";
 import { useOnline } from "../../utils";
 
-export default function SignUpModal({ id, onLoginClick }: {
+export default function SignUpModal({
+  id,
+  onLoginClick,
+}: {
   id: string;
   onLoginClick: () => void;
 }) {
@@ -29,7 +32,6 @@ export default function SignUpModal({ id, onLoginClick }: {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordSnapshot, setPasswordSnapshot] = useState("");
-
 
   // error tracking:
 
@@ -48,8 +50,7 @@ export default function SignUpModal({ id, onLoginClick }: {
   const [triedSubmit, setTriedSubmit] = useState(false);
 
   // check in general if password is good
-  const hasPasswordError = () =>
-    !isLongEnough || !hasNumber || !hasUppercase;
+  const hasPasswordError = () => !isLongEnough || !hasNumber || !hasUppercase;
 
   // check for errors in user input
   const [isFirstRender, setIsFirstRender] = useState(false);
@@ -82,7 +83,6 @@ export default function SignUpModal({ id, onLoginClick }: {
   const { api } = useApi();
   const { getUserFromToken } = useUser();
 
-
   // set up mutations
   /*
   yes there's repeated code, but we looked into abstracting mutation at the 
@@ -93,33 +93,37 @@ export default function SignUpModal({ id, onLoginClick }: {
   const loginMutation = useMutation({
     mutationKey: [MutationKeys.LOG_IN, username, passwordSnapshot],
     mutationFn: () =>
-      api.post<Token>(
-        "/token/",
-        {},
-        {
-          headers: {
-            Authorization: `Basic ${btoa(`${username}:${passwordSnapshot}`)}`,
+      api
+        .post<Token>(
+          "/token/",
+          {},
+          {
+            headers: {
+              Authorization: `Basic ${btoa(`${username}:${passwordSnapshot}`)}`,
+            },
           },
-        },
-      ).then((res) => res.data),
+        )
+        .then((res) => res.data),
     onError: () => {
       setNetworkingError("Unknown error occurred. Please refresh the page.");
     },
     onSuccess: (token: Token) => {
       localStorage.setItem(Constants.TOKEN, token.session_token);
       getUserFromToken();
-    }
+    },
   });
 
   const createAccountMutation = useMutation({
     mutationKey: [MutationKeys.CREATE_ACCOUNT, username, password, email],
     mutationFn: async () => {
       setPasswordSnapshot(password);
-      return (await api.post<User>("/user/", {
-        username: username,
-        password: password,
-        email: email
-      })).data;
+      return (
+        await api.post<User>("/user/", {
+          username: username,
+          password: password,
+          email: email,
+        })
+      ).data;
     },
     onSuccess: () => {
       loginMutation.mutate();
@@ -131,7 +135,7 @@ export default function SignUpModal({ id, onLoginClick }: {
         setUsernameError("The username is already taken.");
         setNetworkingError("");
       }
-    }
+    },
   });
 
   // what happens when user tries to create account
@@ -139,7 +143,7 @@ export default function SignUpModal({ id, onLoginClick }: {
     setTriedSubmit(true);
     // validation phase
 
-    // even tho using variables looks clunky, I was having some issues with what 
+    // even tho using variables looks clunky, I was having some issues with what
     // I believe was concurrency when trying to prevent network requests for invalid accounts
     const hasValidEmail = EmailValidator.validate(email);
     setValidEmail(hasValidEmail);
@@ -151,7 +155,8 @@ export default function SignUpModal({ id, onLoginClick }: {
 
     // have to check much of this manually since the use state variables are
     // unreliable right after being set
-    if (hasValidEmail &&
+    if (
+      hasValidEmail &&
       !hasPasswordError() &&
       usernameError === "" &&
       username.trim().length !== 0 &&
@@ -162,27 +167,26 @@ export default function SignUpModal({ id, onLoginClick }: {
     }
   };
 
-  const Requirement = ({ met, message }: { met: boolean; message: string; }) =>
+  const Requirement = ({ met, message }: { met: boolean; message: string }) => (
     <Row className="items-center gap-1">
       {met ? <IconCheck /> : <IconWarningOutline color="#EC7070" />}
-      <p className={met ? "text-green" : "text-error"}>
-        {message}
-      </p>
-    </Row>;
-
+      <p className={met ? "text-green" : "text-error"}>{message}</p>
+    </Row>
+  );
 
   return (
     <ClosableModal id={id} leftContent={<h4>Sign Up</h4>}>
-      <Row className="w-[436px] gap-1 my-4">
+      <Row className="my-4 w-[436px] gap-1">
         <p>Already have an account?</p>
         <p
-          className="underline text-secondary hover:cursor-pointer font-semibold"
-          onClick={onLoginClick}>
+          className="font-semibold text-secondary underline hover:cursor-pointer"
+          onClick={onLoginClick}
+        >
           Log In
         </p>
       </Row>
-      <div className="bg-gray-100 w-full h-[1px]" />
-      <Column className="gap-4 my-6">
+      <div className="h-[1px] w-full bg-gray-100" />
+      <Column className="my-6 gap-4">
         <TextField
           label="Username"
           value={username}
@@ -203,28 +207,32 @@ export default function SignUpModal({ id, onLoginClick }: {
             value={password}
             onChangeValue={setPassword}
             type="password"
+            autocomplete="new-password"
           />
-          {password.length !== 0 || triedSubmit &&
-            <>
-              <p className={hasPasswordError() ? "text-error" : "text-green"} >
-                {hasPasswordError() ? "Your password does not meet one of the following:" : "Your password meets all of the following:"}
-              </p>
-              <Column className="gap-1 mt-1">
-                <Requirement
-                  met={isLongEnough}
-                  message="Password must be at least 8 characters long"
-                />
-                <Requirement
-                  met={hasNumber}
-                  message="Password must contain at least 1 uppercase letter"
-                />
-                <Requirement
-                  met={hasUppercase}
-                  message="Password must contain at least 1 number"
-                />
-              </Column>
-            </>
-          }
+          {password.length !== 0 ||
+            (triedSubmit && (
+              <>
+                <p className={hasPasswordError() ? "text-error" : "text-green"}>
+                  {hasPasswordError()
+                    ? "Your password does not meet one of the following:"
+                    : "Your password meets all of the following:"}
+                </p>
+                <Column className="mt-1 gap-1">
+                  <Requirement
+                    met={isLongEnough}
+                    message="Password must be at least 8 characters long"
+                  />
+                  <Requirement
+                    met={hasNumber}
+                    message="Password must contain at least 1 uppercase letter"
+                  />
+                  <Requirement
+                    met={hasUppercase}
+                    message="Password must contain at least 1 number"
+                  />
+                </Column>
+              </>
+            ))}
         </Column>
         <TextField
           label="Confirm Password"
@@ -232,6 +240,7 @@ export default function SignUpModal({ id, onLoginClick }: {
           onChangeValue={setConfirmPassword}
           onEnterPressed={handleCreateAccount}
           type="password"
+          autocomplete="new-password"
           hasError={!matchesConfirmPassword}
           errorText="Passwords are not matching."
         />
@@ -240,10 +249,13 @@ export default function SignUpModal({ id, onLoginClick }: {
         size="LARGE"
         label="Create Account"
         onClick={handleCreateAccount}
-        icon={loginMutation.isLoading || createAccountMutation.isLoading ? <Spinner variaton="SMALL" /> : undefined}
+        icon={
+          loginMutation.isLoading || createAccountMutation.isLoading ? (
+            <Spinner variaton="SMALL" />
+          ) : undefined
+        }
       />
-      {netorkingError && <p className="text-error my-6">{netorkingError}</p>}
+      {netorkingError && <p className="my-6 text-error">{netorkingError}</p>}
     </ClosableModal>
   );
 }
-
