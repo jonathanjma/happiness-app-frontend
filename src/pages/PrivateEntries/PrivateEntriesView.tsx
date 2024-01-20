@@ -22,6 +22,8 @@ export default function PrivateEntriesView() {
   const [networkingState, setNetworkingState] = useState(
     Constants.FINISHED_MUTATION_TEXT,
   );
+  // prevent initial journal query
+  const [isFirstRender, setisFirstRender] = useState(true);
   const journalUpdateTimeout = useRef<number | undefined>();
   const { api } = useApi();
   const queryClient = useQueryClient();
@@ -115,9 +117,13 @@ export default function PrivateEntriesView() {
   };
 
   useEffect(() => {
-    setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-    clearTimeout(journalUpdateTimeout.current);
-    journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
+    if (!isFirstRender) {
+      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+      clearTimeout(journalUpdateTimeout.current);
+      journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
+    } else {
+      setisFirstRender(true);
+    }
   }, [selectedEntry]);
 
   return (
