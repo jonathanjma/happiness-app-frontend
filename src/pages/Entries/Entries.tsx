@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useIsMutating, useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Row from "../../components/layout/Row";
-import { Constants, MutationKeys, QueryKeys } from "../../constants";
+import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { Happiness, HappinessPost } from "../../data/models/Happiness";
+import {
+  Happiness,
+  HappinessPost,
+  InfiniteHappinessPagination,
+} from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
 
@@ -21,11 +25,8 @@ export default function Entries() {
   const { user } = useUser();
   const { api } = useApi();
   const queryClient = useQueryClient();
-  const numStillMutating = useIsMutating({
-    mutationKey: MutationKeys.MUTATE_HAPPINESS,
-  });
   const [networkingState, setNetworkingState] = useState(
-    Constants.LOADING_MUTATION_TEXT.toString(),
+    Constants.FINISHED_MUTATION_TEXT.toString(),
   );
 
   const updateHappinessTimeout = useRef<number | undefined>(undefined);
@@ -36,52 +37,73 @@ export default function Entries() {
   };
 
   useEffect(() => {
-    if (selectedEntry) {
+    if (selectedEntry && prevSelectedEntryId.current === selectedEntry.id) {
       if (selectedEntry.value === -1) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
       } else {
         setNetworkingState(Constants.LOADING_MUTATION_TEXT);
         prevSelectedEntryId.current = selectedEntry.id;
         clearTimeout(updateHappinessTimeout.current);
-        updateHappinessTimeout.current = setTimeout(updateHappiness, 1000);
+        updateHappinessTimeout.current = setTimeout(updateHappiness, 500);
       }
     }
+    prevSelectedEntryId.current = selectedEntry?.id;
   }, [selectedEntry]);
 
   // General mutation function for updating Happiness entries
   const updateEntryMutation = useMutation({
-    mutationFn: (newHappiness: HappinessPost) => {
-      return api.post<Happiness>("/happiness/", newHappiness);
+    mutationFn: (newHappiness: HappinessPost) =>
+      api.post<Happiness>("/happiness/", newHappiness).then((res) => res.data),
+    onSuccess: (newHappiness: Happiness) => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+
+      // update finite happiness queries
+      queryClient.setQueriesData(
+        [QueryKeys.FETCH_HAPPINESS],
+        (happinesses?: Happiness[]) => {
+          if (happinesses) {
+            const newHappinesses = happinesses.map((happiness) =>
+              happiness.id === newHappiness.id ? newHappiness : happiness,
+            );
+            if (
+              !newHappinesses.find(
+                (happiness) => happiness.id === newHappiness.id,
+              )
+            ) {
+              newHappinesses.push(newHappiness);
+            }
+            return newHappinesses;
+          }
+          return [];
+        },
+      );
+
+      // update infinite happiness queries
+      queryClient.setQueriesData(
+        [QueryKeys.FETCH_INFINITE_HAPPINESS],
+        (infiniteHappiness?: InfiniteHappinessPagination) => {
+          infiniteHappiness?.pages.forEach((page) => {
+            page.data = page.data.map((happiness) =>
+              happiness.id === newHappiness.id ? newHappiness : happiness,
+            );
+          });
+          return (
+            infiniteHappiness ?? {
+              pages: [],
+              pageParams: [],
+            }
+          );
+        },
+      );
     },
-    mutationKey: MutationKeys.MUTATE_HAPPINESS,
+    onError: () => {
+      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+    },
   });
 
   const deleteHappinessMutation = useMutation({
     mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
-    mutationKey: MutationKeys.MUTATE_HAPPINESS,
   });
-
-  // Update the networking state displayed to the user based on updateEntryMutation result
-  useEffect(() => {
-    if (!selectedEntry || selectedEntry.value === -1) {
-      setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
-      return;
-    }
-    if (numStillMutating > 0) {
-      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-      return;
-    }
-    if (updateEntryMutation.isError || deleteHappinessMutation.isError) {
-      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
-      return;
-    }
-    setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
-      },
-    });
-  }, [numStillMutating]);
 
   return (
     <Row className="h-screen bg-[#FAFAFA]">

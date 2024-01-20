@@ -4,7 +4,11 @@ import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
-import { Happiness, NewHappiness } from "../../data/models/Happiness";
+import {
+  Happiness,
+  InfiniteHappinessPagination,
+  NewHappiness,
+} from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 
 export default function HappinessForm({ height }: { height: number }) {
@@ -22,9 +26,51 @@ export default function HappinessForm({ height }: { height: number }) {
   const [selDate, setSelDate] = useState(new Date());
   const [happiness, setHappiness] = useState(-1);
 
-  const postHappinessMutation = useMutation((newHappiness: NewHappiness) =>
-    api.post("/happiness/", newHappiness),
-  );
+  const postHappinessMutation = useMutation({
+    mutationFn: (newHappiness: NewHappiness) =>
+      api.post<Happiness>("/happiness/", newHappiness).then((res) => res.data),
+    onSuccess: (newHappiness: Happiness) => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      // update finite happiness queries
+      queryClient.setQueriesData(
+        [QueryKeys.FETCH_HAPPINESS],
+        (happinesses?: Happiness[]) => {
+          if (happinesses) {
+            const newHappinesses = happinesses.map((happiness) =>
+              happiness.id === newHappiness.id ? newHappiness : happiness,
+            );
+            if (
+              !newHappinesses.find(
+                (happiness) => happiness.id === newHappiness.id,
+              )
+            ) {
+              newHappinesses.push(newHappiness);
+            }
+            return newHappinesses;
+          }
+          return [];
+        },
+      );
+
+      // update infinite happiness queries
+      queryClient.setQueriesData(
+        [QueryKeys.FETCH_INFINITE_HAPPINESS],
+        (infiniteHappiness?: InfiniteHappinessPagination) => {
+          infiniteHappiness?.pages.forEach((page) => {
+            page.data = page.data.map((happiness) =>
+              happiness.id === newHappiness.id ? newHappiness : happiness,
+            );
+          });
+          return (
+            infiniteHappiness ?? {
+              pages: [],
+              pageParams: [],
+            }
+          );
+        },
+      );
+    },
+  });
 
   // Updates comment and happiness when comment or happiness value changes.
   // If happiness value is not entered, does not submit anything.
@@ -43,17 +89,6 @@ export default function HappinessForm({ height }: { height: number }) {
       }, 1000);
     }
   }, [comment, happiness]);
-
-  // Changes submission status if happiness value is updated successfully and refetches data.
-  useEffect(() => {
-    if (postHappinessMutation.isSuccess && happiness !== -1) {
-      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey.includes(QueryKeys.FETCH_HAPPINESS),
-      });
-    }
-  }, [postHappinessMutation.isSuccess]);
 
   // Changes selected date between today and yesterday when radioValue variable changes.
   useEffect(() => {
@@ -84,7 +119,19 @@ export default function HappinessForm({ height }: { height: number }) {
       queryFnArgs?: undefined,
     ) => Promise<Happiness[] | undefined | unknown>;
   } = useQuery({
-    queryKey: QueryKeys.FETCH_HAPPINESS + " sidebar query",
+    queryKey: [
+      QueryKeys.FETCH_HAPPINESS,
+      {
+        start: formatDate(
+          new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate() - 1,
+          ),
+        ),
+        end: formatDate(new Date()),
+      },
+    ],
     queryFn: () =>
       api
         .get("/happiness/", {

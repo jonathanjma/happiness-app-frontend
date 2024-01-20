@@ -21,6 +21,13 @@ export interface HappinessPagination {
   page: number;
 }
 
+// type of the infinite happiness query
+export interface InfiniteHappinessPagination {
+  pages: HappinessPagination[];
+  // not really sure what this array is supposed to be and we don't really use it
+  pageParams: any[];
+}
+
 /**
  * Type of Happiness for sending to the backend in a post request.
  */
