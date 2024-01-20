@@ -4,11 +4,7 @@ import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import {
-  InfiniteJournalPagination,
-  Journal,
-  JournalPagination,
-} from "../../data/models/Journal";
+import { InfiniteJournalPagination, Journal } from "../../data/models/Journal";
 import { formatDate } from "../../utils";
 import PrivateEntryCard from "./PrivateEntryCard";
 import ScrollableJournalCalendar from "./ScrollableJournalCalendar";
@@ -23,7 +19,7 @@ export default function PrivateEntriesView() {
     Constants.FINISHED_MUTATION_TEXT,
   );
   // prevent initial journal query
-  const [isFirstRender, setisFirstRender] = useState(true);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const journalUpdateTimeout = useRef<number | undefined>();
   const { api } = useApi();
   const queryClient = useQueryClient();
@@ -118,11 +114,12 @@ export default function PrivateEntriesView() {
 
   useEffect(() => {
     if (!isFirstRender) {
+      console.log("second");
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       clearTimeout(journalUpdateTimeout.current);
       journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
-    } else {
-      setisFirstRender(true);
+    } else if (selectedEntry) {
+      setIsFirstRender(false);
     }
   }, [selectedEntry]);
 
