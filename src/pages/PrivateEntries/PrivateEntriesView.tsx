@@ -76,6 +76,17 @@ export default function PrivateEntriesView() {
           );
         },
       );
+
+      // Update non-infinite queries
+      queryClient.setQueriesData(
+        [QueryKeys.FETCH_JOURNAL],
+        (journals?: Journal[]) => {
+          const newJournals = journals?.map((oldJournal) =>
+            oldJournal.id === journal.id ? journal : oldJournal,
+          );
+          return newJournals ?? [];
+        },
+      );
     },
     onError: () => {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
