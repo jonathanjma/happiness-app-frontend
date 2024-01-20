@@ -15,6 +15,7 @@ export enum QueryKeys {
   FETCH_GROUP_INFO = "fetchGroupInfo",
   FETCH_GROUP_HAPPINESS = "fetchGroupHappiness",
   FETCH_GROUP_HAPPINESS_UNREAD = "fetchGroupHappinessUnread",
+  FETCH_INFINITE_JOURNAL = "fetchInfiniteJournal",
   FETCH_JOURNAL = "fetchJournal",
   FETCH_JOURNAL_COUNT = "fetchJournalCount",
   INFINITE = "infiniteQuery",

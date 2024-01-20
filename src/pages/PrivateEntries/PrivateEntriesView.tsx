@@ -4,7 +4,11 @@ import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
-import { Journal } from "../../data/models/Journal";
+import {
+  InfiniteJournalPagination,
+  Journal,
+  JournalPagination,
+} from "../../data/models/Journal";
 import { formatDate } from "../../utils";
 import PrivateEntryCard from "./PrivateEntryCard";
 import ScrollableJournalCalendar from "./ScrollableJournalCalendar";
@@ -24,28 +28,54 @@ export default function PrivateEntriesView() {
 
   const journalMutation = useMutation({
     mutationFn: (newJournal: Journal) =>
-      api.post(
-        "/journal/",
-        {
-          data: newJournal.data,
-          timestamp: newJournal.timestamp,
-        },
-        {
-          headers: {
-            "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY),
+      api
+        .post<Journal>(
+          "/journal/",
+          {
+            data: newJournal.data,
+            timestamp: newJournal.timestamp,
           },
-        },
-      ),
+          {
+            headers: {
+              "Password-Key": sessionStorage.getItem(Constants.PASSWORD_KEY),
+            },
+          },
+        )
+        .then((res) => res.data),
     mutationKey: [MutationKeys.MUTATE_JOURNAL],
-    onSuccess: () => {
+    onSuccess: (journal: Journal) => {
+      console.log("success");
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-      /* 
-      TODO in the future we can use set queries data to make the editing
-      experience smoother, but this introduces a lot of complexity with the
-      update function and how we are going to efficiently update infinite query
-      data. I will leave this as a task for after launch.
-      */
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.FETCH_JOURNAL] });
+
+      // Update infinite queries:
+      queryClient.setQueriesData(
+        [QueryKeys.FETCH_INFINITE_JOURNAL],
+        (infinitePagination?: InfiniteJournalPagination) => {
+          infinitePagination?.pages.forEach((pagination) => {
+            if (pagination) {
+              pagination.data = pagination.data.map((journalFromPagination) =>
+                journalFromPagination.id === journal.id
+                  ? journal
+                  : journalFromPagination,
+              );
+              if (
+                !pagination.data.find(
+                  (journalFromPagination) =>
+                    journalFromPagination.id === journal.id,
+                )
+              ) {
+                pagination.data.push(journal);
+              }
+            }
+          });
+          return (
+            infinitePagination ?? {
+              pages: [],
+              pageParams: [],
+            }
+          );
+        },
+      );
     },
     onError: () => {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
