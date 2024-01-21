@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery, useQuery } from "react-query";
+import { useLocation, useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
 import SmallHappinessCard from "../../components/SmallHappinessCard";
 import Spinner from "../../components/Spinner";
@@ -16,14 +17,18 @@ import {
 } from "../../utils";
 import SearchBar from "../Statistics/SearchBar";
 export default function AllSearchResults() {
-  const [text, setText] = useState("");
-  const [startValue, setStartValue] = useState(0);
-  const [endValue, setEndValue] = useState(10);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const location = useLocation();
+  const [text, setText] = useState<string>(location?.state?.text ?? "");
+  const [startValue, setStartValue] = useState(
+    location?.state?.startValue ?? 0,
+  );
+  const [endValue, setEndValue] = useState(location?.state?.endValue ?? 10);
+  const [startDate, setStartDate] = useState(location?.state?.startDate ?? "");
+  const [endDate, setEndDate] = useState(location?.state?.endDate ?? "");
   const [bottomRef, bottomInView] = useInView();
 
   const { api } = useApi();
+  const navigate = useNavigate();
 
   const { data: numResults, isLoading: isLoadingNum } = useQuery({
     // Find the number of total matching results
@@ -48,7 +53,7 @@ export default function AllSearchResults() {
     },
   });
   const fetchResults = async ({
-    pageParam = 0,
+    pageParam = 1,
   }): Promise<HappinessPagination> => {
     const query = createSearchQuery(
       text,
@@ -69,6 +74,7 @@ export default function AllSearchResults() {
     data: searchResults,
     isLoading: isSearchLoading,
     fetchNextPage,
+    hasNextPage,
   } = useInfiniteQuery({
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
@@ -81,7 +87,8 @@ export default function AllSearchResults() {
       { text: text },
     ],
     queryFn: fetchResults,
-    getNextPageParam: (lastPage) => lastPage.page + 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.data.length === 10 ? lastPage.page + 1 : undefined,
   });
 
   // combine all entries in React Query pages object
@@ -102,7 +109,17 @@ export default function AllSearchResults() {
 
   return (
     <Column className="mx-8 mt-16 gap-6">
-      <BackButton relativeUrl="statistics" text="Back to Your Stats" />
+      <BackButton
+        state={{
+          startDate: startDate,
+          endDate: endDate,
+          startValue: startValue,
+          endValue: endValue,
+          text: text,
+        }}
+        relativeUrl="/statistics"
+        text="Back to Your Stats"
+      />
       <SearchBar
         text={text}
         setText={setText}
@@ -128,9 +145,19 @@ export default function AllSearchResults() {
       )}
       <Column className="gap-4">
         {allEntries?.map((happiness) => (
-          <SmallHappinessCard happiness={happiness} />
+          <SmallHappinessCard
+            happiness={happiness}
+            actions={[
+              {
+                label: "Open In Entries",
+                onClick: () => {
+                  navigate(`/home?date=${happiness.timestamp}`);
+                },
+              },
+            ]}
+          />
         ))}
-        {allEntries?.length !== 0 && (
+        {(hasNextPage || isSearchLoading) && allEntries?.length !== 0 && (
           <div ref={bottomRef}>
             <Spinner className="m-3 min-h-[100px]" text="Loading entries..." />
           </div>

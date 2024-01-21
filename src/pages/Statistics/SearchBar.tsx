@@ -45,7 +45,7 @@ export default function SearchBar({
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const [filterShowing, setFilterShowing] = useState(false);
-  const [resultsShowing, setResultsShowing] = useState(false);
+  const [resultsShowing, setResultsShowing] = useState(true);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(-1);
 
   const navigate = useNavigate();
@@ -307,6 +307,19 @@ export default function SearchBar({
               className={`${
                 !count || count?.number === 0 ? "" : "underline"
               } text-sm text-gray-400 hover:cursor-pointer`}
+              onClick={() => {
+                if (count && count.number !== 0) {
+                  navigate("/search", {
+                    state: {
+                      startDate: startDate,
+                      endDate: endDate,
+                      startValue: startValue,
+                      endValue: endValue,
+                      text: text,
+                    },
+                  });
+                }
+              }}
             >
               {!count || count?.number === 0
                 ? "No search results"

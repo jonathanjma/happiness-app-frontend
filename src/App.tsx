@@ -11,6 +11,7 @@ import Group from "./pages/Group/Group";
 import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import SignIn from "./pages/SignIn/SignIn";
+import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
 
 export default function App() {
@@ -43,10 +44,8 @@ export default function App() {
                           element={<CreateGroup />}
                         />
                         <Route path="/journal" element={<PrivateEntries />} />
-                        <Route
-                          path="/statistics"
-                          element={<AllSearchResults />}
-                        />
+                        <Route path="/statistics" element={<Statistics />} />
+                        <Route path="/search" element={<AllSearchResults />} />
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
                         {/* <Route path="/settings" element={<Settings />} /> */}
                         <Route path="*" element={<Navigate to="/" />} />

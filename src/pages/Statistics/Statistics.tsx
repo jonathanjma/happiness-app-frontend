@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import Column from "../../components/layout/Column";
 import SearchBar from "./SearchBar";
 
 export default function Statistics() {
-  const [text, setText] = useState("");
-  const [startValue, setStartValue] = useState(0);
-  const [endValue, setEndValue] = useState(10);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const location = useLocation();
+  const [text, setText] = useState(location?.state?.text ?? "");
+  const [startValue, setStartValue] = useState(
+    location?.state?.startValue ?? 0,
+  );
+  const [endValue, setEndValue] = useState(location?.state?.endValue ?? 10);
+  const [startDate, setStartDate] = useState(location?.state?.startDate ?? "");
+  const [endDate, setEndDate] = useState(location?.state?.endDate ?? "");
 
   return (
     <Column className="w-3/4 items-stretch gap-8 px-8 py-24">
