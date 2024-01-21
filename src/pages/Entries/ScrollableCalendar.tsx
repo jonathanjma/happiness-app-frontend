@@ -166,7 +166,7 @@ export default function ScrollableCalendar({
   // autoscroll past top loading message on load
   useEffect(() => {
     // height of loading msg + margin is 85 + 20 = 105
-    scrollRef.current!.scrollTop = 105 + 1; // + 1 needed to avoid triggering top load
+    scrollRef.current!.scrollTop = 108 + 1; // + 1 needed to avoid triggering top load
     setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
