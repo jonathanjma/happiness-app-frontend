@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import Row from "./layout/Row";
 import LeftArrowIcon from "../assets/arrow_left.svg";
-import React from "react";
+import Row from "./layout/Row";
 
 export default function BackButton({
   relativeUrl,
@@ -15,7 +14,7 @@ export default function BackButton({
   return (
     <Row className={className}>
       <Link to={relativeUrl}>
-        <Row>
+        <Row className="items-center">
           <img src={LeftArrowIcon} className="max-w-[24px]" />
           <label className="font-normal text-gray-600">{text}</label>
         </Row>

@@ -11,17 +11,39 @@ import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { formatDate, parseYYYYmmddFormat } from "../../utils";
+import {
+  createSearchQuery,
+  formatDate,
+  parseYYYYmmddFormat,
+} from "../../utils";
 import SearchResult from "./SearchResult";
 
-export default function SearchBar() {
-  const [text, setText] = useState("");
+export default function SearchBar({
+  text,
+  setText,
+  startValue,
+  setStartValue,
+  endValue,
+  setEndValue,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  showResultsPreview = true,
+}: {
+  text: string;
+  setText: React.Dispatch<React.SetStateAction<string>>;
+  startValue: number;
+  setStartValue: React.Dispatch<React.SetStateAction<number>>;
+  endValue: number;
+  setEndValue: React.Dispatch<React.SetStateAction<number>>;
+  startDate: string;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  endDate: string;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
+  showResultsPreview?: boolean;
+}) {
   const [isFocused, setIsFocused] = useState(false);
-
-  const [startValue, setStartValue] = useState(0);
-  const [endValue, setEndValue] = useState(10);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [filterShowing, setFilterShowing] = useState(false);
   const [resultsShowing, setResultsShowing] = useState(false);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(-1);
@@ -43,29 +65,6 @@ export default function SearchBar() {
   };
 
   const { api } = useApi();
-  const createQuery = (): Record<string, any> => {
-    const query: Record<string, any> = {};
-    if (text !== "") {
-      query.text = text;
-    }
-    if (!isNaN(new Date(startDate).getTime())) {
-      query.start = formatDate(parseYYYYmmddFormat(startDate));
-    }
-    if (!isNaN(new Date(endDate).getTime())) {
-      query.end = formatDate(parseYYYYmmddFormat(endDate));
-    }
-    if (query.start && !query.end) {
-      query.end = formatDate(new Date());
-    }
-    if (query.end && !query.start) {
-      query.start = "2000-01-01";
-    }
-    if (startValue !== 0 || endValue !== 10) {
-      query.low = startValue;
-      query.high = endValue;
-    }
-    return query;
-  };
 
   const [{ data }, { data: count }] = useQueries([
     {
@@ -80,11 +79,18 @@ export default function SearchBar() {
         { text: text },
       ],
       queryFn: async () => {
-        const query = createQuery();
+        const query = createSearchQuery(
+          text,
+          startDate,
+          endDate,
+          startValue,
+          endValue,
+        );
         query.count = 5;
         const res = await api.get<Happiness[]>("/happiness/search", query);
         return res.data;
       },
+      enabled: showResultsPreview,
     },
     {
       // Find the number of total matching results
@@ -97,7 +103,13 @@ export default function SearchBar() {
         { text: text },
       ],
       queryFn: async () => {
-        const query = createQuery();
+        const query = createSearchQuery(
+          text,
+          startDate,
+          endDate,
+          startValue,
+          endValue,
+        );
         const res = await api.get<Number>("/happiness/search/count", query);
         return res.data;
       },
@@ -246,11 +258,19 @@ export default function SearchBar() {
       )}
 
       {/* Results preview */}
-      {resultsShowing && (
+      {showResultsPreview && resultsShowing && (
         <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200">
           {data && data.length === 0 ? (
             <p className="mx-4 my-3 text-gray-400">
-              {Object.keys(createQuery()).length === 0
+              {Object.keys(
+                createSearchQuery(
+                  text,
+                  startDate,
+                  endDate,
+                  startValue,
+                  endValue,
+                ),
+              ).length === 0
                 ? "Type to search, or apply filters"
                 : "No entries match the query"}
             </p>
