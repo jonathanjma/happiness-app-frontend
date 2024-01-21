@@ -137,21 +137,32 @@ export function useOnline() {
 interface HasId {
   id: number;
 }
+
+/**
+ * This function abstracts the updater for when you need to replace one object
+ * in the cached data of an infinite query. You pass in the infinite pagination
+ * (infinite) and the new object you want to have added to the data or replace
+ * the data and then it will update it for you. Updating is done out-of-place.
+ * @param {Type} newObj the object to be added to the infinite pagination data
+ * @param {InfinitePagintion<Type> | undefined} infinite the infinite pagination data
+ * @returns {InfinitePagintion<Type>} the updated infinite pagination, or an
+ * empty infinite pagination if the original infinite pagination was undefined.
+ */
 export function updateOneInfinite<Type extends HasId>(
-  one: Type,
+  newObj: Type,
   infinite?: InfinitePagintion<Type>,
 ): InfinitePagintion<Type> {
   const newPages = infinite?.pages.map((pagination): Pagination<Type> => {
     if (pagination) {
       const newData = pagination.data.map((item) =>
-        item.id === one.id ? one : item,
+        item.id === newObj.id ? newObj : item,
       );
       if (
         !newData.find(
-          (journalFromPagination) => journalFromPagination.id === one.id,
+          (journalFromPagination) => journalFromPagination.id === newObj.id,
         )
       ) {
-        newData.push(one);
+        newData.push(newObj);
       }
       return { data: newData, page: pagination.page };
     }
@@ -161,15 +172,23 @@ export function updateOneInfinite<Type extends HasId>(
   return { pages: newPages ?? [], pageParams: infinite?.pageParams ?? [] };
 }
 
+/**
+ * A simple function that updates an data to include a new object, either by
+ * replacing an object with an existing id or adding to the new data. Data is
+ * updated out-of-place.
+ * @param newObj the new object to add to the data
+ * @param data the data to be updated
+ * @returns the updated data
+ */
 export function updateOneFinite<Type extends HasId>(
-  one: Type,
+  newObj: Type,
   data?: Type[],
 ): Type[] {
   const newData = data?.map((oldData) =>
-    oldData.id === one.id ? one : oldData,
+    oldData.id === newObj.id ? newObj : oldData,
   );
-  if (newData && !newData.find((value) => value.id === one.id)) {
-    newData.push(one);
+  if (newData && !newData.find((value) => value.id === newObj.id)) {
+    newData.push(newObj);
   }
   return newData ?? [];
 }
