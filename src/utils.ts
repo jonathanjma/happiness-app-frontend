@@ -162,7 +162,8 @@ export function updateOneInfinite<Type extends HasId>(
           (journalFromPagination) => journalFromPagination.id === newObj.id,
         )
       ) {
-        newData.push(newObj);
+        const finalData = [...newData, newObj];
+        return { data: finalData, page: pagination.page };
       }
       return { data: newData, page: pagination.page };
     }
@@ -191,4 +192,39 @@ export function updateOneFinite<Type extends HasId>(
     newData.push(newObj);
   }
   return newData ?? [];
+}
+
+/**
+ * Serves the same purpose as updateOneInfinite, but removes an object from the
+ * infinite pagination
+ * @param deletionId id of the oject to be deleted
+ * @param infinite infinite pagination to delete the object from.
+ * @returns
+ */
+export function deleteOneInfinite<Type extends HasId>(
+  deletionId: number,
+  infinite?: InfinitePagintion<Type>,
+): InfinitePagintion<Type> {
+  const newPages = infinite?.pages.map((pagination): Pagination<Type> => {
+    if (pagination) {
+      const newData = pagination.data.filter((item) => item.id !== deletionId);
+      return { data: newData, page: pagination.page };
+    }
+    // This only happens when pagination is undefined which should never be the case
+    return { data: [], page: -1 };
+  });
+  return { pages: newPages ?? [], pageParams: infinite?.pageParams ?? [] };
+}
+
+/**
+ * Serves the same purpose as update one finite, but for deletion.
+ * @param deletionId id of the item to be deleted
+ * @param finite an array of objects from which to delete the item.
+ * @returns
+ */
+export function deleteOneFinite<Type extends HasId>(
+  deletionId: number,
+  finite?: Type[],
+): Type[] {
+  return finite?.filter((item) => item.id !== deletionId) ?? [];
 }

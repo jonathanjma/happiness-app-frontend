@@ -33,18 +33,17 @@ export default function ConfirmationModal({
       <p> {body} </p>
       <div className="h-6" />
       <Row>
-        <div className="flex flex-grow" />
+        <Button
+          associatedModalId={id}
+          label={confirmText}
+          onClick={onConfirm}
+        />
+        <div className="w-4" />
         <Button
           associatedModalId={id}
           variation="TEXT"
           label={denyText}
           onClick={onDeny}
-        />
-        <div className="w-4" />
-        <Button
-          associatedModalId={id}
-          label={confirmText}
-          onClick={onConfirm}
         />
       </Row>
     </Modal>

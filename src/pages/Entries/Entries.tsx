@@ -77,10 +77,6 @@ export default function Entries() {
     },
   });
 
-  const deleteHappinessMutation = useMutation({
-    mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
-  });
-
   return (
     <Row className="h-screen bg-[#FAFAFA]">
       <div className="pt-8">
@@ -116,9 +112,6 @@ export default function Entries() {
           setEditing={setEditing}
           networkingState={networkingState}
           setNetworkingState={setNetworkingState}
-          onDeleteHappiness={() => {
-            deleteHappinessMutation.mutate();
-          }}
         />
       </div>
     </Row>

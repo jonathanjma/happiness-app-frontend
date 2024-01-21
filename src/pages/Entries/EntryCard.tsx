@@ -8,12 +8,11 @@ import Comments from "../../components/Comments";
 import HappinessNumber from "../../components/HappinessNumber";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import DeleteHappinessModal from "../../components/modals/DeleteHappinessModal";
 import EntryTextSkeleton from "../../components/skeletons/EntryTextSkeleton";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { parseYYYYmmddFormat } from "../../utils";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -27,7 +26,6 @@ export default function EntryCard({
   happiness,
   onChangeHappinessNumber,
   onChangeCommentText,
-  onDeleteHappiness,
   editing,
   setEditing,
   networkingState,
@@ -37,7 +35,6 @@ export default function EntryCard({
   className?: string;
   onChangeHappinessNumber: (value: number) => void;
   onChangeCommentText: (value: string) => void;
-  onDeleteHappiness: () => void;
   editing: boolean;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   networkingState: string;
@@ -178,16 +175,9 @@ export default function EntryCard({
           <Comments associatedHappinessId={happiness.id} modalVariant={false} />
         </Column>
       </Column>
-      <ConfirmationModal
-        id="delete-confirm-modal"
-        title="Deleting happiness"
-        // fix comment form
-        body={`You are deleting happiness for ${parseYYYYmmddFormat(
-          happiness.timestamp,
-        ).toDateString()}, are you sure you want to continue?`}
-        denyText="Cancel"
-        confirmText="Continue"
-        onConfirm={onDeleteHappiness}
+      <DeleteHappinessModal
+        modalId="delete-confirm-modal"
+        happinessId={happiness.id}
       />
     </>
   );
