@@ -41,21 +41,20 @@ export default function PrivateEntriesView() {
         )
         .then((res) => res.data),
     mutationKey: [MutationKeys.MUTATE_JOURNAL],
-    onSuccess: (journal: Journal) => {
-      console.log("success");
+    onSuccess: () => {
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
 
       // Update infinite queries:
       queryClient.setQueriesData(
         [QueryKeys.FETCH_INFINITE_JOURNAL],
         (infinitePagination?: InfiniteJournalPagination) =>
-          updateOneInfinite(journal, infinitePagination),
+          updateOneInfinite(selectedEntry!, infinitePagination),
       );
 
       // Update non-infinite queries
       queryClient.setQueriesData(
         [QueryKeys.FETCH_JOURNAL],
-        (journals?: Journal[]) => updateOneFinite(journal, journals),
+        (journals?: Journal[]) => updateOneFinite(selectedEntry!, journals),
       );
     },
     onError: () => {
@@ -89,7 +88,7 @@ export default function PrivateEntriesView() {
       console.log("second");
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       clearTimeout(journalUpdateTimeout.current);
-      journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
+      journalUpdateTimeout.current = setTimeout(updateJournal, 500);
     } else if (selectedEntry) {
       setIsFirstRender(false);
     }
