@@ -1,7 +1,8 @@
+import TimeAgo from "javascript-time-ago";
+import { Comment } from "../data/models/Comment";
+import { getDateObjFromUTCString } from "../utils";
 import Column from "./layout/Column";
 import Row from "./layout/Row";
-import { Comment } from "../data/models/Comment";
-import TimeAgo from "javascript-time-ago";
 
 /**
  * The type of comment card to display on the big entry card. Text styles are
@@ -24,7 +25,7 @@ export default function CommentCard({ comment }: { comment: Comment }) {
         </h6>
         <p className="leading-5 text-gray-600"> {comment.text} </p>
         <label className=" leading-4 text-gray-400">
-          {timeAgo.format(new Date(comment.timestamp))}
+          {timeAgo.format(getDateObjFromUTCString(comment.timestamp))}
         </label>
       </Column>
     </Row>
