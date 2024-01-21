@@ -5,7 +5,7 @@ import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { InfiniteJournalPagination, Journal } from "../../data/models/Journal";
-import { formatDate } from "../../utils";
+import { formatDate, updateOneFinite, updateOneInfinite } from "../../utils";
 import PrivateEntryCard from "./PrivateEntryCard";
 import ScrollableJournalCalendar from "./ScrollableJournalCalendar";
 
@@ -48,42 +48,14 @@ export default function PrivateEntriesView() {
       // Update infinite queries:
       queryClient.setQueriesData(
         [QueryKeys.FETCH_INFINITE_JOURNAL],
-        (infinitePagination?: InfiniteJournalPagination) => {
-          infinitePagination?.pages.forEach((pagination) => {
-            if (pagination) {
-              pagination.data = pagination.data.map((journalFromPagination) =>
-                journalFromPagination.id === journal.id
-                  ? journal
-                  : journalFromPagination,
-              );
-              if (
-                !pagination.data.find(
-                  (journalFromPagination) =>
-                    journalFromPagination.id === journal.id,
-                )
-              ) {
-                pagination.data.push(journal);
-              }
-            }
-          });
-          return (
-            infinitePagination ?? {
-              pages: [],
-              pageParams: [],
-            }
-          );
-        },
+        (infinitePagination?: InfiniteJournalPagination) =>
+          updateOneInfinite(journal, infinitePagination),
       );
 
       // Update non-infinite queries
       queryClient.setQueriesData(
         [QueryKeys.FETCH_JOURNAL],
-        (journals?: Journal[]) => {
-          const newJournals = journals?.map((oldJournal) =>
-            oldJournal.id === journal.id ? journal : oldJournal,
-          );
-          return newJournals ?? [];
-        },
+        (journals?: Journal[]) => updateOneFinite(journal, journals),
       );
     },
     onError: () => {

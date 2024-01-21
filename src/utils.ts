@@ -116,8 +116,12 @@ export function useOnline() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
-    const onlineHanlder = () => { setIsOnline(true); };
-    const offlineHanlder = () => { setIsOnline(false); };
+    const onlineHanlder = () => {
+      setIsOnline(true);
+    };
+    const offlineHanlder = () => {
+      setIsOnline(false);
+    };
     window.addEventListener("online", onlineHanlder);
     window.addEventListener("offline", offlineHanlder);
 
@@ -128,4 +132,44 @@ export function useOnline() {
   });
 
   return isOnline;
+}
+
+interface HasId {
+  id: number;
+}
+export function updateOneInfinite<Type extends HasId>(
+  one: Type,
+  infinite?: InfinitePagintion<Type>,
+): InfinitePagintion<Type> {
+  const newPages = infinite?.pages.map((pagination): Pagination<Type> => {
+    if (pagination) {
+      const newData = pagination.data.map((item) =>
+        item.id === one.id ? one : item,
+      );
+      if (
+        !newData.find(
+          (journalFromPagination) => journalFromPagination.id === one.id,
+        )
+      ) {
+        newData.push(one);
+      }
+      return { data: newData, page: pagination.page };
+    }
+    // This only happens when pagination is undefined which should never be the case
+    return { data: [], page: -1 };
+  });
+  return { pages: newPages ?? [], pageParams: infinite?.pageParams ?? [] };
+}
+
+export function updateOneFinite<Type extends HasId>(
+  one: Type,
+  data?: Type[],
+): Type[] {
+  const newData = data?.map((oldData) =>
+    oldData.id === one.id ? one : oldData,
+  );
+  if (newData && !newData.find((value) => value.id === one.id)) {
+    newData.push(one);
+  }
+  return newData ?? [];
 }

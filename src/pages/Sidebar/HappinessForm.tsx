@@ -9,7 +9,7 @@ import {
   InfiniteHappinessPagination,
   NewHappiness,
 } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
+import { formatDate, updateOneFinite, updateOneInfinite } from "../../utils";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -34,40 +34,23 @@ export default function HappinessForm({ height }: { height: number }) {
       // update finite happiness queries
       queryClient.setQueriesData(
         [QueryKeys.FETCH_HAPPINESS],
-        (happinesses?: Happiness[]) => {
-          if (happinesses) {
-            const newHappinesses = happinesses.map((happiness) =>
-              happiness.id === newHappiness.id ? newHappiness : happiness,
-            );
-            if (
-              !newHappinesses.find(
-                (happiness) => happiness.id === newHappiness.id,
-              )
-            ) {
-              newHappinesses.push(newHappiness);
-            }
-            return newHappinesses;
-          }
-          return [];
-        },
+        (happinesses?: Happiness[]) =>
+          updateOneFinite(newHappiness, happinesses),
       );
 
       // update infinite happiness queries
       queryClient.setQueriesData(
-        [QueryKeys.FETCH_INFINITE_HAPPINESS],
-        (infiniteHappiness?: InfiniteHappinessPagination) => {
-          infiniteHappiness?.pages.forEach((page) => {
-            page.data = page.data.map((happiness) =>
-              happiness.id === newHappiness.id ? newHappiness : happiness,
-            );
-          });
-          return (
-            infiniteHappiness ?? {
-              pages: [],
-              pageParams: [],
+        {
+          predicate: (query) => {
+            if (query.queryKey.includes(QueryKeys.FETCH_INFINITE_HAPPINESS)) {
+              console.log("match");
+              return true;
             }
-          );
+            return false;
+          },
         },
+        (infiniteHappiness?: InfiniteHappinessPagination) =>
+          updateOneInfinite(newHappiness, infiniteHappiness),
       );
     },
   });

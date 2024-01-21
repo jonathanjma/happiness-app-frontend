@@ -9,6 +9,7 @@ import {
   HappinessPost,
   InfiniteHappinessPagination,
 } from "../../data/models/Happiness";
+import { updateOneFinite, updateOneInfinite } from "../../utils";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
 
@@ -60,40 +61,15 @@ export default function Entries() {
       // update finite happiness queries
       queryClient.setQueriesData(
         [QueryKeys.FETCH_HAPPINESS],
-        (happinesses?: Happiness[]) => {
-          if (happinesses) {
-            const newHappinesses = happinesses.map((happiness) =>
-              happiness.id === newHappiness.id ? newHappiness : happiness,
-            );
-            if (
-              !newHappinesses.find(
-                (happiness) => happiness.id === newHappiness.id,
-              )
-            ) {
-              newHappinesses.push(newHappiness);
-            }
-            return newHappinesses;
-          }
-          return [];
-        },
+        (happinesses?: Happiness[]) =>
+          updateOneFinite(newHappiness, happinesses),
       );
 
       // update infinite happiness queries
       queryClient.setQueriesData(
         [QueryKeys.FETCH_INFINITE_HAPPINESS],
-        (infiniteHappiness?: InfiniteHappinessPagination) => {
-          infiniteHappiness?.pages.forEach((page) => {
-            page.data = page.data.map((happiness) =>
-              happiness.id === newHappiness.id ? newHappiness : happiness,
-            );
-          });
-          return (
-            infiniteHappiness ?? {
-              pages: [],
-              pageParams: [],
-            }
-          );
-        },
+        (infiniteHappiness?: InfiniteHappinessPagination) =>
+          updateOneInfinite(newHappiness, infiniteHappiness),
       );
     },
     onError: () => {
