@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/IconClose";
@@ -47,6 +47,15 @@ export default function SearchBar({
   const [filterShowing, setFilterShowing] = useState(false);
   const [resultsShowing, setResultsShowing] = useState(true);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(-1);
+  const iconFilled = useMemo<boolean>(
+    () =>
+      filterShowing ||
+      startValue !== 0 ||
+      endValue !== 10 ||
+      startDate !== "" ||
+      endDate !== "",
+    [filterShowing, startValue, endValue, startDate, endDate],
+  );
 
   const navigate = useNavigate();
 
@@ -156,7 +165,7 @@ export default function SearchBar({
     <Column className="relative z-50 w-full gap-4">
       {/* Search bar */}
       <Row
-        className={`items-center rounded-[50px] border-1 border-gray-300 px-6 py-3 hover:border-gray-400 ${
+        className={`items-center rounded-[50px] border-1 border-gray-300 px-6 hover:border-gray-400 ${
           isFocused
             ? "border-yellow shadow-form-selected hover:border-yellow"
             : ""
@@ -168,7 +177,7 @@ export default function SearchBar({
             setText(e.target.value);
           }}
           placeholder="Search for keywords"
-          className="w-auto flex-grow focus:outline-none"
+          className="my-3 w-auto flex-grow focus:outline-none"
           onBlur={() => {
             setIsFocused(false);
           }}
@@ -176,16 +185,17 @@ export default function SearchBar({
             setIsFocused(true);
           }}
         />
-        <Row className="gap-4">
+        <Row className={`items-center ${iconFilled ? " gap-2" : " gap-4"}`}>
           <IconFilter
             color="#808080"
-            className="hover:cursor-pointer"
+            className={`hover:cursor-pointer`}
             onClick={handleToggleFilter}
+            filled={iconFilled}
           />
           {text.length !== 0 && (
             <IconClose
               color="#808080"
-              className="hover:cursor-pointer"
+              className="my-3 hover:cursor-pointer"
               onClick={() => {
                 setText("");
                 setResultsShowing(false);
