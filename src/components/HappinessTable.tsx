@@ -76,8 +76,8 @@ export default function HappinessTable({
           id="view-happiness"
         />
       )}
-      <table className="min-w-full divide-y divide-gray-200 overflow-hidden rounded-lg">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-x-1 divide-y divide-secondary">
+        <thead className="border-1 border-gray-200 bg-gray-50">
           <tr>
             <th className="text-gray-500 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
               {start.toLocaleDateString("en-us", { month: "long" })}
@@ -97,7 +97,7 @@ export default function HappinessTable({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 border-b bg-white">
+        <tbody className="divide-x-1 divide-y-1 divide-gray-200 border-b bg-white">
           {group.users.map((user) => (
             <tr className="hover:bg-light_yellow">
               <td className="text-gray-900 whitespace-nowrap border-l border-r border-gray-200 px-6 py-4 text-sm font-medium">
