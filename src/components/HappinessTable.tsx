@@ -4,7 +4,7 @@ import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Group } from "../data/models/Group";
 import { Happiness } from "../data/models/Happiness";
-import { formatDate, parseYYYYmmddFormat } from "../utils";
+import { floatToColor, formatDate, parseYYYYmmddFormat } from "../utils";
 import HappinessViewerModal from "./modals/HappinessViewerModal";
 /**
  *
@@ -97,7 +97,7 @@ export default function HappinessTable({
         </thead>
         <tbody className="divide-x-1 divide-y-1 divide-gray-200 border-b bg-white">
           {group.users.map((user) => (
-            <tr className="hover:bg-light_yellow">
+            <tr>
               <td className="text-gray-900 whitespace-nowrap border-l border-r border-gray-200 px-6 py-4 text-sm font-medium">
                 {user.username}
               </td>
@@ -107,12 +107,11 @@ export default function HappinessTable({
                     happiness.timestamp === formatDate(date) &&
                     happiness.author.username === user.username,
                 );
-                let dataStyle =
-                  "px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center ";
+                let dataStyle = `px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center `;
                 if (happiness) {
                   dataStyle += "hover:cursor-pointer hover:bg-yellow ";
                   if (happiness.comment) {
-                    dataStyle += " has_comment";
+                    dataStyle += "has_comment ";
                   }
                 }
                 return (
@@ -126,6 +125,9 @@ export default function HappinessTable({
                     }}
                     onMouseEnter={() => {
                       setSelectedHappiness(happiness);
+                    }}
+                    style={{
+                      backgroundColor: floatToColor(happiness?.value ?? -1),
                     }}
                   >
                     {happiness?.value}
