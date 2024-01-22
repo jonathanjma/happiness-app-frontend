@@ -16,31 +16,9 @@ export default function LineChart({
   chartData: ChartData<"line", number[], string>;
   onClick: (evt: ChartEvent, element: ActiveElement[]) => void;
 }) {
-  // const chartRef = useRef(null);
-
-  //   useEffect(() => {
-  //     const chart = chartRef.current;
-
-  //     if (chart) {
-  //       console.log("ChartJS", chart);
-  //       // @ts-ignore
-  //       console.log(chart.chartInstance);
-  //     }
-  //   }, []);
-
-  // function change_data(element) {
-  //     if (element.length > 0) {
-  //       let index = element[0].index;
-  //       let dataindices = element.map((e) => e.datasetIndex);
-  //       setPointData([dataindices, index]);
-  //       dayShow(true);
-  //   }
-  // }
-
   return (
     <div className="container">
       <Line
-        // ref={chartRef}
         redraw={true}
         updateMode="show"
         data={chartData}

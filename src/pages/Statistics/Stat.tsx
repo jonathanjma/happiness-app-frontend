@@ -12,11 +12,9 @@ import { mean, median, mode, std, min, max } from "mathjs";
 export default function Stat({
   values,
   statName,
-  key,
 }: {
   values: number[];
   statName: number;
-  key: number;
 }) {
   let statLabel = ["Average", "Median", "Mode", "STD", "Minimum", "Maximum"];
   let calculatedStats = [
@@ -26,11 +24,10 @@ export default function Stat({
     // for some reason, ts isn't working with this
     mode(values)[0].toFixed(1),
     // @ts-ignore
-    std(values).toFixed(2),
+    std(values, "uncorrected").toFixed(2),
     min(values).toFixed(1),
     max(values).toFixed(1),
   ];
-  console.log(mode(values));
 
   return (
     <>
