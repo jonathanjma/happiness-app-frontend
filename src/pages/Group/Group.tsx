@@ -113,7 +113,9 @@ export default function Group() {
                   <p>Graph View</p>
                 </TabPanel>
                 <TabPanel index={3}>
-                  <HappinessTable group={data!} startDate="2024-01-08" />
+                  <div className="m-12">
+                    <HappinessTable group={data!} startDate="2024-01-08" />
+                  </div>
                 </TabPanel>
               </div>
             </>
