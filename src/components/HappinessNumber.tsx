@@ -94,6 +94,25 @@ export default function HappinessNumber({
     </div>
   );
 
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(updateHappinessTimeout.current);
+    let happinessNum = 0;
+    if (e.target.value !== "") {
+      happinessNum = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
+      if (happinessNum < 0) {
+        happinessNum *= -1;
+      }
+      // While loop is unncessary but does make absolutley sure it is in range
+      while (happinessNum > 10) {
+        happinessNum /= 10;
+      }
+    }
+    // We don't change the current happiness until we know for sure
+    // it's a valid range
+    setCurrentHappiness(happinessNum);
+    setHappinessDisplay(happinessNum.toString());
+  };
+
   return sidebarStyle ? (
     <div className="flex">
       {/* Input */}
@@ -110,26 +129,7 @@ export default function HappinessNumber({
               ? " h-[36px] max-w-[55px] text-xl"
               : " h-auto max-w-[80px] text-4xl")
           }
-          onChange={(e) => {
-            clearTimeout(updateHappinessTimeout.current);
-            let happinessNum = 0;
-            if (e.target.value !== "") {
-              happinessNum = parseFloat(
-                e.target.value.substring(e.target.value.indexOf("-") + 1),
-              );
-              if (happinessNum < 0) {
-                happinessNum *= -1;
-              }
-              // While loop is unncessary but does make absolutley sure it is in range
-              while (happinessNum > 10) {
-                happinessNum /= 10;
-              }
-            }
-            // We don't change the current happiness until we know for sure
-            // it's a valid range
-            setCurrentHappiness(happinessNum);
-            setHappinessDisplay(happinessNum.toString());
-          }}
+          onChange={changeHandler}
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
@@ -157,26 +157,7 @@ export default function HappinessNumber({
               ? " h-[36px] max-w-[55px] text-xl"
               : " h-auto max-w-[80px] text-4xl")
           }
-          onChange={(e) => {
-            clearTimeout(updateHappinessTimeout.current);
-            let happinessNum = 0;
-            if (e.target.value !== "") {
-              happinessNum = parseFloat(
-                e.target.value.substring(e.target.value.indexOf("-") + 1),
-              );
-              if (happinessNum < 0) {
-                happinessNum *= -1;
-              }
-              // While loop is unncessary but does make absolutley sure it is in range
-              while (happinessNum > 10) {
-                happinessNum /= 10;
-              }
-            }
-            // We don't change the current happiness until we know for sure
-            // it's a valid range
-            setCurrentHappiness(happinessNum);
-            setHappinessDisplay(happinessNum.toString());
-          }}
+          onChange={changeHandler}
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
