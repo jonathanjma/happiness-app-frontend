@@ -66,8 +66,6 @@ export default function HappinessTable({
     return <p className="ml-8 mt-8 text-error">Error loading happiness data</p>;
   }
 
-  const averages: Record<string, number[]> = {};
-
   return (
     <>
       {selectedHappiness && (
