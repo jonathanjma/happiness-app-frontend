@@ -29,7 +29,7 @@ export default function SmallHappinessCard({
 
   return (
     <Card className="p-4">
-      <Row className="items-center gap-x-2">
+      <Row className="items-center gap-x-1">
         <div className="flex h-11 w-11 items-center justify-center rounded-[4px] bg-light_yellow">
           <h4 className="text-secondary">{happiness.value.toFixed(1)}</h4>
         </div>
