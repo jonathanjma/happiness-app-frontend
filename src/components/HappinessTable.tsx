@@ -124,7 +124,16 @@ export default function HappinessTable({
                   <td
                     className={dataStyle}
                     onClick={() => {
-                      setSelectedHappiness(happiness);
+                      if (
+                        selectedHappiness &&
+                        selectedHappiness.id === happiness?.id
+                      ) {
+                        window.HSOverlay.open(
+                          document.querySelector("#view-happiness"),
+                        );
+                      } else {
+                        setSelectedHappiness(happiness);
+                      }
                     }}
                     style={{
                       backgroundColor: floatToColor(happiness?.value ?? -1),
