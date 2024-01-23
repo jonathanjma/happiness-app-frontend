@@ -120,7 +120,6 @@ export default function HappinessForm({ height }: { height: number }) {
         setComment("");
       } else {
         setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-        console.log(`data from latest query: ${JSON.stringify(data[0])}`);
         setHappiness(data[0].value);
         setComment(data[0].comment);
       }

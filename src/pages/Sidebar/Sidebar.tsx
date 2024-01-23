@@ -98,7 +98,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                           href={entry.route}
                           selectedClass={[
                             "bg-yellow font-semibold text-secondary shadow-md1 ",
-                            "bg-light_yellow font-medium text-gray-600 ",
+                            "font-medium text-gray-600 ",
                           ]}
                           className={
                             "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
