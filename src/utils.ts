@@ -116,8 +116,12 @@ export function useOnline() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
-    const onlineHanlder = () => { setIsOnline(true); };
-    const offlineHanlder = () => { setIsOnline(false); };
+    const onlineHanlder = () => {
+      setIsOnline(true);
+    };
+    const offlineHanlder = () => {
+      setIsOnline(false);
+    };
     window.addEventListener("online", onlineHanlder);
     window.addEventListener("offline", offlineHanlder);
 
@@ -128,4 +132,34 @@ export function useOnline() {
   });
 
   return isOnline;
+}
+
+export function createSearchQuery(
+  text: string,
+  start: string,
+  end: string,
+  startValue: number,
+  endValue: number,
+): Record<string, string | number> {
+  const query: Record<string, any> = {};
+  if (text !== "") {
+    query.text = text;
+  }
+  if (!isNaN(new Date(start).getTime())) {
+    query.start = formatDate(parseYYYYmmddFormat(start));
+  }
+  if (!isNaN(new Date(end).getTime())) {
+    query.end = formatDate(parseYYYYmmddFormat(end));
+  }
+  if (query.start && !query.end) {
+    query.end = formatDate(new Date());
+  }
+  if (query.end && !query.start) {
+    query.start = "2000-01-01";
+  }
+  if (startValue !== 0 || endValue !== 10) {
+    query.low = startValue;
+    query.high = endValue;
+  }
+  return query;
 }
