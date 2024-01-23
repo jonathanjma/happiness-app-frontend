@@ -1,11 +1,27 @@
 import { useEffect, useState } from "react";
 
-// Formats a given date object in the format yyyy-mm-dd format
+/**
+ * Formats a given date object in the format yyyy-mm-dd format
+ * @param date
+ * @returns A string of the formatted date
+ */
 export function formatDate(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+/**
+ * Parses a date string in the YYYY-MM-dd format while avoiding weird timezone issues.
+ * Please use this function whenever trying to parse a date in this format!
+ * @param dateString the string to be parsed
+ * @returns date object containing the proper time
+ */
+export function parseYYYYmmddFormat(dateString: string): Date {
+  // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
+  const values = dateString.split("-");
+  return new Date(`${values[1]}-${values[2]}-${values[0]}`);
 }
 
 /**
@@ -22,18 +38,6 @@ export function getWeekdayFromNumber(n: number): string {
   const date = new Date();
   date.setDate(new Date().getDate() - new Date().getDay() + n);
   return date.toLocaleString("en-us", { weekday: "short" });
-}
-
-/**
- * Parses a date string in the YYYY-MM-dd format while avoiding weird timezone issues.
- * Please use this function whenever trying to parse a date in this format!
- * @param dateString the string to be parsed
- * @returns date object containing the proper time
- */
-export function parseYYYmmddFormat(dateString: string): Date {
-  // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
-  const values = dateString.split("-");
-  return new Date(`${values[1]}-${values[2]}-${values[0]}`);
 }
 
 /**
@@ -102,4 +106,60 @@ export function useWindowDimensions() {
   }, []);
 
   return windowDimensions;
+}
+
+/**
+ * A custom hook to detect if the user is online.
+ * @returns live boolean variable representing the user's connection state.
+ */
+export function useOnline() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const onlineHanlder = () => {
+      setIsOnline(true);
+    };
+    const offlineHanlder = () => {
+      setIsOnline(false);
+    };
+    window.addEventListener("online", onlineHanlder);
+    window.addEventListener("offline", offlineHanlder);
+
+    return () => {
+      window.removeEventListener("online", onlineHanlder);
+      window.removeEventListener("offline", offlineHanlder);
+    };
+  });
+
+  return isOnline;
+}
+
+export function createSearchQuery(
+  text: string,
+  start: string,
+  end: string,
+  startValue: number,
+  endValue: number,
+): Record<string, string | number> {
+  const query: Record<string, any> = {};
+  if (text !== "") {
+    query.text = text;
+  }
+  if (!isNaN(new Date(start).getTime())) {
+    query.start = formatDate(parseYYYYmmddFormat(start));
+  }
+  if (!isNaN(new Date(end).getTime())) {
+    query.end = formatDate(parseYYYYmmddFormat(end));
+  }
+  if (query.start && !query.end) {
+    query.end = formatDate(new Date());
+  }
+  if (query.end && !query.start) {
+    query.start = "2000-01-01";
+  }
+  if (startValue !== 0 || endValue !== 10) {
+    query.low = startValue;
+    query.high = endValue;
+  }
+  return query;
 }
