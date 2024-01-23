@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import useStateWithCallback from "use-state-with-callback";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Group } from "../data/models/Group";
@@ -25,12 +25,15 @@ export default function HappinessTable({
   endDate?: string;
 }) {
   const { api } = useApi();
-  const [selectedHappiness, setSelectedHappiness] = useStateWithCallback<
+  const [selectedHappiness, setSelectedHappiness] = useState<
     Happiness | undefined
-  >(undefined, (happiness) => {
-    //@ts-ignore
-    window.HSOverlay.open(document.querySelector("#view-happiness"));
-  });
+  >(undefined);
+  // open modal when user selects new happiness
+  useEffect(() => {
+    if (selectedHappiness) {
+      window.HSOverlay.open(document.querySelector("#view-happiness"));
+    }
+  }, [selectedHappiness]);
 
   const start = parseYYYYmmddFormat(startDate);
   const end = endDate ? parseYYYYmmddFormat(endDate) : new Date();
