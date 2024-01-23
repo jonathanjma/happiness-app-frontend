@@ -28,7 +28,6 @@ export default function HappinessTable({
   const [selectedHappiness, setSelectedHappiness] = useStateWithCallback<
     Happiness | undefined
   >(undefined, (happiness) => {
-    console.log(`selected ${happiness}`);
     //@ts-ignore
     window.HSOverlay.open(document.querySelector("#view-happiness"));
   });
