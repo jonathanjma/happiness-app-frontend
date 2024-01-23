@@ -10,6 +10,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate, useWindowDimensions } from "../../utils";
+import useStateWithCallback from "use-state-with-callback";
 import Button from "../../components/Button";
 import Stat from "./Stat";
 
@@ -25,9 +26,12 @@ export default function Statistics() {
   const [radioValue, setRadioValue] = useState(2);
   const [graphTitle, setGraphTitle] = useState("Weekly Happiness");
   const [graphSubTitle, setGraphSubTitle] = useState("");
-  const [viewingEntry, setViewingEntry] = useState<Happiness | undefined>(
-    undefined,
-  );
+  const [viewingEntry, setViewingEntry] = useStateWithCallback<
+    Happiness | undefined
+  >(undefined, () => {
+    // @ts-ignore
+    window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
+  });
   const [calCollapsed, setCalCollapsed] = useState<boolean>(false);
   const [start, setStart] = useState(
     new Date(
@@ -187,8 +191,8 @@ export default function Statistics() {
                   showDay={radioValue === 1}
                   uniqDays={true}
                   range={[start, end]}
-                  onSelectEntry={(entry: Happiness) => {
-                    setViewingEntry(entry);
+                  onSelectEntry={(entry: Happiness[]) => {
+                    setViewingEntry(entry[0]);
                   }}
                 />
                 <Row className="flex justify-center space-x-4">
@@ -235,7 +239,7 @@ export default function Statistics() {
                       onSelectEntry={(entry: Happiness) => {
                         setViewingEntry(entry);
                       }}
-                      openModalId="show-happiness-modal"
+                      // openModalId="show-happiness-modal"
                     />
                   </div>
                 )}

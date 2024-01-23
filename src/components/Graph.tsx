@@ -24,7 +24,7 @@ Chart.register(...registerables);
  * @param showDay boolean determining whether to show day of week as label instead of date
  * @param uniqDays if true, shows only the days with happiness entered over all users, otherwise shows all dates in given range
  * @param range two-element list containing the start and end date objects for the graph (required if uniqDays = false
- * @param onSelectEntry function describing what happens when a specific happiness value is clicked
+ * @param onSelectEntry function describing what happens when a specific list of happiness values is clicked
  * @returns
  */
 
@@ -43,7 +43,7 @@ export default function Graph({
   showDay?: boolean;
   uniqDays?: boolean;
   range: Date[];
-  onSelectEntry: (selectedEntry: Happiness) => void;
+  onSelectEntry: (selectedEntry: Happiness[]) => void;
 }) {
   if (entries.length === 0) {
     console.log("empty entries");
@@ -143,19 +143,20 @@ export default function Graph({
     pointHitRadius: 15,
   }));
 
-  const onClick = (evt: ChartEvent, elt: ActiveElement[]) => {
-    if (elt[0].index === undefined) return;
-    const foundEntry = entries.find(
-      (h) =>
-        h.timestamp === datesList[elt[0].index] &&
-        h.author.username === usernameList[elt[0].datasetIndex],
-    );
-    if (foundEntry) {
-      onSelectEntry(foundEntry);
-      console.log("ok");
-      // @ts-ignore
-      window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
-    }
+  const onClick = (evt: ChartEvent, elts: ActiveElement[]) => {
+    if (elts[0].index === undefined) return;
+    const foundEntries: Happiness[] = [];
+    elts.map((elt) => {
+      let foundEntry = entries.find(
+        (h) =>
+          h.timestamp === datesList[elt.index] &&
+          h.author.username === usernameList[elt.datasetIndex],
+      );
+      if (foundEntry) {
+        foundEntries.push(foundEntry);
+      }
+    });
+    onSelectEntry(foundEntries);
   };
 
   // chartData is the object passed to the LineChart component to create the graph. It contains...
