@@ -37,7 +37,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
               <div
                 className={
                   "mb-6 flex w-full items-center space-x-4 rounded-xl p-1 pr-4 hover:bg-medium_yellow" +
-                  (dropdownState ? " bg-yellow" : "")
+                  (dropdownState ? " bg-yellow shadow-md1" : "")
                 }
                 onClick={() => setDropdownState(!dropdownState)}
               >
