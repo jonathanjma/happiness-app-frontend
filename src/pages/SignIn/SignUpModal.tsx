@@ -207,7 +207,6 @@ export default function SignUpModal({
             value={password}
             onChangeValue={setPassword}
             type="password"
-            autocomplete="new-password"
           />
           {password.length !== 0 ||
             (triedSubmit && (
@@ -240,7 +239,6 @@ export default function SignUpModal({
           onChangeValue={setConfirmPassword}
           onEnterPressed={handleCreateAccount}
           type="password"
-          autocomplete="new-password"
           hasError={!matchesConfirmPassword}
           errorText="Passwords are not matching."
         />

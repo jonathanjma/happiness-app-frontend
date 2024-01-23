@@ -78,6 +78,7 @@ export default function Welcome() {
         <Column className="basis-1/2 gap-y-16">
           {features.map((feature, i) => (
             <FeatureCard
+              key={i}
               title={feature.title}
               description={feature.description}
               icon={feature.icon}
