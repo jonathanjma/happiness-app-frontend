@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useUser } from "../../contexts/UserProvider";
-import { User } from "../../data/models/User";
 
 import EntriesIcon from "../../assets/book.svg";
 import JournalIcon from "../../assets/encrypted.svg";

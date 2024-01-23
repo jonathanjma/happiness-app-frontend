@@ -18,13 +18,6 @@ export default function LinkButton({
   href: string;
 }) {
   return (
-    // <a
-    //   type="button"
-    //   className={"flex flex-row rounded-xl py-3 pl-3 pr-4.5 " + className}
-    //   onClick={onClick}
-    //   href={href}
-    // >
-    // </a>
     <NavLink
       to={href}
       className={({ isActive }) =>
