@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useQuery } from "react-query";
+import useStateWithCallback from "use-state-with-callback";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Group } from "../data/models/Group";
@@ -25,9 +25,13 @@ export default function HappinessTable({
   endDate?: string;
 }) {
   const { api } = useApi();
-  const [selectedHappiness, setSelectedHappiness] = useState<
+  const [selectedHappiness, setSelectedHappiness] = useStateWithCallback<
     Happiness | undefined
-  >(undefined);
+  >(undefined, (happiness) => {
+    console.log(`selected ${happiness}`);
+    //@ts-ignore
+    window.HSOverlay.open(document.querySelector("#view-happiness"));
+  });
 
   const start = parseYYYYmmddFormat(startDate);
   const end = endDate ? parseYYYYmmddFormat(endDate) : new Date();
@@ -118,12 +122,6 @@ export default function HappinessTable({
                   <td
                     className={dataStyle}
                     onClick={() => {
-                      // @ts-ignore
-                      window.HSOverlay.open(
-                        document.querySelector("#view-happiness"),
-                      );
-                    }}
-                    onMouseEnter={() => {
                       setSelectedHappiness(happiness);
                     }}
                     style={{

@@ -21,7 +21,8 @@
     "react-hot-toast": "^2.4.1",
     "react-intersection-observer": "^9.5.3",
     "react-router-dom": "^6.21.1",
-    "react-textarea-autosize": "^8.5.3"
+    "react-textarea-autosize": "^8.5.3",
+    "use-state-with-callback": "^3.0.2"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
