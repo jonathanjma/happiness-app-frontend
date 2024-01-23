@@ -26,12 +26,9 @@ export default function Statistics() {
   const [radioValue, setRadioValue] = useState(2);
   const [graphTitle, setGraphTitle] = useState("Weekly Happiness");
   const [graphSubTitle, setGraphSubTitle] = useState("");
-  const [viewingEntry, setViewingEntry] = useStateWithCallback<
-    Happiness | undefined
-  >(undefined, () => {
-    // @ts-ignore
-    window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
-  });
+  const [viewingEntry, setViewingEntry] = useState<Happiness | undefined>(
+    undefined,
+  );
   const [calCollapsed, setCalCollapsed] = useState<boolean>(false);
   const [start, setStart] = useState(
     new Date(
@@ -46,6 +43,13 @@ export default function Statistics() {
       new Date().getMonth(),
       new Date().getDate(),
     ),
+  );
+
+  useEffect(
+    () =>
+      // @ts-ignore
+      window.HSOverlay.open(document.querySelector("#show-happiness-modal")),
+    [viewingEntry],
   );
 
   const { width, height } = useWindowDimensions();
@@ -124,24 +128,6 @@ export default function Statistics() {
     refetch();
   }, [data, start, end, graphTitle]);
 
-  const [redraw, setRedraw] = useState(true);
-
-  // redraw when calendar expands/shrinks
-  useEffect(() => {
-    console.log("set true");
-    setRedraw(true);
-  }, [calCollapsed, radioValue]);
-
-  // redraw when window size changes
-  useEffect(() => {
-    console.log("height/width changing");
-    setRedraw(true);
-  }, [height, width]);
-
-  useEffect(() => {
-    setRedraw(false);
-  }, [redraw]);
-
   // list of statistic settings
   const setNames = [
     "Show Average",
@@ -192,7 +178,14 @@ export default function Statistics() {
                   uniqDays={true}
                   range={[start, end]}
                   onSelectEntry={(entry: Happiness[]) => {
-                    setViewingEntry(entry[0]);
+                    if (viewingEntry && viewingEntry.id === entry[0].id) {
+                      // @ts-ignore
+                      window.HSOverlay.open(
+                        document.querySelector("#show-happiness-modal"),
+                      );
+                    } else {
+                      setViewingEntry(entry[0]);
+                    }
                   }}
                 />
                 <Row className="flex justify-center space-x-4">
@@ -237,7 +230,17 @@ export default function Statistics() {
                       startDate={start}
                       variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
                       onSelectEntry={(entry: Happiness) => {
-                        setViewingEntry(entry);
+                        if (viewingEntry && viewingEntry.id === entry.id) {
+                          // @ts-ignore
+                          window.HSOverlay.open(
+                            document.querySelector("#show-happiness-modal"),
+                          );
+                          console.log("interesting");
+                          console.log(viewingEntry);
+                        } else {
+                          setViewingEntry(entry);
+                          console.log("ok???");
+                        }
                       }}
                       // openModalId="show-happiness-modal"
                     />
