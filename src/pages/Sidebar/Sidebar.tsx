@@ -23,8 +23,6 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
     { title: "Settings", route: "/settings", icon: SettingsIcon },
   ];
 
-  const [selectedLink, setSelectedLink] = useState("");
-
   const { height } = useWindowDimensions();
 
   return (
@@ -33,41 +31,61 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
         id="docs-sidebar"
         className="scrollbar-y scroll-hidden bottom-0 left-0 top-0 z-[60] h-screen min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
       >
-        {/* <button
-                    className={
-                      "w-3/10 ml-1.5 min-w-[78px] rounded-lg border border-secondary px-3 py-1 text-center text-sm font-semibold text-secondary shadow-md1 outline-none"
-                    }
-                    onClick={useUser().logoutUser}
-                  >
-                    <label>Log Out</label>
-                  </button> */}
         <div className="flex h-full flex-col">
           <div className="m-4 flex grow flex-col">
-            <div className="m-4 flex grow flex-col">
-              <a className="flex-none" href={"/profile/" + user!.id}>
-                <div className="mb-6 flex items-center space-x-4 rounded-xl p-1 pr-4 hover:bg-medium_yellow">
-                  <div
-                    className="items-center"
-                    onClick={() => setSelectedLink("")}
-                  >
-                    <img
-                      className="mx-auto block max-h-[32px] max-w-[32px] justify-center rounded-full sm:mx-0 sm:shrink-0"
-                      src={user!.profile_picture}
-                      alt="profile"
-                    />
-                  </div>
-                  <div className="text-secondary">
-                    <div className="text-base font-semibold">
-                      {user!.username}
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      Logging since {user!.created.substring(0, 4)}
-                    </div>
-                  </div>
-                  <div className="flex flex-1" />
-                  <div>{<DropdownIcon />}</div>
+            <div className="relative m-4 flex grow flex-col">
+              <div
+                className={
+                  "mb-6 flex w-full items-center space-x-4 rounded-xl p-1 pr-4 hover:bg-medium_yellow" +
+                  (dropdownState ? " bg-yellow" : "")
+                }
+                onClick={() => setDropdownState(!dropdownState)}
+              >
+                <div className="items-center">
+                  <img
+                    className="mx-auto block max-h-[32px] max-w-[32px] justify-center rounded-full sm:mx-0 sm:shrink-0"
+                    src={user!.profile_picture}
+                    alt="profile"
+                  />
                 </div>
-              </a>
+                <div className="text-secondary">
+                  <div className="text-base font-semibold">
+                    {user!.username}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Logging since {user!.created.substring(0, 4)}
+                  </div>
+                </div>
+                <div className="flex flex-1" />
+                <div>{<DropdownIcon />}</div>
+              </div>
+              {dropdownState ? (
+                <>
+                  <div className="absolute top-11 mt-2 w-full rounded-xl border border-1 border-gray-200 shadow-xl">
+                    <LinkButton
+                      label={"Profile"}
+                      href={"/profile/" + user!.id}
+                      selectedClass={[
+                        "bg-yellow font-semibold text-secondary shadow-md1",
+                        "bg-white font-medium text-gray-600",
+                      ]}
+                      className={
+                        "rounded-b-none bg-white hover:bg-medium_yellow hover:shadow-md1"
+                      }
+                    />
+                    <button
+                      className={
+                        "flex w-full flex-row rounded-b-xl bg-white py-3 pl-3 pr-4.5 font-medium text-gray-600 outline-none hover:bg-medium_yellow hover:shadow-md1"
+                      }
+                      onClick={useUser().logoutUser}
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
               <HappinessForm height={height} />
               <div className="flex grow flex-col">
                 <nav className="relative w-full grow">
@@ -77,7 +95,6 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                         <LinkButton
                           icon={<img src={entry.icon} />}
                           label={entry.title}
-                          onClick={() => setSelectedLink(entry.title)}
                           href={entry.route}
                           selectedClass={[
                             "bg-yellow font-semibold text-secondary shadow-md1 ",

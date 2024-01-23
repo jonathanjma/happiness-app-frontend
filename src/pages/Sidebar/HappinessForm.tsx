@@ -171,7 +171,7 @@ export default function HappinessForm({ height }: { height: number }) {
           </label>
         </button>
       </div>
-      <div className="mb-4 rounded-xl bg-white p-4">
+      <div className="mb-4 rounded-xl border border-1 border-gray-100 bg-white p-4">
         <div className="text-sm font-medium text-gray-600">
           {selDate.toLocaleString("en-us", { weekday: "long" })}
         </div>

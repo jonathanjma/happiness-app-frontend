@@ -13,7 +13,7 @@ export default function LinkButton({
   icon?: React.ReactElement;
   label: string;
   selectedClass: string[];
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
   href: string;
 }) {
