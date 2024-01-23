@@ -24,13 +24,14 @@ export default function SignIn({ signUp }: { signUp: boolean }) {
           associatedModalId="sign-in-modal"
           onClick={openSignUp}
           variation="FILLED"
+          className="bg-yellow"
         />
       ) : (
         <Button
           label="Log In"
           associatedModalId="login-modal"
           onClick={openLogin}
-          variation="TEXT"
+          variation="OUTLINED"
         />
       )}
       <ForgotPasswordModal id="forgot-pass-modal" onLoginClick={openLogin} />

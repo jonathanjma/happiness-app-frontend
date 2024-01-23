@@ -14,6 +14,7 @@ export default function Button({
   variation = "FILLED",
   size = "LARGE",
   associatedModalId,
+  className = "",
 }: {
   icon?: React.ReactElement;
   label: string;
@@ -21,31 +22,35 @@ export default function Button({
   variation?: "OUTLINED" | "FILLED" | "TEXT";
   size?: "SMALL" | "LARGE";
   associatedModalId?: string;
+  className?: string;
 }) {
-  const additions = icon ? "pl-3 pr-4.5" : "px-4.5";
+  const additions = icon ? "pl-3 pr-4.5 " : "px-4.5 ";
 
-  let className =
+  let classNameBtn =
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 ";
 
-  className += (size === "LARGE" ? "h-12 " : "h-10 ");
+  classNameBtn += size === "LARGE" ? "h-12 " : "h-10 ";
 
   switch (variation) {
     case "FILLED":
-      className +=
+      classNameBtn +=
         "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)] " +
         additions;
       break;
     case "OUTLINED":
-      className += " border-secondary border-1 " + additions;
+      classNameBtn += " border-secondary border-1 " + additions;
       break;
     case "TEXT":
-      className += additions;
+      classNameBtn += additions;
   }
+
+  classNameBtn += className;
+
   return (
     <button
       data-hs-overlay={`#${associatedModalId}`}
       type="button"
-      className={className}
+      className={classNameBtn}
       onClick={onClick}
     >
       {icon && (
@@ -54,7 +59,7 @@ export default function Button({
           <div className="w-2.5" />
         </>
       )}
-      <label className=" font-semibold text-secondary hover:cursor-pointer">
+      <label className="font-semibold text-secondary hover:cursor-pointer">
         {label}
       </label>
     </button>
