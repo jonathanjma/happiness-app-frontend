@@ -159,7 +159,7 @@ export default function EntryCard({
             {editing && (
               <Row className="mt-1 gap-1">
                 {happiness.value === -1 ||
-                  networkingState === Constants.ERROR_MUTATION_TEXT ? (
+                networkingState === Constants.ERROR_MUTATION_TEXT ? (
                   <IconWarningOutline color="#808080" />
                 ) : (
                   <IconClock />

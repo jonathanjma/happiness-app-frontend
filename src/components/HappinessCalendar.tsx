@@ -17,7 +17,7 @@ export default function HappinessCalendar({
 }: {
   startDate: Date;
   variation: "MONTHLY" | "WEEKLY";
-  selectedEntry: Happiness;
+  selectedEntry: Happiness | undefined;
   onSelectEntry: (selectedEntry: Happiness) => void;
 }) {
   const { api } = useApi();
@@ -105,6 +105,7 @@ export default function HappinessCalendar({
                 <DayCell
                   happiness={matchingHappiness}
                   isSelected={
+                    selectedEntry !== undefined &&
                     selectedEntry &&
                     formatDate(date) === selectedEntry.timestamp
                   }
@@ -142,7 +143,6 @@ const DayCell = ({
   isSelected: boolean;
   onClick: () => void;
   showWeekday?: boolean;
-  openModalId: string;
 }) => {
   const happinessPercent = happiness.value * 10;
   const cellNumber = parseYYYYmmddFormat(happiness.timestamp).getDate();

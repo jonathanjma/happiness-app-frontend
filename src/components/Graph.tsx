@@ -45,9 +45,6 @@ export default function Graph({
   range: Date[];
   onSelectEntry: (selectedEntry: Happiness[]) => void;
 }) {
-  if (entries.length === 0) {
-    console.log("empty entries");
-  }
   // define colors for graph
   let colors = [
     "royalblue",
@@ -116,14 +113,6 @@ export default function Graph({
 
   const skipped = (ctx: ScriptableLineSegmentContext, value: number[]) =>
     ctx.p0.skip || ctx.p1.skip ? value : undefined;
-
-  // datesList.push("2023-12-17");
-  // datesList.push("2023-12-25");
-  // datesList.push("2023-11-24");
-
-  // console.log(usernameList);
-  // console.log(happinessData);
-  // console.log(datesList);
 
   // formattedValues is a list of objects that represent the dataset for the graph
   const formattedValues = usernameList.map((name, idx) => ({

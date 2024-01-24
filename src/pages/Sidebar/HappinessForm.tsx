@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import TextareaAutosize from "react-textarea-autosize";
-import HappinessNumber from "../../components/HappinessNumber";
-import { Constants, QueryKeys } from "../../constants";
+import { useState, useRef, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
+import TextareaAutosize from "react-textarea-autosize";
+import HappinessNumber from "../../components/HappinessNumber";
+import { Constants, QueryKeys } from "../../constants";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -120,7 +120,6 @@ export default function HappinessForm({ height }: { height: number }) {
         setComment("");
       } else {
         setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-        console.log(`data from latest query: ${JSON.stringify(data[0])}`);
         setHappiness(data[0].value);
         setComment(data[0].comment);
       }
@@ -171,7 +170,7 @@ export default function HappinessForm({ height }: { height: number }) {
           </label>
         </button>
       </div>
-      <div className="mb-4 rounded-xl bg-white p-4">
+      <div className="mb-4 rounded-xl border border-1 border-gray-100 bg-white p-4">
         <div className="text-sm font-medium text-gray-600">
           {selDate.toLocaleString("en-us", { weekday: "long" })}
         </div>
@@ -211,16 +210,7 @@ export default function HappinessForm({ height }: { height: number }) {
           />
         </div>
         <div className="mt-2 flex w-full text-sm">
-          <div className="w-1/2 font-medium text-dark_gray">
-            {radioValue === 2
-              ? selDate.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : ""}
-          </div>
-          {/* Currently the time doesn't update so i need to fix that */}
-          <div className="w-full text-right font-medium text-gray-400">
+          <div className="w-full text-left font-medium text-gray-400">
             {networkingState}
           </div>
         </div>

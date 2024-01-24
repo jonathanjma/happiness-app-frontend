@@ -12,8 +12,6 @@ import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate, useWindowDimensions } from "../../utils";
-import useStateWithCallback from "use-state-with-callback";
-import Button from "../../components/Button";
 import Stat from "./Stat";
 
 /**
@@ -157,9 +155,6 @@ export default function Statistics() {
     } else return false;
   });
 
-  // console.log(start);
-  // console.log(end);
-
   return (
     <>
       <div className="mx-[32px] my-[96px] flex-1">
@@ -252,20 +247,17 @@ export default function Statistics() {
                     <HappinessCalendar
                       startDate={start}
                       variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
+                      selectedEntry={viewingEntry}
                       onSelectEntry={(entry: Happiness) => {
                         if (viewingEntry && viewingEntry.id === entry.id) {
                           // @ts-ignore
                           window.HSOverlay.open(
                             document.querySelector("#show-happiness-modal"),
                           );
-                          console.log("interesting");
-                          console.log(viewingEntry);
                         } else {
                           setViewingEntry(entry);
-                          console.log("ok???");
                         }
                       }}
-                      // openModalId="show-happiness-modal"
                     />
                   </div>
                 )}
