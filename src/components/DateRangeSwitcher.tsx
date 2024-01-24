@@ -34,13 +34,13 @@ export default function DateRangeSwitcher({
     setRadioValue: (newValue: number) => void;
     labels: String[];
   }) => (
-    <Row className="w-[200px]">
+    <Row className="w-[256px]">
       <button
         className={
           "w-1/2 rounded-l-lg border border-1.5 p-1 " +
           (radioValue === 1
             ? "border-yellow bg-yellow text-secondary"
-            : "border-r-0.5 border-gray-100 bg-white text-dark_gray")
+            : "border-r-0.5 text-dark_gray border-gray-100 bg-white")
         }
         onClick={() => {
           setRadioValue(1);
@@ -60,7 +60,7 @@ export default function DateRangeSwitcher({
           "border-right w-1/2 rounded-r-lg border-1.5 p-1 " +
           (radioValue === 2
             ? "border-yellow bg-yellow text-secondary"
-            : "border-l-0.5 border-gray-100 bg-white text-dark_gray")
+            : "border-l-0.5 text-dark_gray border-gray-100 bg-white")
         }
         onClick={() => {
           setRadioValue(2);

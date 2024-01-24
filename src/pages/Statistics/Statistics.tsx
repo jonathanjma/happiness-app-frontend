@@ -163,7 +163,7 @@ export default function Statistics() {
   return (
     <>
       <div className="mx-[32px] my-[96px] flex-1">
-        <Row className="pb-4">
+        <Row>
           <div className="text-4xl font-medium">Your Stats</div>
           <div className="flex flex-1" />
           <DateRangeSwitcher
@@ -173,24 +173,26 @@ export default function Statistics() {
             setCurDates={[setStart, setEnd]}
           />
         </Row>
+        <Row className="my-8">
+          <SearchBar
+            text={text}
+            setText={setText}
+            startValue={startValue}
+            setStartValue={setStartValue}
+            endValue={endValue}
+            setEndValue={setEndValue}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+          />
+        </Row>
         {isError || isLoading || data === undefined ? (
           <></>
         ) : (
           <>
             <Row className="w-full">
               <div className={`w-full flex-1`}>
-              <SearchBar
-        text={text}
-        setText={setText}
-        startValue={startValue}
-        setStartValue={setStartValue}
-        endValue={endValue}
-        setEndValue={setEndValue}
-        startDate={startDate}
-        setStartDate={setStartDate}
-        endDate={endDate}
-        setEndDate={setEndDate}
-      />
                 <Graph
                   entries={data}
                   graphTitle={graphTitle}
@@ -246,7 +248,7 @@ export default function Statistics() {
                 {calCollapsed && radioValue === 2 ? (
                   <></>
                 ) : (
-                  <div className="p-1">
+                  <div className="-z-50 p-1">
                     <HappinessCalendar
                       startDate={start}
                       variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
