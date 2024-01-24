@@ -81,7 +81,7 @@ export default function HappinessTable({
           id="view-happiness"
         />
       )}
-      <table className="min-w-full divide-x-1 divide-y divide-secondary">
+      <table className="min-w-full border-separate border-spacing-0 divide-x-1 divide-y divide-secondary">
         <thead className="border-1 border-gray-200 bg-gray-50">
           <tr>
             <th
@@ -109,7 +109,7 @@ export default function HappinessTable({
         <tbody className="divide-x-1 divide-y-1 divide-gray-200 border-b bg-white">
           {group.users.map((user) => (
             <tr>
-              <td className="text-gray-900 whitespace-nowrap border-l border-r border-gray-200 pl-2 text-sm font-medium">
+              <td className="text-gray-900 sticky left-0 z-10 whitespace-nowrap border-b border-l border-r border-gray-200 bg-white pl-2 text-sm font-medium">
                 {user.username}
               </td>
               {dateList.map((date) => {

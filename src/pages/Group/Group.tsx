@@ -113,11 +113,11 @@ export default function Group() {
                   <p>Graph View</p>
                 </TabPanel>
                 <TabPanel index={3}>
-                  <div className="m-12  overflow-auto">
+                  <div className="m-12 max-w-[600px] overflow-auto">
                     <HappinessTable
                       group={data!}
                       startDate="2023-12-01"
-                      endDate="2023-12-8"
+                      endDate="2023-12-7"
                     />
                   </div>
                 </TabPanel>
