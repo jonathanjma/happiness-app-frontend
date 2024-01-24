@@ -98,7 +98,7 @@ export default function HappinessTable({
             ))}
           </tr>
           <tr>
-            <th className="sticky left-0 border-r border-gray-200 bg-gray-50"></th>
+            <th className="sticky left-0 border-b border-r border-gray-200 bg-gray-50"></th>
             {dateList.map((date) => (
               <th className="text-gray-500 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                 {date.toLocaleDateString("en-us", { day: "numeric" })}
