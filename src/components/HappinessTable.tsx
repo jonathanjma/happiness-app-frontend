@@ -5,6 +5,7 @@ import { useApi } from "../contexts/ApiProvider";
 import { Group } from "../data/models/Group";
 import { Happiness } from "../data/models/Happiness";
 import { floatToColor, formatDate, parseYYYYmmddFormat } from "../utils";
+import Row from "./layout/Row";
 import HappinessViewerModal from "./modals/HappinessViewerModal";
 /**
  *
@@ -113,7 +114,23 @@ export default function HappinessTable({
           {group.users.map((user) => (
             <tr>
               <td className="text-gray-900 sticky left-0 z-10 whitespace-nowrap border-b border-l border-r border-gray-200 bg-white pl-2 text-sm font-medium">
-                {user.username}
+                <Row className="items-center gap-2">
+                  <img
+                    src={user.profile_picture}
+                    className="h-6 w-6 rounded-full"
+                  />
+
+                  <div
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "150px", // Adjust this value as needed
+                    }}
+                  >
+                    {user.username}
+                  </div>
+                </Row>
               </td>
               {dateList.map((date) => {
                 const happiness = data?.find(
