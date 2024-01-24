@@ -4,13 +4,13 @@ import { useUser } from "../../contexts/UserProvider";
 import EntriesIcon from "../../assets/book.svg";
 import JournalIcon from "../../assets/encrypted.svg";
 import StatsIcon from "../../assets/graph.svg";
-import GroupsIcon from "../../assets/groups.svg";
+import GroupsIcon from "../../assets/group.svg";
 import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
-import HappinessForm from "./HappinessForm";
 import { useWindowDimensions } from "../../utils";
+import HappinessForm from "./HappinessForm";
 
-export default function Sidebar({ element }: { element: React.ReactElement }) {
+export default function Sidebar({ element }: { element: React.ReactElement; }) {
   const { user } = useUser();
 
   const navConfig = [
@@ -34,7 +34,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
         <div className="flex h-full flex-col">
           <div className="m-4 flex grow flex-col">
             <div className="m-4 flex grow flex-col">
-              <div className="mb-1 text-sm font-semibold text-dark_gray">
+              <div className="mb-1 text-sm font-semibold text-gray-600">
                 Account
               </div>
               <a className="flex-none" href={"/profile/" + user!.id}>
@@ -80,10 +80,13 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                           href={entry.route}
                           selectedClass={[
                             "bg-yellow font-semibold text-secondary shadow-md1 ",
-                            "bg-light_yellow font-medium text-dark_gray ",
+                            "bg-light_yellow font-medium text-gray-600 ",
                           ]}
                           className={
                             "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
+                            (selectedLink === entry.title
+                              ? "bg-yellow text-secondary shadow-md1"
+                              : "bg-light_yellow text-gray-600") +
                             (entry.title === "Settings" && height >= 750
                               ? " absolute bottom-0 w-[256px]"
                               : "")

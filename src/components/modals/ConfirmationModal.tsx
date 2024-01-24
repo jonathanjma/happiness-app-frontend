@@ -26,7 +26,9 @@ export default function ConfirmationModal({
   return (
     <Modal id={id}>
       <h3>{title}</h3>
-      {subtitle && <p className="font-subtitle-2 leading-6"> {subtitle} </p>}
+      {subtitle && (
+        <label className="leading-6 text-gray-400">{subtitle}</label>
+      )}
       <div className="h-6" />
       <p> {body} </p>
       <div className="h-6" />

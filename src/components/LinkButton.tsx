@@ -21,7 +21,7 @@ export default function LinkButton({
     <NavLink
       to={href}
       className={({ isActive }) =>
-        "flex w-full flex-row rounded-xl py-3 pl-3 pr-4.5 font-medium text-dark_gray " +
+        "flex w-full flex-row rounded-xl py-3 pl-3 pr-4.5 font-medium text-gray-600 " +
         className +
         (isActive ? selectedClass[0] : selectedClass[1])
       }

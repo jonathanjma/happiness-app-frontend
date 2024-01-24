@@ -4,12 +4,19 @@ import Comments from "../Comments";
 import Column from "../layout/Column";
 import Row from "../layout/Row";
 import Modal from "./Modal";
+import { dateFromStr } from "../../utils";
+import { dateOrTodayYesterday } from "../../pages/Group/GroupFeed";
 
-export default function HappinessViewerModal({ happiness, id }: { happiness: Happiness, id: string; }) {
+export default function HappinessViewerModal({
+  happiness,
+  id,
+}: {
+  happiness: Happiness;
+  id: string;
+}) {
   return (
     <Modal id={id}>
-      <Column className="gap-6 w-[600px]">
-
+      <Column className="w-[600px] gap-6">
         {/* Top row for closing */}
         <Row>
           <div className="flex flex-1" />
@@ -21,12 +28,26 @@ export default function HappinessViewerModal({ happiness, id }: { happiness: Hap
         {/* Profile and score row */}
         <Row className="items-center">
           {/* Profile picture */}
-          <img className="w-[42px] h-[42px] rounded-full" src={happiness.author.profile_picture} />
+          <img
+            className="h-[42px] w-[42px] rounded-full"
+            src={happiness.author.profile_picture}
+          />
           <div className="w-2" />
           {/* Name and time */}
           <Column>
-            <p className="leading-6 text-gray-600 font-medium" >{happiness.author.username}</p>
-            <label className="leading-4 text-gray-400 ">{new Date(happiness.timestamp).toLocaleDateString("en-us", { year: "2-digit", month: "2-digit", day: "2-digit" })}</label>
+            <p className="font-medium leading-6 text-gray-600">
+              {happiness.author.username}
+            </p>
+            <label className="leading-4 text-gray-400 ">
+              {dateOrTodayYesterday(
+                happiness.timestamp,
+                dateFromStr(happiness.timestamp).toLocaleString("en-us", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }),
+              )}
+            </label>
           </Column>
           <div className="flex flex-1" />
           {/* Score */}
@@ -38,7 +59,11 @@ export default function HappinessViewerModal({ happiness, id }: { happiness: Hap
 
         {/* Comments */}
         <div>
-          <Comments modalVariant associatedHappinessId={happiness.id} canAddComment={true} />
+          <Comments
+            modalVariant
+            associatedHappinessId={happiness.id}
+            canAddComment={true}
+          />
         </div>
       </Column>
     </Modal>

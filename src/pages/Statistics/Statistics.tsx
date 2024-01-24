@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
+import { useLocation } from "react-router-dom";
+import SearchBar from "./SearchBar";
 import DateRangeSwitcher from "../../components/DateRangeSwitcher";
 import Graph from "../../components/Graph";
 import HappinessCalendar from "../../components/HappinessCalendar";
@@ -21,6 +23,15 @@ export default function Statistics() {
   const { api } = useApi();
   const { user } = useUser();
   const queryClient = useQueryClient();
+
+  const location = useLocation();
+  const [text, setText] = useState(location?.state?.text ?? "");
+  const [startValue, setStartValue] = useState(
+    location?.state?.startValue ?? 0,
+  );
+  const [endValue, setEndValue] = useState(location?.state?.endValue ?? 10);
+  const [startDate, setStartDate] = useState(location?.state?.startDate ?? "");
+  const [endDate, setEndDate] = useState(location?.state?.endDate ?? "");
 
   const settingsNames = user!.settings.map((e) => e.key);
   const [radioValue, setRadioValue] = useState(2);
@@ -168,6 +179,18 @@ export default function Statistics() {
           <>
             <Row className="w-full">
               <div className={`w-full flex-1`}>
+              <SearchBar
+        text={text}
+        setText={setText}
+        startValue={startValue}
+        setStartValue={setStartValue}
+        endValue={endValue}
+        setEndValue={setEndValue}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+      />
                 <Graph
                   entries={data}
                   graphTitle={graphTitle}

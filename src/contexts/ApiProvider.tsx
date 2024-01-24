@@ -8,14 +8,24 @@ interface ContextApi {
 }
 
 const repos = {
-  api: new ApiClient()
+  api: new ApiClient(),
 };
 
 // Provides context
 const ApiContext = createContext<ContextApi>(repos);
 
-export default function ApiProvider({ children }: { children: React.ReactElement; }) {
-  const queryClient = new QueryClient();
+export default function ApiProvider({
+  children,
+}: {
+  children: React.ReactElement;
+}) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   return (
     <ApiContext.Provider value={repos}>
