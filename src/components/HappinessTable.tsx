@@ -118,7 +118,7 @@ export default function HappinessTable({
                     happiness.timestamp === formatDate(date) &&
                     happiness.author.username === user.username,
                 );
-                let dataStyle = `whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center py-4 ${xPadding} `;
+                let dataStyle = `whitespace-nowrap text-sm text-gray-500 border-r border-t border-gray-200 text-center py-4 ${xPadding} `;
                 if (happiness) {
                   dataStyle += "hover:cursor-pointer hover:bg-yellow ";
                   if (happiness.comment) {
