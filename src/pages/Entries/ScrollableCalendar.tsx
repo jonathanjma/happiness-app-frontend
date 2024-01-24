@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-import HappinessPreviewCard from "./HappinessPreviewCard";
-import { useApi } from "../../contexts/ApiProvider";
+import { useLocation } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import Column from "../../components/layout/Column";
+import { QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
 import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
-import { useUser } from "../../contexts/UserProvider";
-import { QueryKeys } from "../../constants";
-import { useInView } from "react-intersection-observer";
-import { useLocation } from "react-router-dom";
-import Column from "../../components/layout/Column";
+import HappinessPreviewCard from "./HappinessPreviewCard";
 
 // Infinite scrollable calendar for viewing happiness entries
 export default function ScrollableCalendar({
@@ -171,6 +171,7 @@ export default function ScrollableCalendar({
     setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
+  // this use effect statement is the issue:
   // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
     // remember div scroll height before previous page fetch

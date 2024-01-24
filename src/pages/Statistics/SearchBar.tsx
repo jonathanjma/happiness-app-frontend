@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/IconClose";
@@ -11,20 +11,51 @@ import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { formatDate, parseYYYYmmddFormat } from "../../utils";
+import {
+  createSearchQuery,
+  formatDate,
+  parseYYYYmmddFormat,
+} from "../../utils";
 import SearchResult from "./SearchResult";
 
-export default function SearchBar() {
-  const [text, setText] = useState("");
+export default function SearchBar({
+  text,
+  setText,
+  startValue,
+  setStartValue,
+  endValue,
+  setEndValue,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  showResultsPreview = true,
+}: {
+  text: string;
+  setText: React.Dispatch<React.SetStateAction<string>>;
+  startValue: number;
+  setStartValue: React.Dispatch<React.SetStateAction<number>>;
+  endValue: number;
+  setEndValue: React.Dispatch<React.SetStateAction<number>>;
+  startDate: string;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  endDate: string;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
+  showResultsPreview?: boolean;
+}) {
   const [isFocused, setIsFocused] = useState(false);
-
-  const [startValue, setStartValue] = useState(0);
-  const [endValue, setEndValue] = useState(10);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [filterShowing, setFilterShowing] = useState(false);
-  const [resultsShowing, setResultsShowing] = useState(false);
+  const [resultsShowing, setResultsShowing] = useState(true);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(-1);
+  const iconFilled = useMemo<boolean>(
+    () =>
+      filterShowing ||
+      startValue !== 0 ||
+      endValue !== 10 ||
+      startDate !== "" ||
+      endDate !== "",
+    [filterShowing, startValue, endValue, startDate, endDate],
+  );
 
   const navigate = useNavigate();
 
@@ -43,29 +74,6 @@ export default function SearchBar() {
   };
 
   const { api } = useApi();
-  const createQuery = (): Record<string, any> => {
-    const query: Record<string, any> = {};
-    if (text !== "") {
-      query.text = text;
-    }
-    if (!isNaN(new Date(startDate).getTime())) {
-      query.start = formatDate(parseYYYYmmddFormat(startDate));
-    }
-    if (!isNaN(new Date(endDate).getTime())) {
-      query.end = formatDate(parseYYYYmmddFormat(endDate));
-    }
-    if (query.start && !query.end) {
-      query.end = formatDate(new Date());
-    }
-    if (query.end && !query.start) {
-      query.start = "2000-01-01";
-    }
-    if (startValue !== 0 || endValue !== 10) {
-      query.low = startValue;
-      query.high = endValue;
-    }
-    return query;
-  };
 
   const [{ data }, { data: count }] = useQueries([
     {
@@ -80,11 +88,18 @@ export default function SearchBar() {
         { text: text },
       ],
       queryFn: async () => {
-        const query = createQuery();
+        const query = createSearchQuery(
+          text,
+          startDate,
+          endDate,
+          startValue,
+          endValue,
+        );
         query.count = 5;
         const res = await api.get<Happiness[]>("/happiness/search", query);
         return res.data;
       },
+      enabled: showResultsPreview,
     },
     {
       // Find the number of total matching results
@@ -97,7 +112,13 @@ export default function SearchBar() {
         { text: text },
       ],
       queryFn: async () => {
-        const query = createQuery();
+        const query = createSearchQuery(
+          text,
+          startDate,
+          endDate,
+          startValue,
+          endValue,
+        );
         const res = await api.get<Number>("/happiness/search/count", query);
         return res.data;
       },
@@ -144,7 +165,7 @@ export default function SearchBar() {
     <Column className="relative z-50 w-full gap-4">
       {/* Search bar */}
       <Row
-        className={`items-center rounded-[50px] border-1 border-gray-300 px-6 py-3 hover:border-gray-400 ${
+        className={`items-center rounded-[50px] border-1 border-gray-300 px-6 hover:border-gray-400 ${
           isFocused
             ? "border-yellow shadow-form-selected hover:border-yellow"
             : ""
@@ -156,7 +177,7 @@ export default function SearchBar() {
             setText(e.target.value);
           }}
           placeholder="Search for keywords"
-          className="w-auto flex-grow focus:outline-none"
+          className="my-3 w-auto flex-grow focus:outline-none"
           onBlur={() => {
             setIsFocused(false);
           }}
@@ -164,16 +185,17 @@ export default function SearchBar() {
             setIsFocused(true);
           }}
         />
-        <Row className="gap-4">
+        <Row className={`items-center ${iconFilled ? " gap-2" : " gap-4"}`}>
           <IconFilter
             color="#808080"
-            className="hover:cursor-pointer"
+            className={`hover:cursor-pointer`}
             onClick={handleToggleFilter}
+            filled={iconFilled}
           />
           {text.length !== 0 && (
             <IconClose
               color="#808080"
-              className="hover:cursor-pointer"
+              className="my-3 hover:cursor-pointer"
               onClick={() => {
                 setText("");
                 setResultsShowing(false);
@@ -246,11 +268,19 @@ export default function SearchBar() {
       )}
 
       {/* Results preview */}
-      {resultsShowing && (
+      {showResultsPreview && resultsShowing && (
         <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200">
           {data && data.length === 0 ? (
             <p className="mx-4 my-3 text-gray-400">
-              {Object.keys(createQuery()).length === 0
+              {Object.keys(
+                createSearchQuery(
+                  text,
+                  startDate,
+                  endDate,
+                  startValue,
+                  endValue,
+                ),
+              ).length === 0
                 ? "Type to search, or apply filters"
                 : "No entries match the query"}
             </p>
@@ -287,6 +317,19 @@ export default function SearchBar() {
               className={`${
                 !count || count?.number === 0 ? "" : "underline"
               } text-sm text-gray-400 hover:cursor-pointer`}
+              onClick={() => {
+                if (count && count.number !== 0) {
+                  navigate("/search", {
+                    state: {
+                      startDate: startDate,
+                      endDate: endDate,
+                      startValue: startValue,
+                      endValue: endValue,
+                      text: text,
+                    },
+                  });
+                }
+              }}
             >
               {!count || count?.number === 0
                 ? "No search results"
