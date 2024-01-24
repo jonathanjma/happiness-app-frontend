@@ -32,6 +32,9 @@ export default function HappinessTable({
   useEffect(() => {
     if (selectedHappiness) {
       window.HSOverlay.open(document.querySelector("#view-happiness"));
+      api.post("/reads/", {
+        happiness_id: selectedHappiness.id,
+      });
     }
   }, [selectedHappiness]);
 
