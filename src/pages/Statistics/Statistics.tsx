@@ -45,12 +45,10 @@ export default function Statistics() {
     ),
   );
 
-  useEffect(
-    () =>
-      // @ts-ignore
-      window.HSOverlay.open(document.querySelector("#show-happiness-modal")),
-    [viewingEntry],
-  );
+  useEffect(() => {
+    // @ts-ignore
+    window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
+  }, [viewingEntry]);
 
   const { width, height } = useWindowDimensions();
 
