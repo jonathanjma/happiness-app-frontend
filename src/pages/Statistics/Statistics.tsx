@@ -74,7 +74,7 @@ export default function Statistics() {
       queryFnArgs?: undefined,
     ) => Promise<Happiness[] | undefined | unknown>;
   } = useQuery({
-    queryKey: QueryKeys.FETCH_HAPPINESS + " graph query",
+    queryKey: [QueryKeys.FETCH_HAPPINESS, " graph query", {start: start}, {end: end}]
     queryFn: () =>
       api
         .get("/happiness/", {
