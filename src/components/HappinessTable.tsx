@@ -100,7 +100,7 @@ export default function HappinessTable({
           <tr>
             <th className="sticky left-0 border-b border-r border-gray-200 bg-gray-50"></th>
             {dateList.map((date) => (
-              <th className="text-gray-500 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
+              <th className="text-gray-500 border-b border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                 {date.toLocaleDateString("en-us", { day: "numeric" })}
               </th>
             ))}
@@ -118,7 +118,7 @@ export default function HappinessTable({
                     happiness.timestamp === formatDate(date) &&
                     happiness.author.username === user.username,
                 );
-                let dataStyle = `whitespace-nowrap text-sm text-gray-500 border-r border-t border-gray-200 text-center py-4 ${xPadding} `;
+                let dataStyle = `whitespace-nowrap text-sm text-gray-500 border-r border-b border-gray-200 text-center py-4 ${xPadding} `;
                 if (happiness) {
                   dataStyle += "hover:cursor-pointer ";
                   if (happiness.comment) {
