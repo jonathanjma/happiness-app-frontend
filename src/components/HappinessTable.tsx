@@ -71,6 +71,7 @@ export default function HappinessTable({
   if (isError) {
     return <p className="ml-8 mt-8 text-error">Error loading happiness data</p>;
   }
+  const xPadding = dateList.length > 7 ? "px-2" : "px-6";
 
   return (
     <>
@@ -83,11 +84,15 @@ export default function HappinessTable({
       <table className="min-w-full divide-x-1 divide-y divide-secondary">
         <thead className="border-1 border-gray-200 bg-gray-50">
           <tr>
-            <th className="text-gray-500 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
+            <th
+              className={`text-gray-500 border-r border-gray-200 ${xPadding} py-3 text-center text-xs font-medium uppercase tracking-wider`}
+            >
               {start.toLocaleDateString("en-us", { month: "long" })}
             </th>
             {dateList.map((date) => (
-              <th className="text-gray-500 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
+              <th
+                className={`text-gray-500 border-r border-gray-200 ${xPadding} py-3 text-center text-xs font-medium uppercase tracking-wider`}
+              >
                 {date.toLocaleDateString("en-us", { weekday: "short" })}
               </th>
             ))}
@@ -104,7 +109,7 @@ export default function HappinessTable({
         <tbody className="divide-x-1 divide-y-1 divide-gray-200 border-b bg-white">
           {group.users.map((user) => (
             <tr>
-              <td className="text-gray-900 whitespace-nowrap border-l border-r border-gray-200 px-6 py-4 text-sm font-medium">
+              <td className="text-gray-900 whitespace-nowrap border-l border-r border-gray-200 pl-2 text-sm font-medium">
                 {user.username}
               </td>
               {dateList.map((date) => {
@@ -113,7 +118,7 @@ export default function HappinessTable({
                     happiness.timestamp === formatDate(date) &&
                     happiness.author.username === user.username,
                 );
-                let dataStyle = `px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center `;
+                let dataStyle = `whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-center py-4 ${xPadding} `;
                 if (happiness) {
                   dataStyle += "hover:cursor-pointer hover:bg-yellow ";
                   if (happiness.comment) {
