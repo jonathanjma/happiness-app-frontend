@@ -50,57 +50,68 @@ export default function Welcome() {
 
   return (
     <div>
-      <Row className="justify-between bg-light_yellow pb-5 pl-28 pr-12 pt-8">
+      <Row
+        className="justify-between bg-light_yellow pb-5 pl-28 pr-12 pt-8"
+        id="bar"
+      >
         <img src={HappinessAppText} />
         <SignIn signUp={false} />
       </Row>
-      <Row className="items-center justify-between bg-light_yellow py-32 pl-28 pr-12">
-        <Column className="pr-14">
-          <p className="mb-12 text-5xl font-extrabold text-secondary">
-            Begin Your <br /> Happiness Journey.
-          </p>
-          <SignIn signUp={true} />
-        </Column>
-        <img src={WelcomeImg} className="min-h-[450px] rounded-3xl" />
-      </Row>
-      <Row className="relative -top-12 justify-between rounded-t-[60px] bg-white py-32 pl-28 pr-12">
-        <Column className="basis-1/2 pr-14">
-          <p className="mb-4 text-5xl font-extrabold text-secondary">
-            Our Key Features
-          </p>
-          <h2 className="font-normal text-gray-600">
-            <span className="font-bold text-secondary">
-              Elevating mindfulness and community
-            </span>{" "}
-            are the key of our app.
-          </h2>
-        </Column>
-        <Column className="basis-1/2 gap-y-16">
-          {features.map((feature, i) => (
-            <FeatureCard
-              key={i}
-              title={feature.title}
-              description={feature.description}
-              icon={feature.icon}
-            />
-          ))}
-        </Column>
-      </Row>
-      <Row className="items-center justify-between pb-32 pl-28 pr-12">
-        <Column className="basis-1/2 pr-14">
-          <h2 className="mb-4 font-normal text-secondary">
-            Introducing
-            <p className="text-5xl font-extrabold">Private Journals</p>
-          </h2>
-          <h4 className="font-normal text-gray-600">
-            Keep your most sensitive logs private using <br />
-            <span className="font-bold text-secondary">
-              encryption technology.
-            </span>{" "}
-            Enjoy the best privacy with Happiness App.
-          </h4>
-        </Column>
-      </Row>
+      <div id="wrapped">
+        <div className="panels" id="fixed">
+          <Row className="items-center justify-between bg-light_yellow py-32 pl-28 pr-12">
+            <Column className="pr-14">
+              <p className="mb-12 text-5xl font-extrabold text-secondary">
+                Begin Your <br /> Happiness Journey.
+              </p>
+              <SignIn signUp={true} />
+            </Column>
+            <img src={WelcomeImg} className="min-h-[450px] rounded-3xl" />
+          </Row>
+        </div>
+
+        <div className="panels" id="overlay">
+          <Row className="justify-between rounded-t-[60px] bg-white py-32 pl-28 pr-12">
+            {/*relative -top-12 */}
+            <Column className="basis-1/2 pr-14">
+              <p className="mb-4 text-5xl font-extrabold text-secondary">
+                Our Key Features
+              </p>
+              <h2 className="font-normal text-gray-600">
+                <span className="font-bold text-secondary">
+                  Elevating mindfulness and community
+                </span>{" "}
+                are the key of our app.
+              </h2>
+            </Column>
+            <Column className="basis-1/2 gap-y-16">
+              {features.map((feature, i) => (
+                <FeatureCard
+                  key={i}
+                  title={feature.title}
+                  description={feature.description}
+                  icon={feature.icon}
+                />
+              ))}
+            </Column>
+          </Row>
+          <Row className="items-center justify-between bg-white pb-32 pl-28 pr-12">
+            <Column className="basis-1/2 pr-14">
+              <h2 className="mb-4 font-normal text-secondary">
+                Introducing
+                <p className="text-5xl font-extrabold">Private Journals</p>
+              </h2>
+              <h4 className="font-normal text-gray-600">
+                Keep your most sensitive logs private using <br />
+                <span className="font-bold text-secondary">
+                  encryption technology.
+                </span>{" "}
+                Enjoy the best privacy with Happiness App.
+              </h4>
+            </Column>
+          </Row>
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,6 @@ import Entries from "./pages/Entries/Entries";
 import Group from "./pages/Group/Group";
 import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
 import Sidebar from "./pages/Sidebar/Sidebar";
-import SignIn from "./pages/SignIn/SignIn";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import Welcome from "./pages/Welcome/Welcome";
