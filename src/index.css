@@ -74,3 +74,9 @@ label:hover {
     line-clamp: 3;
     -webkit-box-orient: vertical;
 }
+
+.transition-bg-500 {
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+}
