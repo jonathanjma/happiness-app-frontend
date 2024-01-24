@@ -85,7 +85,7 @@ export default function HappinessTable({
         <thead className="border-1 border-gray-200 bg-gray-50">
           <tr>
             <th
-              className={`text-gray-500 border-r border-gray-200 ${xPadding} py-3 text-center text-xs font-medium uppercase tracking-wider`}
+              className={`text-gray-500 sticky left-0 border-r border-gray-200 bg-gray-50 ${xPadding} py-3 text-center text-xs font-medium uppercase tracking-wider`}
             >
               {start.toLocaleDateString("en-us", { month: "long" })}
             </th>
@@ -98,7 +98,7 @@ export default function HappinessTable({
             ))}
           </tr>
           <tr>
-            <th className="border-r border-gray-200"></th>
+            <th className="sticky left-0 border-r border-gray-200 bg-gray-50"></th>
             {dateList.map((date) => (
               <th className="text-gray-500 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
                 {date.toLocaleDateString("en-us", { day: "numeric" })}
@@ -120,7 +120,7 @@ export default function HappinessTable({
                 );
                 let dataStyle = `whitespace-nowrap text-sm text-gray-500 border-r border-t border-gray-200 text-center py-4 ${xPadding} `;
                 if (happiness) {
-                  dataStyle += "hover:cursor-pointer hover:bg-yellow ";
+                  dataStyle += "hover:cursor-pointer ";
                   if (happiness.comment) {
                     dataStyle += "has_comment ";
                   }
@@ -150,8 +150,8 @@ export default function HappinessTable({
               })}
             </tr>
           ))}
-          <tr className="border-b border-solid hover:bg-light_yellow">
-            <td className="text-gray-900 whitespace-nowrap border-b border-l border-r border-t-2 border-b-gray-200 border-l-gray-200 border-r-gray-200 border-t-gray-400 px-6 py-4 text-sm font-medium">
+          <tr className="border-b border-solid">
+            <td className="text-gray-900 sticky left-0 whitespace-nowrap border-b border-l border-r border-t-2 border-b-gray-200 border-l-gray-200 border-r-gray-200 border-t-gray-400 bg-white px-6 py-4 text-sm font-medium">
               Average
             </td>
             {dateList.map((date) => {
