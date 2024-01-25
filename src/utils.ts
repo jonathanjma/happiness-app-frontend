@@ -164,6 +164,25 @@ export function createSearchQuery(
   return query;
 }
 
+/**
+ * Maps floats from 0 to 10 to a color string.
+ * 0 goes to yellow-50, 0.5 goes to yellow-100, etc. up to 10
+ */
+export function floatToColor(float: number): string {
+  if (float === -1) return `rgba(255,255,255,1)`;
+  const rgb: number[] = [246, 226, 174];
+  let difference = float - 5;
+  if (difference === 0) return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
+  if (difference > 0) {
+    difference += 10;
+  } else {
+    difference = 10 - difference * -1;
+  }
+  const modifiedColor = rgb.map((n) => (difference * n) / 10);
+
+  return `rgba(${modifiedColor[0]},${modifiedColor[1]},${modifiedColor[2]},1)`;
+}
+
 export function getTimeZone() {
   const offset = new Date().getTimezoneOffset();
   const o = Math.abs(offset);

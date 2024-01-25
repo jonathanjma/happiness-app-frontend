@@ -1,17 +1,18 @@
-import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
-import { Group } from "../../data/models/Group";
-import { useApi } from "../../contexts/ApiProvider";
-import Spinner from "../../components/Spinner";
-import SettingsIcon from "../../assets/settings.svg";
-import PostIcon from "../../assets/post.svg";
-import GraphIcon from "../../assets/graph.svg";
-import TableIcon from "../../assets/table.svg";
-import FeedPanel from "./FeedPanel";
-import Row from "../../components/layout/Row";
 import React from "react";
-import { QueryKeys } from "../../constants";
+import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
+import GraphIcon from "../../assets/graph.svg";
+import PostIcon from "../../assets/post.svg";
+import SettingsIcon from "../../assets/settings.svg";
+import TableIcon from "../../assets/table.svg";
 import BackButton from "../../components/BackButton";
+import HappinessTable from "../../components/HappinessTable";
+import Spinner from "../../components/Spinner";
+import Row from "../../components/layout/Row";
+import { QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { Group } from "../../data/models/Group";
+import FeedPanel from "./FeedPanel";
 
 function TabButton({
   index,
@@ -112,7 +113,13 @@ export default function Group() {
                   <p>Graph View</p>
                 </TabPanel>
                 <TabPanel index={3}>
-                  <p>Table View</p>
+                  <div className="m-12  overflow-auto">
+                    <HappinessTable
+                      group={data!}
+                      startDate="2023-12-01"
+                      endDate="2023-12-31"
+                    />
+                  </div>
                 </TabPanel>
               </div>
             </>
