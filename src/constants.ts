@@ -32,4 +32,5 @@ export enum MutationKeys {
 // settings keys according to how they are expected from the backend
 export enum SettingKeys {
   NOTIFICATIONS = "notify",
+  RECOVERY_PHRASE = "key_recovery_phrase",
 }
