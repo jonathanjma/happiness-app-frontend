@@ -23,8 +23,7 @@ export default function Stat({
     // @ts-ignore
     // for some reason, ts isn't working with this
     mode(values)[0].toFixed(1),
-    // @ts-ignore
-    std(values, "uncorrected").toFixed(2),
+    (std(values, "uncorrected") as number).toFixed(2),
     min(values).toFixed(1),
     max(values).toFixed(1),
   ];
@@ -32,10 +31,10 @@ export default function Stat({
   return (
     <>
       <div className="flex h-[84px] w-[84px] flex-col items-center justify-center space-y-2 rounded-xl bg-light_yellow">
-        <div className="text-sm font-medium text-dark_gray">
+        <div className="text-dark_gray text-sm font-medium">
           {statLabel[statName]}
         </div>
-        <div className="text-xl font-semibold text-dark_gray">
+        <div className="text-dark_gray text-xl font-semibold">
           {calculatedStats[statName]}
         </div>
       </div>

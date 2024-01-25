@@ -11,7 +11,7 @@ import {
   ScriptableTooltipContext,
 } from "chart.js";
 import { Chart, ChartData, registerables } from "chart.js";
-import { formatDate, parseYYYYmmddFormat } from "../utils";
+import { formatDate, parseYYYYmmddFormat, getDaysArray } from "../utils";
 import { ChartEvent } from "chart.js/dist/core/core.plugins";
 import { ActiveElement } from "chart.js/dist/plugins/plugin.tooltip";
 Chart.register(...registerables);
@@ -82,35 +82,19 @@ export default function Graph({
       Date.parse(a.timestamp) - Date.parse(b.timestamp),
   );
 
-  // helper function to get list of dates given a start and end date
-  var getDaysArray = function (s: Date, e: Date) {
-    for (
-      var a = [], d = new Date(s);
-      d <= new Date(e);
-      d.setDate(d.getDate() + 1)
-    ) {
-      a.push(formatDate(new Date(d)));
-    }
-    return a;
-  };
-
   let datesList: string[] = uniqDays
     ? getDaysArray(range[0], range[1])
     : [...new Set(happinessData.map((e) => e.timestamp))];
   datesList.sort((a: string, b: string) => Date.parse(a) - Date.parse(b));
 
-  // by default, shows date as graph label
-  let graphLabels: string[] = datesList.map((dateString) =>
-    dateString.substring(5).replace("-", "/"),
-  );
+  // graph label; converts to day of week if showDay is true, otherwise shows date as graph label
+  const graphLabels: string[] = showDay
+    ? datesList.map((d: string) =>
+        parseYYYYmmddFormat(d).toLocaleString("en-us", { weekday: "short" }),
+      )
+    : datesList.map((dateString) => dateString.substring(5).replace("-", "/"));
 
-  // converts to day of week if showDay is true
-  if (showDay) {
-    graphLabels = datesList.map((d: string) =>
-      parseYYYYmmddFormat(d).toLocaleString("en-us", { weekday: "short" }),
-    );
-  }
-
+  // allows gaps between values to be filled by a dashed line
   const skipped = (ctx: ScriptableLineSegmentContext, value: number[]) =>
     ctx.p0.skip || ctx.p1.skip ? value : undefined;
 
@@ -159,7 +143,7 @@ export default function Graph({
     <>
       <div className="flex w-full flex-1 justify-center">
         <div className="@lg:min-h-[500px] mb-4 flex min-h-[380px] w-full flex-1 flex-wrap justify-center rounded-[10px] bg-brand_off_white py-8 shadow-lg">
-          <h4 className="flex justify-center text-black">{graphTitle}</h4>
+          <h4 className="text-black flex justify-center">{graphTitle}</h4>
           <h5 className="flex w-full justify-center text-gray-400">
             {graphSubTitle}
           </h5>

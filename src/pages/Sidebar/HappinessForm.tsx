@@ -6,6 +6,7 @@ import { formatDate } from "../../utils";
 import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
 import { Constants, QueryKeys } from "../../constants";
+import RadioButton from "../../components/RadioButton";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -129,46 +130,11 @@ export default function HappinessForm({ height }: { height: number }) {
   return (
     <>
       <div className="mb-4 flex w-full justify-center">
-        <button
-          className={
-            "w-1/2 rounded-l-lg border border-1.5 p-1 " +
-            (radioValue === 1
-              ? "border-yellow bg-yellow text-secondary"
-              : "border-r-0.5 border-gray-100 bg-white text-gray-600")
-          }
-          onClick={() => {
-            setRadioValue(1);
-          }}
-        >
-          <label
-            className={
-              "text-base hover:cursor-pointer " +
-              (radioValue === 1 ? "font-semibold" : "font-medium")
-            }
-          >
-            Yesterday
-          </label>
-        </button>
-        <button
-          className={
-            "border-right w-1/2 rounded-r-lg border-1.5 p-1 " +
-            (radioValue === 2
-              ? "border-yellow bg-yellow text-secondary"
-              : "border-l-0.5 border-gray-100 bg-white text-gray-600")
-          }
-          onClick={() => {
-            setRadioValue(2);
-          }}
-        >
-          <label
-            className={
-              "text-base hover:cursor-pointer " +
-              (radioValue === 2 ? "font-semibold" : "font-medium")
-            }
-          >
-            Today
-          </label>
-        </button>
+        <RadioButton
+          radioValue={radioValue}
+          setRadioValue={setRadioValue}
+          labels={["Yesterday", "Today"]}
+        />
       </div>
       <div className="mb-4 rounded-xl border border-1 border-gray-100 bg-white p-4">
         <div className="text-sm font-medium text-gray-600">

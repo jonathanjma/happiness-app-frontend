@@ -1,6 +1,6 @@
 import React, { SVGProps } from "react";
 
-const DropdownIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
+const ArrowDownIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       width="18"
@@ -28,5 +28,4 @@ const DropdownIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => {
     </svg>
   );
 };
-
-export default DropdownIcon;
+export default ArrowDownIcon;

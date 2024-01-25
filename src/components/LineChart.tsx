@@ -9,6 +9,13 @@ import { ChartEvent } from "chart.js/dist/core/core.plugins";
 import { getElementAtEvent } from "react-chartjs-2";
 import { ActiveElement } from "chart.js/dist/plugins/plugin.tooltip";
 
+/**
+ * Creates LineChart used in Graph component
+ * @param chartData formatted data used to create LineChart (see react-chartjs-2 for more info)
+ * @param onClick function that provides side effects when points are clicked
+ * @returns
+ */
+
 export default function LineChart({
   chartData,
   onClick,

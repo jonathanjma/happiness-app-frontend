@@ -163,3 +163,15 @@ export function createSearchQuery(
   }
   return query;
 }
+
+// helper function to get list of dates given a start and end date
+export function getDaysArray(start: Date, end: Date) {
+  for (
+    var a = [], d = new Date(start);
+    d <= new Date(end);
+    d.setDate(d.getDate() + 1)
+  ) {
+    a.push(formatDate(new Date(d)));
+  }
+  return a;
+}

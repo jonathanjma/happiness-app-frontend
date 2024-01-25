@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../contexts/UserProvider";
-import DropdownIcon from "../../assets/DropdownIcon";
+import ArrowDownIcon from "../../assets/ArrowDownIcon";
 import EntriesIcon from "../../assets/book.svg";
 import JournalIcon from "../../assets/encrypted.svg";
 import StatsIcon from "../../assets/graph.svg";
@@ -57,7 +57,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                   </div>
                 </div>
                 <div className="flex flex-1" />
-                <div>{<DropdownIcon />}</div>
+                <div>{<ArrowDownIcon />}</div>
               </div>
               {dropdownState ? (
                 <>
