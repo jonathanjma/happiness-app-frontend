@@ -12,6 +12,7 @@ import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
+import { getTimeZone } from "../../utils";
 export default function UserSettings() {
   const [toggled, setToggled] = useState(false);
   const { user, deleteUser } = useUser();
@@ -22,7 +23,8 @@ export default function UserSettings() {
   );
   // we only care about the time of this date
   const [emailTime, setEmailTime] = useState(
-    user!.settings.find((s) => s.key === "notify")?.value ?? "09:00",
+    user!.settings.find((s) => s.key === "notify")?.value.split(" ")[0] ??
+      "09:00",
   );
   const [email, setEmail] = useState("");
   const [changeEmailState, setChangeEmailState] = useState("");
@@ -66,33 +68,40 @@ export default function UserSettings() {
       api
         .post<SettingShort>("/user/settings/", {
           key: "notify",
-          value: emailTime,
+          value: `${emailTime} ${getTimeZone()}`,
           enabled: enabled,
         })
         .then((res) => res.data),
     onSuccess: (data) => {
       setHasEmailAlerts(data.enabled);
-      setEmailTime(data.value);
+      setEmailTime(data.value.split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     },
   });
 
-  const { isLoading: usernameChangeLoading, mutate: changeUsername } =
-    useMutation({
-      mutationFn: (username: string) =>
-        api.put("/user/info/", {
-          data_type: "username",
-          data: username,
-        }),
-      onError: () => {
-        setChangeUsernameState("Username already taken.");
-      },
-      onSuccess: () => {
-        setChangeUsernameState("Username updated. Refresh to see changes.");
-      },
-    });
+  const {
+    isLoading: usernameChangeLoading,
+    mutate: changeUsername,
+    isError: usernameIsError,
+  } = useMutation({
+    mutationFn: (username: string) =>
+      api.put("/user/info/", {
+        data_type: "username",
+        data: username,
+      }),
+    onError: () => {
+      setChangeUsernameState("Username already taken.");
+    },
+    onSuccess: () => {
+      setChangeUsernameState("Username updated. Refresh to see changes.");
+    },
+  });
 
-  const { isLoading: emailChangeLoading, mutate: changeEmail } = useMutation({
+  const {
+    isLoading: emailChangeLoading,
+    mutate: changeEmail,
+    isError: emailError,
+  } = useMutation({
     mutationFn: (email: string) => {
       return api.put("/user/info/", {
         data_type: "email",
@@ -141,12 +150,18 @@ export default function UserSettings() {
         <h4 className="text-gray-600">Account Settings</h4>
         <TextField
           value={email}
-          hint="Enter a new email address"
+          hint={user!.email}
           onChangeValue={setEmail}
           label="Change email:"
         />
         {changeEmailState && (
-          <label className="font-normal">{changeEmailState}</label>
+          <label
+            className={`font-normal ${
+              emailError ? "text-error" : "text-gray-400"
+            }`}
+          >
+            {changeEmailState}
+          </label>
         )}
         <Button
           label="Change Email"
@@ -165,6 +180,15 @@ export default function UserSettings() {
           onChangeValue={setUsername}
           label="Change username:"
         />
+        {changeUsernameState && (
+          <label
+            className={`font-normal ${
+              usernameIsError ? "text-error" : "text-gray-400"
+            }`}
+          >
+            {changeUsernameState}
+          </label>
+        )}
         <Button
           label="Change Username"
           icon={
@@ -178,9 +202,6 @@ export default function UserSettings() {
             }
           }}
         />
-        {changeUsernameState && (
-          <label className="font-normal">{changeUsernameState}</label>
-        )}
         <h4 className="text-gray-600">Delete Account</h4>
         <Button
           label="Delete account"

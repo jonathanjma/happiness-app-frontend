@@ -28,3 +28,8 @@ export enum MutationKeys {
   CREATE_ACCOUNT = "createAccount",
   LOG_IN = "logIn",
 }
+
+// settings keys according to how they are expected from the backend
+export enum SettingKeys {
+  NOTIFICATIONS = "notify",
+}
