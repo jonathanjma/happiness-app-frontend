@@ -1,21 +1,19 @@
 import * as EmailValidator from "email-validator";
 import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
-import ToastMessage from "../../components/ToastMessage";
 import Toggle from "../../components/Toggle";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import ClosableModal from "../../components/modals/ClosableModal";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
-import { Constants, SettingKeys } from "../../constants";
+import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
 import { getTimeZone } from "../../utils";
+import RecoveryPhraseModal from "./RecoveryPhraseModal";
 export default function UserSettings() {
   const { user, deleteUser } = useUser();
   const { api } = useApi();
@@ -145,26 +143,6 @@ export default function UserSettings() {
     },
   });
 
-  const {
-    mutate: changeRecoveryPhrase,
-    isLoading: recoveryPhraseLoading,
-    isError: recoveryPhraseError,
-  } = useMutation({
-    mutationFn: () =>
-      api.post("/user/settings/", {
-        key: SettingKeys.RECOVERY_PHRASE,
-        value: recoveryPhrase,
-        enabled: true,
-      }),
-    onSuccess: () => {
-      toast.custom(<ToastMessage message="Recovery Phrase Set" />);
-      window.HSOverlay.close(document.querySelector("#recovery"));
-    },
-    onError: () => {
-      setRecoveryPhraseState("Error setting recovery phrase.");
-    },
-  });
-
   return (
     <>
       <Column className="mx-8 my-16 w-full gap-6">
@@ -202,6 +180,7 @@ export default function UserSettings() {
           hint={user!.email}
           onChangeValue={setEmail}
           label="Change email:"
+          type="email"
         />
         {changeEmailState && (
           <label
@@ -230,6 +209,7 @@ export default function UserSettings() {
           hint={user!.username}
           onChangeValue={setUsername}
           label="Change username:"
+          type="username"
         />
         {changeUsernameState && (
           <label
@@ -302,41 +282,7 @@ export default function UserSettings() {
           associatedModalId: "",
         }}
       />
-      <ClosableModal
-        id="recovery"
-        leftContent={<h4>Change or Create Your Recovery Key</h4>}
-      >
-        <div className="h-4" />
-        <div className="h-[1px] w-full bg-gray-100" />
-        <Column className="gap-6">
-          <p className="mt-6 max-w-[600px] text-gray-400">
-            Enter a new recovery phrase to use as a backup for private journals.
-            If you forget your password, you will be prompted for your recovery
-            phrase to restore journal entries. Store this in a safe place so you
-            can still access journals if you forget your password! You'll need
-            to enter your password to change or create your recovery phrase.
-          </p>
-          <TextField
-            label="Recovery phrase"
-            hint="I will remember this"
-            value={recoveryPhrase}
-            onChangeValue={setRecoveryPhrase}
-          />
-          {recoveryPhraseState && (
-            <label className="text-error">{recoveryPhraseState}</label>
-          )}
-          <Row className="gap-4">
-            <Button
-              label="Submit Recovery Phrase"
-              icon={
-                recoveryPhraseLoading ? <Spinner variaton="SMALL" /> : undefined
-              }
-              onClick={changeRecoveryPhrase}
-            />
-            <Button label="Cancel" variation="TEXT" />
-          </Row>
-        </Column>
-      </ClosableModal>
+      <RecoveryPhraseModal id="recovery" />
     </>
   );
 }
