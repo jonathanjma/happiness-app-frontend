@@ -64,7 +64,7 @@ export default function TextField({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderStyle =
-    "focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 " +
+    "w-[250px] focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 " +
     (isFocused
       ? " shadow-form-selected border-yellow hover:border-yellow"
       : "") +
@@ -73,7 +73,7 @@ export default function TextField({
       : " border-gray-300 hover:border-gray-400");
 
   return (
-    <Column className={"w-[250px] gap-1 " + className}>
+    <Column className={"gap-1 " + className}>
       {label && <p className="font-normal text-gray-400">{label}</p>}
       <Row className={borderStyle}>
         {innerElements}

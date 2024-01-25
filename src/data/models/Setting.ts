@@ -5,3 +5,9 @@ export interface Setting {
   value: string;
   userId: number;
 }
+
+export interface SettingShort {
+  key: string;
+  enabled: boolean;
+  value: string;
+}

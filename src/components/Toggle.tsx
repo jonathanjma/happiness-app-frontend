@@ -18,14 +18,16 @@ export default function Toggle({
   return (
     <div
       className={
-        "relative h-7 w-[52px] rounded-3xl hover:cursor-pointer " +
+        "relative h-6 w-[52px] rounded-3xl hover:cursor-pointer " +
         additionalStyles
       }
-      onClick={() => onToggle(toggled)}
+      onClick={() => {
+        onToggle(toggled);
+      }}
     >
       <div
-        className={`absolute bottom-0 left-0 right-0 top-0 my-auto h-[65%] w-2/5 rounded-full bg-white duration-200 ease-in-out ${
-          toggled ? "translate-x-[120%]" : "translate-x-1"
+        className={`absolute bottom-0 left-0 right-0 top-0 my-auto h-[65%] w-[35%] select-none rounded-full bg-white duration-200 ease-in-out ${
+          toggled ? "translate-x-[160%]" : "translate-x-1"
         }`}
       />
     </div>
