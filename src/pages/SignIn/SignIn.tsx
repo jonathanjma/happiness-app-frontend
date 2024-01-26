@@ -24,7 +24,7 @@ export default function SignIn({ signUp }: { signUp: boolean }) {
           associatedModalId="sign-in-modal"
           onClick={openSignUp}
           variation="FILLED"
-          className="h-auto bg-yellow px-7 py-5"
+          classNameBtn="h-auto bg-yellow px-7 py-5"
           classNameText="text-[22px]"
         />
       ) : (

@@ -5,7 +5,7 @@ export interface ButtonProps {
   variation?: "OUTLINED" | "FILLED" | "TEXT" | "DANGEROUS";
   size?: "SMALL" | "LARGE";
   associatedModalId?: string;
-  className?: string;
+  classNameBtn?: string;
   classNameText?: string;
 }
 
@@ -25,10 +25,9 @@ export default function Button({
   variation = "FILLED",
   size = "LARGE",
   associatedModalId,
-  className = "",
+  classNameBtn = "",
   classNameText = "",
 }: ButtonProps) {
-  
   let className =
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 text-secondary ";
 
