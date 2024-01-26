@@ -104,14 +104,14 @@ export default function CreateGroup() {
           value={groupName}
           onChangeValue={setGroupName}
           label="Group Name:"
-          supportingText={nameError}
+          errorText={nameError}
           hasError={nameError !== ""}
         />
         <TextField
           value={curUserAdd}
           onChangeValue={setCurUserAdd}
           label="Invite Users:"
-          supportingText={userAddError}
+          errorText={userAddError}
           hasError={userAddError !== ""}
           onEnterPressed={addUser}
           tooltip="(press enter to add user to list)"

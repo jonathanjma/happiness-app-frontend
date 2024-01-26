@@ -51,13 +51,13 @@ export default function Welcome() {
   return (
     <div>
       {/* Navbar */}
-      <Row className="sticky top-0 justify-between rounded-b-2xl bg-light_yellow pb-5 pl-12 pr-12 pt-8 md:pl-28">
+      <Row className="sticky top-0 z-10 justify-between rounded-b-2xl bg-light_yellow pb-5 pl-12 pr-12 pt-8 md:pl-28">
         <img src={HappinessAppText} className="pr-4" />
         <SignIn signUp={false} />
       </Row>
 
       {/* Fixed Div */}
-      <div className="fixed top-0 -z-10 h-full w-full bg-light_yellow">
+      <div className="fixed top-0 h-full w-full bg-light_yellow">
         <Row className="items-center justify-between py-32 pl-12 pr-12 md:pl-28">
           <Column className="basis-1/2 pr-14">
             <p className="mb-12 text-5xl font-extrabold text-secondary">
@@ -73,7 +73,7 @@ export default function Welcome() {
       </div>
 
       {/* Div which scrolls on top of fixed div */}
-      <div className="mt-[60vh] md:mt-[70vh]">
+      <div className="relative z-[5] mt-[60vh] md:mt-[70vh]">
         <Row className="flex-wrap justify-between rounded-t-[60px] bg-white py-32 pl-12 pr-12 shadow-[0_-4px_48px_0px_rgba(0,0,0,0.05)] md:pl-28">
           <Column className="basis-1/2 pb-10 pr-14">
             <p className="mb-4 text-5xl font-extrabold text-secondary">

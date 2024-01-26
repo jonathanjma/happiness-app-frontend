@@ -15,6 +15,7 @@ export default function Button({
   size = "LARGE",
   associatedModalId,
   className = "",
+  classNameText = "",
 }: {
   icon?: React.ReactElement;
   label: string;
@@ -23,6 +24,7 @@ export default function Button({
   size?: "SMALL" | "LARGE";
   associatedModalId?: string;
   className?: string;
+  classNameText?: string;
 }) {
   const additions = icon ? "pl-3 pr-4.5 " : "px-4.5 ";
 
@@ -59,7 +61,11 @@ export default function Button({
           <div className="w-2.5" />
         </>
       )}
-      <label className="font-semibold text-secondary hover:cursor-pointer">
+      <label
+        className={
+          "font-semibold text-secondary hover:cursor-pointer " + classNameText
+        }
+      >
         {label}
       </label>
     </button>

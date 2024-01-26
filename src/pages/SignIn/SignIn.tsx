@@ -24,7 +24,8 @@ export default function SignIn({ signUp }: { signUp: boolean }) {
           associatedModalId="sign-in-modal"
           onClick={openSignUp}
           variation="FILLED"
-          className="bg-yellow"
+          className="h-auto bg-yellow px-7 py-5"
+          classNameText="text-[22px]"
         />
       ) : (
         <Button
@@ -32,6 +33,7 @@ export default function SignIn({ signUp }: { signUp: boolean }) {
           associatedModalId="login-modal"
           onClick={openLogin}
           variation="OUTLINED"
+          classNameText="font-bold"
         />
       )}
       <ForgotPasswordModal id="forgot-pass-modal" onLoginClick={openLogin} />
