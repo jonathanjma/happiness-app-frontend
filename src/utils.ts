@@ -164,6 +164,17 @@ export function createSearchQuery(
   return query;
 }
 
+// helper function to get list of dates given a start and end date
+export function getDaysArray(start: Date, end: Date) {
+  for (
+    var a = [], d = new Date(start);
+    d <= new Date(end);
+    d.setDate(d.getDate() + 1)
+  ) {
+    a.push(formatDate(new Date(d)));
+  }
+  return a;
+}
 /**
  * Maps floats from 0 to 10 to a color string.
  * 0 goes to yellow-50, 0.5 goes to yellow-100, etc. up to 10

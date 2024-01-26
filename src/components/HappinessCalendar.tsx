@@ -17,7 +17,7 @@ export default function HappinessCalendar({
 }: {
   startDate: Date;
   variation: "MONTHLY" | "WEEKLY";
-  selectedEntry: Happiness;
+  selectedEntry: Happiness | undefined;
   onSelectEntry: (selectedEntry: Happiness) => void;
 }) {
   const { api } = useApi();
@@ -105,6 +105,7 @@ export default function HappinessCalendar({
                 <DayCell
                   happiness={matchingHappiness}
                   isSelected={
+                    selectedEntry !== undefined &&
                     selectedEntry &&
                     formatDate(date) === selectedEntry.timestamp
                   }

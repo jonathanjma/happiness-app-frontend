@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../contexts/UserProvider";
-import DropdownIcon from "../../assets/DropdownIcon";
+import ArrowDownIcon from "../../assets/ArrowDownIcon";
 import EntriesIcon from "../../assets/book.svg";
 import JournalIcon from "../../assets/encrypted.svg";
 import StatsIcon from "../../assets/graph.svg";
@@ -36,7 +36,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
             <div className="relative m-4 flex grow flex-col">
               <div
                 className={
-                  "mb-6 flex w-full items-center space-x-4 rounded-xl p-1 pr-4 hover:bg-medium_yellow" +
+                  "mb-6 flex w-full select-none items-center space-x-4 rounded-xl p-1 pr-4 hover:cursor-pointer hover:bg-medium_yellow" +
                   (dropdownState ? " bg-yellow shadow-md1" : "")
                 }
                 onClick={() => setDropdownState(!dropdownState)}
@@ -57,7 +57,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                   </div>
                 </div>
                 <div className="flex flex-1" />
-                <div>{<DropdownIcon />}</div>
+                <div>{<ArrowDownIcon />}</div>
               </div>
               {dropdownState ? (
                 <>

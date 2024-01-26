@@ -269,7 +269,7 @@ export default function SearchBar({
 
       {/* Results preview */}
       {showResultsPreview && resultsShowing && (
-        <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200">
+        <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200 bg-white">
           {data && data.length === 0 ? (
             <p className="mx-4 my-3 text-gray-400">
               {Object.keys(
