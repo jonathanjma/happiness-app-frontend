@@ -34,10 +34,13 @@ export default function UserSettings() {
 
   const [changePasswordState, setChangePasswordState] = useState("");
 
+  // for changing password
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
   // for recovery phrase modal
   const [recoveryPhrase, setRecoveryPhrase] = useState("");
   const [recoveryPhraseState, setRecoveryPhraseState] = useState("");
-
   const [password, setPassword] = useState("");
 
   const [emailTimeNetworkingState, setEmailTimeNetworkingState] = useState(
@@ -233,7 +236,13 @@ export default function UserSettings() {
             }
           }}
         />
-
+        <p className="text-gray-400">Change password:</p>
+        <TextField
+          label="Old password"
+          type="password"
+          value={oldPassword}
+          onChangeValue={setOldPassword}
+        />
         <Button
           label="Change Password"
           onClick={sendPasswordResetEmail}
