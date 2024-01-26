@@ -11,12 +11,14 @@ export default function NewPasswordInput({
   triedSubmit,
   password,
   setPassword,
+  label = "Password",
 }: {
   hasPasswordError: boolean;
   setPasswordError: React.Dispatch<React.SetStateAction<boolean>>;
   triedSubmit: boolean;
   password: string;
   setPassword: React.Dispatch<React.SetStateAction<string>>;
+  label?: string;
 }) {
   const [isLongEnough, setIsLongEnough] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
@@ -54,7 +56,7 @@ export default function NewPasswordInput({
   return (
     <Column>
       <TextField
-        label="Password"
+        label={label}
         value={password}
         onChangeValue={setPassword}
         type="password"

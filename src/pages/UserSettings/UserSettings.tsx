@@ -2,6 +2,7 @@ import * as EmailValidator from "email-validator";
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
+import NewPasswordInput from "../../components/NewPasswordInput";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
 import Toggle from "../../components/Toggle";
@@ -37,11 +38,20 @@ export default function UserSettings() {
   // for changing password
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [hasPasswordError, setHasPasswordError] = useState(false);
+
+  const handlePasswordSubmit = () => {
+    setTriedSubmit(true);
+    if (!hasPasswordError) {
+      changePassword();
+    }
+  };
 
   // for recovery phrase modal
   const [recoveryPhrase, setRecoveryPhrase] = useState("");
   const [recoveryPhraseState, setRecoveryPhraseState] = useState("");
   const [password, setPassword] = useState("");
+  const [triedSubmit, setTriedSubmit] = useState(false);
 
   const [emailTimeNetworkingState, setEmailTimeNetworkingState] = useState(
     Constants.FINISHED_MUTATION_TEXT,
@@ -129,20 +139,23 @@ export default function UserSettings() {
     },
   });
 
+  // Change password mutation
   const {
     isLoading: changePasswordLoading,
-    mutate: sendPasswordResetEmail,
+    mutate: changePassword,
     isError: changePasswordError,
   } = useMutation({
     mutationFn: () =>
-      api.post("/user/initiate_password_reset/", {
-        email: user!.email,
+      api.put("/user/info/", {
+        data_type: "password",
+        data: oldPassword,
+        data2: newPassword,
       }),
     onError: () => {
-      setChangePasswordState("An unknown error has occurred.");
+      setChangePasswordState("Your old password may be incorrect.");
     },
     onSuccess: () => {
-      setChangePasswordState("Password reset email sent!");
+      setChangePasswordState("Password changed.");
     },
   });
 
@@ -150,6 +163,7 @@ export default function UserSettings() {
     <>
       <Column className="mx-8 my-16 w-full gap-6">
         <h2>Settings</h2>
+
         <h4 className="text-gray-600">Notification Settings</h4>
         <Row className=" h-6 w-1/2 items-center">
           <p className="text-gray-400">Email Alerts</p>
@@ -177,6 +191,7 @@ export default function UserSettings() {
             </label>
           </>
         )}
+
         <h4 className="text-gray-600">Account Settings</h4>
         <TextField
           value={email}
@@ -243,12 +258,13 @@ export default function UserSettings() {
           value={oldPassword}
           onChangeValue={setOldPassword}
         />
-        <Button
-          label="Change Password"
-          onClick={sendPasswordResetEmail}
-          icon={
-            changePasswordLoading ? <Spinner variaton="SMALL" /> : undefined
-          }
+        <NewPasswordInput
+          hasPasswordError={hasPasswordError}
+          setPasswordError={setHasPasswordError}
+          password={newPassword}
+          setPassword={setNewPassword}
+          triedSubmit={triedSubmit}
+          label="New password"
         />
         {changePasswordState && (
           <label
@@ -259,15 +275,22 @@ export default function UserSettings() {
             {changePasswordState}
           </label>
         )}
+        <Button
+          label="Change Password"
+          onClick={handlePasswordSubmit}
+          icon={
+            changePasswordLoading ? <Spinner variaton="SMALL" /> : undefined
+          }
+        />
 
         <h4 className="text-gray-600">Private Journals</h4>
-
         <Button
           label="Set Up Recovery Key"
           onClick={() => {
             window.HSOverlay.open(document.querySelector("#recovery"));
           }}
         />
+
         <h4 className="text-gray-600">Delete Account</h4>
         <Button
           label="Delete account"
