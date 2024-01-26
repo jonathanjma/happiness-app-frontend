@@ -75,11 +75,11 @@ export default function NewPasswordInput({
               message="Password must be at least 8 characters long"
             />
             <Requirement
-              met={hasNumber}
+              met={hasUppercase}
               message="Password must contain at least 1 uppercase letter"
             />
             <Requirement
-              met={hasUppercase}
+              met={hasNumber}
               message="Password must contain at least 1 number"
             />
           </Column>

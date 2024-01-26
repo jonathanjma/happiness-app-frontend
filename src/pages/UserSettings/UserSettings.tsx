@@ -15,6 +15,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
 import { getTimeZone } from "../../utils";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
+
 export default function UserSettings() {
   const { user, deleteUser } = useUser();
   const { api } = useApi();
@@ -251,7 +252,7 @@ export default function UserSettings() {
             }
           }}
         />
-        <p className="text-gray-400">Change password:</p>
+        <p className="font-normal text-gray-400">Change password:</p>
         <TextField
           label="Old password"
           type="password"
