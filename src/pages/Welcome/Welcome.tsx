@@ -50,67 +50,68 @@ export default function Welcome() {
 
   return (
     <div>
-      <Row
-        className="justify-between bg-light_yellow pb-5 pl-28 pr-12 pt-8"
-        id="bar"
-      >
-        <img src={HappinessAppText} />
+      {/* Navbar */}
+      <Row className="sticky top-0 justify-between rounded-b-2xl bg-light_yellow pb-5 pl-12 pr-12 pt-8 md:pl-28">
+        <img src={HappinessAppText} className="pr-4" />
         <SignIn signUp={false} />
       </Row>
-      <div id="wrapped">
-        <div className="panels" id="fixed">
-          <Row className="items-center justify-between bg-light_yellow py-32 pl-28 pr-12">
-            <Column className="pr-14">
-              <p className="mb-12 text-5xl font-extrabold text-secondary">
-                Begin Your <br /> Happiness Journey.
-              </p>
-              <SignIn signUp={true} />
-            </Column>
-            <img src={WelcomeImg} className="min-h-[450px] rounded-3xl" />
-          </Row>
-        </div>
 
-        <div className="panels" id="overlay">
-          <Row className="justify-between rounded-t-[60px] bg-white py-32 pl-28 pr-12">
-            {/*relative -top-12 */}
-            <Column className="basis-1/2 pr-14">
-              <p className="mb-4 text-5xl font-extrabold text-secondary">
-                Our Key Features
-              </p>
-              <h2 className="font-normal text-gray-600">
-                <span className="font-bold text-secondary">
-                  Elevating mindfulness and community
-                </span>{" "}
-                are the key of our app.
-              </h2>
-            </Column>
-            <Column className="basis-1/2 gap-y-16">
-              {features.map((feature, i) => (
-                <FeatureCard
-                  key={i}
-                  title={feature.title}
-                  description={feature.description}
-                  icon={feature.icon}
-                />
-              ))}
-            </Column>
-          </Row>
-          <Row className="items-center justify-between bg-white pb-32 pl-28 pr-12">
-            <Column className="basis-1/2 pr-14">
-              <h2 className="mb-4 font-normal text-secondary">
-                Introducing
-                <p className="text-5xl font-extrabold">Private Journals</p>
-              </h2>
-              <h4 className="font-normal text-gray-600">
-                Keep your most sensitive logs private using <br />
-                <span className="font-bold text-secondary">
-                  encryption technology.
-                </span>{" "}
-                Enjoy the best privacy with Happiness App.
-              </h4>
-            </Column>
-          </Row>
-        </div>
+      {/* Fixed Div */}
+      <div className="fixed top-0 -z-10 h-full w-full bg-light_yellow">
+        <Row className="items-center justify-between py-32 pl-12 pr-12 md:pl-28">
+          <Column className="basis-1/2 pr-14">
+            <p className="mb-12 text-5xl font-extrabold text-secondary">
+              Begin Your <br /> Happiness Journey.
+            </p>
+            <SignIn signUp={true} />
+          </Column>
+          <img
+            src={WelcomeImg}
+            className="hidden max-h-[450px] max-w-[450px] basis-1/2 rounded-3xl sm:block"
+          />
+        </Row>
+      </div>
+
+      {/* Div which scrolls on top of fixed div */}
+      <div className="mt-[60vh] md:mt-[70vh]">
+        <Row className="flex-wrap justify-between rounded-t-[60px] bg-white py-32 pl-12 pr-12 shadow-[0_-4px_48px_0px_rgba(0,0,0,0.05)] md:pl-28">
+          <Column className="basis-1/2 pb-10 pr-14">
+            <p className="mb-4 text-5xl font-extrabold text-secondary">
+              Our Key Features
+            </p>
+            <h2 className="font-normal text-gray-600">
+              <span className="font-bold text-secondary">
+                Elevating mindfulness and community
+              </span>{" "}
+              are the key of our app.
+            </h2>
+          </Column>
+          <Column className="basis-1/2 gap-y-16">
+            {features.map((feature, i) => (
+              <FeatureCard
+                key={i}
+                title={feature.title}
+                description={feature.description}
+                icon={feature.icon}
+              />
+            ))}
+          </Column>
+        </Row>
+        <Row className="flex-wrap items-center justify-between bg-white pb-32 pl-12 pr-12 md:pl-28">
+          <Column className="basis-1/2 pr-14">
+            <h2 className="mb-4 font-normal text-secondary">
+              Introducing
+              <p className="text-5xl font-extrabold">Private Journals</p>
+            </h2>
+            <h4 className="font-normal text-gray-600">
+              Keep your most sensitive logs private using <br />
+              <span className="font-bold text-secondary">
+                encryption technology.
+              </span>{" "}
+              Enjoy the best privacy with Happiness App.
+            </h4>
+          </Column>
+        </Row>
       </div>
     </div>
   );
