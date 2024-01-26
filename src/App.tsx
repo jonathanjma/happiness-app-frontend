@@ -13,6 +13,7 @@ import Sidebar from "./pages/Sidebar/Sidebar";
 import SignIn from "./pages/SignIn/SignIn";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
+import UserSettings from "./pages/UserSettings/UserSettings";
 
 export default function App() {
   return (
@@ -47,7 +48,7 @@ export default function App() {
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/search" element={<AllSearchResults />} />
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                        {/* <Route path="/settings" element={<Settings />} /> */}
+                        <Route path="/settings" element={<UserSettings />} />
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>
                     }

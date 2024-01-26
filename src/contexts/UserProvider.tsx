@@ -106,13 +106,8 @@ export default function UserProvider({
   };
 
   const deleteUser = () => {
-    api.delete<void>("/user/").then((res) => {
-      if (res.status == 204) {
-        setUser(undefined);
-        setState(UserState.Error);
-        localStorage.removeItem(Constants.TOKEN);
-      }
-    });
+    setState(UserState.Error);
+    localStorage.removeItem(Constants.TOKEN);
   };
 
   return (

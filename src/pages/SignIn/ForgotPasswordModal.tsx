@@ -1,15 +1,20 @@
 import * as EmailValidator from "email-validator";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
+import ToastMessage from "../../components/ToastMessage";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
 import { useApi } from "../../contexts/ApiProvider";
 import { useOnline } from "../../utils";
 
-export default function ForgotPasswordModal({ id, onLoginClick }: {
+export default function ForgotPasswordModal({
+  id,
+  onLoginClick,
+}: {
   id: string;
   onLoginClick: () => void;
 }) {
@@ -19,12 +24,12 @@ export default function ForgotPasswordModal({ id, onLoginClick }: {
   const isOnline = useOnline();
 
   const requestEmail = useMutation({
-    mutationFn: () => api.post<{ email: string; }>("/user/initiate_password_reset/", {
-      email: email
-    }),
+    mutationFn: () =>
+      api.post<{ email: string }>("/user/initiate_password_reset/", {
+        email: email,
+      }),
     onSuccess: () => {
-      console.log(`TODO toast once Jonathan's PR is merged`);
-      // @ts-ignore
+      toast.custom(<ToastMessage message="✅ Password Reset Email Sent" />);
       window.HSOverlay.close(document.querySelector(`#${id}`));
     },
     onError: () => {
@@ -33,7 +38,7 @@ export default function ForgotPasswordModal({ id, onLoginClick }: {
       } else {
         setEmailError("Check your internet connection");
       }
-    }
+    },
   });
   const handlePasswordReset = () => {
     if (EmailValidator.validate(email)) {
@@ -48,11 +53,8 @@ export default function ForgotPasswordModal({ id, onLoginClick }: {
   }, [email]);
 
   return (
-    <ClosableModal
-      id={id}
-      leftContent={<h4>Forgot password</h4>}
-    >
-      <div className=" bg-gray-100 w-[436px] h-[1px] mt-4 mb-6" />
+    <ClosableModal id={id} leftContent={<h4>Forgot password</h4>}>
+      <div className=" mb-6 mt-4 h-[1px] w-[436px] bg-gray-100" />
       <TextField
         value={email}
         onChangeValue={setEmail}
@@ -66,13 +68,11 @@ export default function ForgotPasswordModal({ id, onLoginClick }: {
         <Button
           label="Reset Password"
           onClick={handlePasswordReset}
-          icon={requestEmail.isLoading ? <Spinner variaton="SMALL" /> : undefined}
+          icon={
+            requestEmail.isLoading ? <Spinner variaton="SMALL" /> : undefined
+          }
         />
-        <Button
-          label="Back to Login"
-          onClick={onLoginClick}
-          variation="TEXT"
-        />
+        <Button label="Back to Login" onClick={onLoginClick} variation="TEXT" />
       </Row>
     </ClosableModal>
   );
