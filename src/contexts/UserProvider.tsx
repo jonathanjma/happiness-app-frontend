@@ -23,11 +23,11 @@ interface ContextUser {
 const UserContext = createContext<ContextUser>({
   user: undefined,
   state: UserState.Loading,
-  createUser: (_: string, __: string) => { },
-  loginUser: (_: string, __: string) => { },
-  logoutUser: () => { },
-  deleteUser: () => { },
-  getUserFromToken: () => { },
+  createUser: (_: string, __: string) => {},
+  loginUser: (_: string, __: string) => {},
+  logoutUser: () => {},
+  deleteUser: () => {},
+  getUserFromToken: () => {},
 });
 
 /**
@@ -100,18 +100,14 @@ export default function UserProvider({
       if (res.status == 204) {
         setUser(undefined);
         localStorage.removeItem(Constants.TOKEN);
+        setState(UserState.Error);
       }
     });
   };
 
   const deleteUser = () => {
-    api.delete<void>("/user/").then((res) => {
-      if (res.status == 204) {
-        setUser(undefined);
-        setState(UserState.Error);
-        localStorage.removeItem(Constants.TOKEN);
-      }
-    });
+    setState(UserState.Error);
+    localStorage.removeItem(Constants.TOKEN);
   };
 
   return (

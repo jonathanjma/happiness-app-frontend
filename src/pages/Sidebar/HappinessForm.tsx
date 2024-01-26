@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import TextareaAutosize from "react-textarea-autosize";
-import HappinessNumber from "../../components/HappinessNumber";
-import { Constants, QueryKeys } from "../../constants";
+import { useState, useRef, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
+import TextareaAutosize from "react-textarea-autosize";
+import HappinessNumber from "../../components/HappinessNumber";
+import { Constants, QueryKeys } from "../../constants";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -19,7 +19,13 @@ export default function HappinessForm({ height }: { height: number }) {
   const postHappinessTimeout = useRef<number | undefined>(undefined);
 
   const [radioValue, setRadioValue] = useState(2);
-  const [selDate, setSelDate] = useState(new Date());
+  const [selDate, setSelDate] = useState(
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    ),
+  );
   const [happiness, setHappiness] = useState(-1);
 
   const postHappinessMutation = useMutation((newHappiness: NewHappiness) =>
@@ -65,7 +71,11 @@ export default function HappinessForm({ height }: { height: number }) {
           new Date().getDate() - 1,
         );
       } else {
-        return new Date();
+        return new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate(),
+        );
       }
     });
   }, [radioValue]);
@@ -88,20 +98,15 @@ export default function HappinessForm({ height }: { height: number }) {
     queryFn: () =>
       api
         .get("/happiness/", {
-          start: formatDate(
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() - 1,
-            ),
-          ),
-          end: formatDate(new Date()),
+          start: formatDate(selDate),
+          end: formatDate(selDate),
         })
         .then((res) => res.data),
   });
 
   // react to data
   useEffect(() => {
+    refetch();
     if (isLoading || data === undefined) {
       // TODO from design: loading state for this submission box
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
@@ -109,15 +114,14 @@ export default function HappinessForm({ height }: { height: number }) {
       // TODO from design: error state for this submission box
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
     } else {
-      const idx: number = radioValue === 1 ? 0 : 1;
-      if (data[idx] === undefined) {
+      if (data[0] === undefined) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
         setHappiness(-1);
         setComment("");
       } else {
         setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-        setHappiness(data[idx].value);
-        setComment(data[idx].comment);
+        setHappiness(data[0].value);
+        setComment(data[0].comment);
       }
     }
   }, [data, selDate]);
@@ -127,7 +131,7 @@ export default function HappinessForm({ height }: { height: number }) {
       <div className="mb-4 flex w-full justify-center">
         <button
           className={
-            "w-1/2 rounded-l-lg border p-1 " +
+            "w-1/2 rounded-l-lg border border-1.5 p-1 " +
             (radioValue === 1
               ? "border-yellow bg-yellow text-secondary"
               : "border-r-0.5 border-gray-100 bg-white text-gray-600")
@@ -136,7 +140,12 @@ export default function HappinessForm({ height }: { height: number }) {
             setRadioValue(1);
           }}
         >
-          <label className="text-base font-semibold hover:cursor-pointer">
+          <label
+            className={
+              "text-base hover:cursor-pointer " +
+              (radioValue === 1 ? "font-semibold" : "font-medium")
+            }
+          >
             Yesterday
           </label>
         </button>
@@ -151,12 +160,17 @@ export default function HappinessForm({ height }: { height: number }) {
             setRadioValue(2);
           }}
         >
-          <label className="text-base font-semibold hover:cursor-pointer">
+          <label
+            className={
+              "text-base hover:cursor-pointer " +
+              (radioValue === 2 ? "font-semibold" : "font-medium")
+            }
+          >
             Today
           </label>
         </button>
       </div>
-      <div className="mb-4 rounded-xl bg-white p-4">
+      <div className="mb-4 rounded-xl border border-1 border-gray-100 bg-white p-4">
         <div className="text-sm font-medium text-gray-600">
           {selDate.toLocaleString("en-us", { weekday: "long" })}
         </div>
@@ -187,7 +201,7 @@ export default function HappinessForm({ height }: { height: number }) {
             value={comment}
             minRows={3}
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
-            className={`mt-2 min-h-[112px] w-full resize-none overflow-hidden rounded-lg p-2 text-left text-sm font-medium text-gray-600 outline-none outline-1 outline-gray-100`}
+            className={`scroll-hidden mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm font-medium text-gray-600 outline-none outline-1 outline-gray-100`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
@@ -196,16 +210,7 @@ export default function HappinessForm({ height }: { height: number }) {
           />
         </div>
         <div className="mt-2 flex w-full text-sm">
-          <div className="w-1/2 font-medium text-gray-600">
-            {radioValue === 2
-              ? selDate.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : ""}
-          </div>
-          {/* Currently the time doesn't update so i need to fix that */}
-          <div className="w-1/2 text-right font-medium text-gray-400">
+          <div className="w-full text-left font-medium text-gray-400">
             {networkingState}
           </div>
         </div>

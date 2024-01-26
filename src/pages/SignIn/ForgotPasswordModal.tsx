@@ -1,9 +1,11 @@
 import * as EmailValidator from "email-validator";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
+import ToastMessage from "../../components/ToastMessage";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
 import { useApi } from "../../contexts/ApiProvider";
@@ -27,7 +29,7 @@ export default function ForgotPasswordModal({
         email: email,
       }),
     onSuccess: () => {
-      console.log(`TODO toast once Jonathan's PR is merged`);
+      toast.custom(<ToastMessage message="✅ Password Reset Email Sent" />);
       window.HSOverlay.close(document.querySelector(`#${id}`));
     },
     onError: () => {

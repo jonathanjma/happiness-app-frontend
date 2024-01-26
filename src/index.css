@@ -40,6 +40,15 @@
     caption {
         @apply text-xs font-medium leading-4;
     }
+
+    .has_comment {
+        @apply relative
+    }
+
+    .has_comment:after {
+        content: "";
+        @apply absolute right-0 top-0 border-[3.5px] border-solid border-transparent border-t-secondary border-r-secondary
+    }
 }
 
 /* CSS class for hiding the scrollbar */
@@ -77,4 +86,10 @@ label:hover {
 
 .hs-overlay-backdrop {
     z-index: unset;
+}
+
+.transition-bg-500 {
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
 }

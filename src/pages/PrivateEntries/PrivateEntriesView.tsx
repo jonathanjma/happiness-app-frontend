@@ -14,7 +14,6 @@ export default function PrivateEntriesView() {
     undefined,
   );
   const { user } = useUser();
-  const [editing, setEditing] = useState(false);
   const [networkingState, setNetworkingState] = useState(
     Constants.FINISHED_MUTATION_TEXT,
   );
@@ -85,7 +84,6 @@ export default function PrivateEntriesView() {
         <ScrollableJournalCalendar
           selectedEntry={selectedEntry}
           setSelectedEntry={setSelectedEntry}
-          setEditing={setEditing}
         />
       </div>
       <div className="h-full w-full py-8 pr-8">

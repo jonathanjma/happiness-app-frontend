@@ -12,6 +12,7 @@ import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
+import UserSettings from "./pages/UserSettings/UserSettings";
 import Welcome from "./pages/Welcome/Welcome";
 
 export default function App() {
@@ -39,15 +40,12 @@ export default function App() {
                         <Route path="/home" element={<Entries />} />
                         <Route path="/groups" element={<UserGroups />} />
                         <Route path="/groups/:groupID" element={<Group />} />
-                        <Route
-                          path="/groups/create"
-                          element={<CreateGroup />}
-                        />
+                        <Route path="/groups/create" element={<CreateGroup />} />
                         <Route path="/journal" element={<PrivateEntries />} />
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/search" element={<AllSearchResults />} />
                         {/* <Route path="/profile/:userID" element={<Profile />} /> */}
-                        {/* <Route path="/settings" element={<Settings />} /> */}
+                        <Route path="/settings" element={<UserSettings />} />
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>
                     }
