@@ -3,6 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import Column from "../../components/layout/Column";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
@@ -14,16 +15,13 @@ import {
   parseYYYYmmddFormat,
 } from "../../utils";
 import PrivateEntryPreviewCard from "./PrivateEntryPreviewCard";
-import Column from "../../components/layout/Column";
 
 export default function ScrollableJournalCalendar({
   selectedEntry,
   setSelectedEntry,
-  setEditing,
 }: {
   selectedEntry: Journal | undefined;
   setSelectedEntry: React.Dispatch<React.SetStateAction<Journal | undefined>>;
-  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { api } = useApi();
   const { user } = useUser();
@@ -222,7 +220,6 @@ export default function ScrollableJournalCalendar({
                       click={() => {
                         if (entry.timestamp !== selectedDate) {
                           setSelectedDate(entry.timestamp);
-                          setEditing(false);
                         }
                       }}
                       selected={entry.timestamp === selectedEntry?.timestamp}
