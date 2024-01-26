@@ -31,32 +31,32 @@ module.exports = {
     },
     extend: {
       padding: {
-        4.5: "18px"
+        4.5: "18px",
       },
       width: {
-        2.5: "10px"
+        2.5: "10px",
       },
       height: {
         0.25: "1px",
-        50: "200px"
+        50: "200px",
       },
       borderWidth: {
         1: "1px",
-        1.5: "1.5px"
+        1.5: "1.5px",
       },
       gap: {
-        0.25: "1px"
+        0.25: "1px",
       },
       margin: {
-        0.25: "1px"
+        0.25: "1px",
       },
       boxShadow: {
         md1: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
         md2: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)",
-        "form-selected": "0px 0px 4px 2px rgba(240, 207, 120, 0.25)"
+        "form-selected": "0px 0px 4px 2px rgba(240, 207, 120, 0.25)",
       },
     },
   },
   content: ["./src/**/*.{js,ts,jsx,tsx}", "node_modules/preline/dist/*.js"],
-  plugins: [require("preline/plugin")]
+  plugins: [require("preline/plugin")],
 };
