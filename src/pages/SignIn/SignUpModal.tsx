@@ -1,9 +1,8 @@
 import * as EmailValidator from "email-validator";
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
-import IconCheck from "../../assets/IconCheck";
-import IconWarningOutline from "../../assets/IconWarningOutline";
 import Button from "../../components/Button";
+import NewPasswordInput from "../../components/NewPasswordInput";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
 import Column from "../../components/layout/Column";
@@ -50,23 +49,8 @@ export default function SignUpModal({
   const [triedSubmit, setTriedSubmit] = useState(false);
 
   // check in general if password is good
-  const hasPasswordError = () => !isLongEnough || !hasNumber || !hasUppercase;
+  const [hasPasswordError, setHasPasswordError] = useState(true);
 
-  // check for errors in user input
-  const [isFirstRender, setIsFirstRender] = useState(false);
-  useEffect(() => {
-    if (isFirstRender) {
-      setIsFirstRender(true);
-      return;
-    }
-    setIsLongEnough(password.length >= 8);
-
-    const numberRegex = /[0-9]/;
-    setHasNumber(numberRegex.test(password));
-
-    const uppercaseRegex = /[A-Z]/;
-    setHasUppercase(uppercaseRegex.test(password));
-  }, [password]);
   // make it so error doesn't persist when user begins to edit
   useEffect(() => {
     setValidEmail(true);
@@ -157,7 +141,7 @@ export default function SignUpModal({
     // unreliable right after being set
     if (
       hasValidEmail &&
-      !hasPasswordError() &&
+      !hasPasswordError &&
       usernameError === "" &&
       username.trim().length !== 0 &&
       password === confirmPassword
@@ -166,13 +150,6 @@ export default function SignUpModal({
       createAccountMutation.mutate();
     }
   };
-
-  const Requirement = ({ met, message }: { met: boolean; message: string }) => (
-    <Row className="items-center gap-1">
-      {met ? <IconCheck /> : <IconWarningOutline color="#EC7070" />}
-      <p className={met ? "text-green" : "text-error"}>{message}</p>
-    </Row>
-  );
 
   return (
     <ClosableModal id={id} leftContent={<h4>Sign Up</h4>}>
@@ -201,39 +178,13 @@ export default function SignUpModal({
           hasError={!validEmail}
           errorText="Email address is invalid."
         />
-        <Column>
-          <TextField
-            label="Password"
-            value={password}
-            onChangeValue={setPassword}
-            type="password"
-            autocomplete="new-password"
-          />
-          {password.length !== 0 ||
-            (triedSubmit && (
-              <>
-                <p className={hasPasswordError() ? "text-error" : "text-green"}>
-                  {hasPasswordError()
-                    ? "Your password does not meet one of the following:"
-                    : "Your password meets all of the following:"}
-                </p>
-                <Column className="mt-1 gap-1">
-                  <Requirement
-                    met={isLongEnough}
-                    message="Password must be at least 8 characters long"
-                  />
-                  <Requirement
-                    met={hasNumber}
-                    message="Password must contain at least 1 uppercase letter"
-                  />
-                  <Requirement
-                    met={hasUppercase}
-                    message="Password must contain at least 1 number"
-                  />
-                </Column>
-              </>
-            ))}
-        </Column>
+        <NewPasswordInput
+          password={password}
+          setPassword={setPassword}
+          hasPasswordError={hasPasswordError}
+          setPasswordError={setHasPasswordError}
+          triedSubmit={triedSubmit}
+        />
         <TextField
           label="Confirm Password"
           value={confirmPassword}

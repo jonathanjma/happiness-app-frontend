@@ -1,4 +1,4 @@
-import Button from "../Button";
+import Button, { ButtonProps } from "../Button";
 import Row from "../layout/Row";
 import Modal from "./Modal";
 
@@ -11,6 +11,7 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
   onDeny?: () => void;
   id: string;
+  confirmButtonProps?: ButtonProps;
 }
 
 export default function ConfirmationModal({
@@ -22,6 +23,7 @@ export default function ConfirmationModal({
   onConfirm,
   onDeny = () => {},
   id,
+  confirmButtonProps,
 }: ConfirmationModalProps) {
   return (
     <Modal id={id}>
@@ -45,6 +47,7 @@ export default function ConfirmationModal({
           associatedModalId={id}
           label={confirmText}
           onClick={onConfirm}
+          {...confirmButtonProps}
         />
       </Row>
     </Modal>

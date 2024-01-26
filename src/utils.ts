@@ -193,3 +193,14 @@ export function floatToColor(float: number): string {
 
   return `rgba(${modifiedColor[0]},${modifiedColor[1]},${modifiedColor[2]},1)`;
 }
+
+export function getTimeZone() {
+  const offset = new Date().getTimezoneOffset();
+  const o = Math.abs(offset);
+  return (
+    (offset < 0 ? "+" : "-") +
+    ("00" + Math.floor(o / 60)).slice(-2) +
+    ":" +
+    ("00" + (o % 60)).slice(-2)
+  );
+}
