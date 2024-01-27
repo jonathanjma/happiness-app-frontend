@@ -44,8 +44,8 @@ export default function HappinessCalendar({
 
     const dayToAdd = new Date(startDate);
     for (let i = 0; i <= 6; i++) {
-      dayToAdd.setDate(startDate.getDate() + i);
       days.push(new Date(dayToAdd));
+      dayToAdd.setDate(dayToAdd.getDate() + 1);
     }
   }
 
