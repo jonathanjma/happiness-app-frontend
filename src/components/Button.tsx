@@ -41,21 +41,19 @@ export default function Button({
         "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)] ";
       break;
     case "OUTLINED":
-      className += " border-secondary border-1 ";
+      className += "border-secondary border-1 ";
       break;
     case "TEXT":
       break;
     case "DANGEROUS":
-      className += " bg-gray-50 text-error shadow-md1 ";
+      className += "bg-gray-50 text-error shadow-md1 ";
   }
-
-  classNameBtn += className;
 
   return (
     <button
       data-hs-overlay={`#${associatedModalId}`}
       type="button"
-      className={classNameBtn}
+      className={className + classNameBtn}
       onClick={onClick}
     >
       {icon && (
