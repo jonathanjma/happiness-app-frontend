@@ -5,6 +5,8 @@ export interface ButtonProps {
   variation?: "OUTLINED" | "FILLED" | "TEXT" | "DANGEROUS";
   size?: "SMALL" | "LARGE";
   associatedModalId?: string;
+  classNameBtn?: string;
+  classNameText?: string;
 }
 
 /**
@@ -23,6 +25,8 @@ export default function Button({
   variation = "FILLED",
   size = "LARGE",
   associatedModalId,
+  classNameBtn = "",
+  classNameText = "",
 }: ButtonProps) {
   let className =
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 text-secondary ";
@@ -37,18 +41,19 @@ export default function Button({
         "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)] ";
       break;
     case "OUTLINED":
-      className += " border-secondary border-1 ";
+      className += "border-secondary border-1 ";
       break;
     case "TEXT":
       break;
     case "DANGEROUS":
-      className += " bg-gray-50 text-error shadow-md1 ";
+      className += "bg-gray-50 text-error shadow-md1 ";
   }
+
   return (
     <button
       data-hs-overlay={`#${associatedModalId}`}
       type="button"
-      className={className}
+      className={className + classNameBtn}
       onClick={onClick}
     >
       {icon && (
@@ -60,7 +65,7 @@ export default function Button({
       <label
         className={`${
           variation === "DANGEROUS" ? "text-error" : "text-secondary"
-        } font-semibold hover:cursor-pointer`}
+        } font-semibold hover:cursor-pointer ${classNameText}`}
       >
         {label}
       </label>
