@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { useLocation } from "react-router-dom";
-import SearchBar from "./SearchBar";
+import ExpandLeftIcon from "../../assets/ExpandLeftIcon";
+import ExpandRightIcon from "../../assets/ExpandRightIcon";
 import DateRangeSwitcher from "../../components/DateRangeSwitcher";
 import Graph from "../../components/Graph";
 import HappinessCalendar from "../../components/HappinessCalendar";
@@ -12,9 +13,8 @@ import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate, useWindowDimensions } from "../../utils";
+import SearchBar from "./SearchBar";
 import Stat from "./Stat";
-import ExpandLeftIcon from "../../assets/ExpandLeftIcon";
-import ExpandRightIcon from "../../assets/ExpandRightIcon";
 
 /**
  * The page for displaying statistics for the current user
@@ -57,8 +57,9 @@ export default function Statistics() {
   );
 
   useEffect(() => {
-    // @ts-ignore
-    window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
+    if (viewingEntry) {
+      window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
+    }
   }, [viewingEntry]);
 
   const { width, height } = useWindowDimensions();

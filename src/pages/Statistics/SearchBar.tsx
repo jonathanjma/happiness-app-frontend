@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { createRef, useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/IconClose";
@@ -57,6 +57,8 @@ export default function SearchBar({
     [filterShowing, startValue, endValue, startDate, endDate],
   );
 
+  const searchInput = createRef<HTMLInputElement>();
+
   const navigate = useNavigate();
 
   // handle showing and hiding filter and results
@@ -71,6 +73,7 @@ export default function SearchBar({
   const handleShowResults = () => {
     setFilterShowing(false);
     setResultsShowing(true);
+    searchInput.current?.focus();
   };
 
   const { api } = useApi();
@@ -184,6 +187,7 @@ export default function SearchBar({
           onFocus={() => {
             setIsFocused(true);
           }}
+          ref={searchInput}
         />
         <Row className={`items-center ${iconFilled ? " gap-2" : " gap-4"}`}>
           <IconFilter
@@ -268,7 +272,7 @@ export default function SearchBar({
       )}
 
       {/* Results preview */}
-      {showResultsPreview && resultsShowing && (
+      {showResultsPreview && resultsShowing && isFocused && (
         <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200 bg-white">
           {data && data.length === 0 ? (
             <p className="mx-4 my-3 text-gray-400">

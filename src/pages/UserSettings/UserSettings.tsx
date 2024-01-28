@@ -49,9 +49,6 @@ export default function UserSettings() {
   };
 
   // for recovery phrase modal
-  const [recoveryPhrase, setRecoveryPhrase] = useState("");
-  const [recoveryPhraseState, setRecoveryPhraseState] = useState("");
-  const [password, setPassword] = useState("");
   const [triedSubmit, setTriedSubmit] = useState(false);
 
   const [emailTimeNetworkingState, setEmailTimeNetworkingState] = useState(
