@@ -7,6 +7,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
+import { formatDate } from "../../utils";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -99,7 +100,7 @@ export default function Entries() {
               id: -1,
               value: -1,
               comment: "",
-              timestamp: Date.now().toString(),
+              timestamp: formatDate(new Date()),
               author: user!,
             }
           }

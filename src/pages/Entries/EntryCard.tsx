@@ -13,7 +13,7 @@ import EntryTextSkeleton from "../../components/skeletons/EntryTextSkeleton";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { parseYYYYmmddFormat } from "../../utils";
+import { dateFromStr } from "../../utils";
 
 /**
  * The Big Entry Card component to display an entry on the entries page
@@ -45,7 +45,6 @@ export default function EntryCard({
 }) {
   const navigate = useNavigate();
   const { api } = useApi();
-  // console.log(`happiness: ${JSON.stringify(happiness)}`);
   const { data: count } = useQuery(
     [QueryKeys.FETCH_JOURNAL_COUNT, { timestamp: happiness.timestamp }],
     {
@@ -98,11 +97,10 @@ export default function EntryCard({
           <Column>
             <h4>Public Entry</h4>
             <h5 className=" text-gray-600">
-              {new Date(happiness.timestamp).toLocaleDateString("en-US", {
+              {dateFromStr(happiness.timestamp).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
                 year: "numeric",
-                timeZone: "UTC",
               })}
             </h5>
           </Column>
@@ -182,9 +180,14 @@ export default function EntryCard({
         id="delete-confirm-modal"
         title="Deleting happiness"
         // fix comment form
-        body={`You are deleting happiness for ${parseYYYYmmddFormat(
+        body={`You are deleting happiness for ${dateFromStr(
           happiness.timestamp,
-        ).toDateString()}, are you sure you want to continue?`}
+        ).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+          weekday: "long",
+        })}, are you sure you want to continue?`}
         denyText="Cancel"
         confirmText="Continue"
         onConfirm={onDeleteHappiness}
