@@ -78,9 +78,10 @@ export default function PrivateEntriesView() {
     journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
   }, [selectedEntry]);
 
+  // add leave without saving popup
   window.onbeforeunload = () => {
     if (networkingState === Constants.LOADING_MUTATION_TEXT) {
-      return "Still saving entry, are you sure you want to leave?";
+      return Constants.LEAVE_WITHOUT_SAVING;
     }
   };
 

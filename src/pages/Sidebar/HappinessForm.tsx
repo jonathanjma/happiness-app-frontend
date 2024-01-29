@@ -29,6 +29,13 @@ export default function HappinessForm({ height }: { height: number }) {
     api.post("/happiness/", newHappiness),
   );
 
+  // add leave without saving popup
+  window.onbeforeunload = () => {
+    if (networkingState === Constants.LOADING_MUTATION_TEXT) {
+      return Constants.LEAVE_WITHOUT_SAVING;
+    }
+  };
+
   // Updates comment and happiness when comment or happiness value changes.
   // If happiness value is not entered, does not submit anything.
   useEffect(() => {
