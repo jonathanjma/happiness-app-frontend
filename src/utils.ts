@@ -194,7 +194,12 @@ export function floatToColor(float: number): string {
   return `rgba(${modifiedColor[0]},${modifiedColor[1]},${modifiedColor[2]},1)`;
 }
 
-export function getTimeZone() {
+/**
+ * Gets the user's local timezone offset in the form of + or -, and then a 24-hour time
+ * for example: -05:00
+ * @returns the desired timezone string
+ */
+export function getTimeZone(): string {
   const offset = new Date().getTimezoneOffset();
   const o = Math.abs(offset);
   return (
@@ -203,4 +208,20 @@ export function getTimeZone() {
     ":" +
     ("00" + (o % 60)).slice(-2)
   );
+}
+
+/**
+ * Get default date returns today if the user's local time is past 5am, and returns yesterday otherwise.
+ * @returns date object for today or yesterday depending on user's time.
+ */
+export function getDefaultDate(): Date {
+  const date = new Date();
+  const hours = date.getHours();
+
+  if (hours >= 18) {
+    return date;
+  } else {
+    date.setDate(date.getDate() - 1);
+    return date;
+  }
 }
