@@ -85,7 +85,7 @@ label:hover {
 }
 
 .hs-overlay-backdrop {
-    z-index: unset;
+    position: unset;
 }
 
 .transition-bg-500 {
