@@ -78,6 +78,12 @@ export default function PrivateEntriesView() {
     journalUpdateTimeout.current = setTimeout(updateJournal, 1000);
   }, [selectedEntry]);
 
+  window.onbeforeunload = () => {
+    if (networkingState === Constants.LOADING_MUTATION_TEXT) {
+      return "Still saving entry, are you sure you want to leave?";
+    }
+  };
+
   return (
     <Row className="h-screen bg-[#FAFAFA]">
       <div className="h-full pt-6">
