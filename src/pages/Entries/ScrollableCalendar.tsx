@@ -180,7 +180,7 @@ export default function ScrollableCalendar({
         setPrevScrollHeight(scrollRef.current!.scrollHeight);
       }
       // new scroll height is simply: current - previous
-      else if (!isFetchingPreviousPage && data) {
+      else if (data) {
         scrollRef.current!.scrollTo({
           top: scrollRef.current!.scrollHeight - prevScrollHeight,
           behavior: "instant",
