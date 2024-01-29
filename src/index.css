@@ -84,6 +84,10 @@ label:hover {
     -webkit-box-orient: vertical;
 }
 
+.hs-overlay-backdrop {
+    z-index: unset;
+}
+
 .transition-bg-500 {
     -webkit-transition: background-color 500ms linear;
     -ms-transition: background-color 500ms linear;

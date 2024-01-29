@@ -191,7 +191,6 @@ export default function SignUpModal({
           onChangeValue={setConfirmPassword}
           onEnterPressed={handleCreateAccount}
           type="password"
-          autocomplete="new-password"
           hasError={!matchesConfirmPassword}
           errorText="Passwords are not matching."
         />

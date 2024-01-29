@@ -171,19 +171,21 @@ export default function ScrollableCalendar({
     setPrevScrollHeight(scrollRef.current!.scrollHeight);
   }, [isLoading]);
 
-  // this use effect statement is the issue:
   // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
-    // remember div scroll height before previous page fetch
-    if (isFetchingPreviousPage) {
-      setPrevScrollHeight(scrollRef.current!.scrollHeight);
-    }
-    // new scroll height is simply: current - previous
-    if (!isFetchingPreviousPage && data) {
-      scrollRef.current!.scrollTo({
-        top: scrollRef.current!.scrollHeight - prevScrollHeight,
-        behavior: "instant",
-      });
+    if (startDateStr) {
+      // if in bidirectional scroll mode
+      // remember div scroll height before previous page fetch
+      if (isFetchingPreviousPage) {
+        setPrevScrollHeight(scrollRef.current!.scrollHeight);
+      }
+      // new scroll height is simply: current - previous
+      else if (!isFetchingPreviousPage && data) {
+        scrollRef.current!.scrollTo({
+          top: scrollRef.current!.scrollHeight - prevScrollHeight,
+          behavior: "instant",
+        });
+      }
     }
   }, [isFetchingPreviousPage]);
 

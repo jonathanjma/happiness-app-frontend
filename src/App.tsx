@@ -10,10 +10,10 @@ import Entries from "./pages/Entries/Entries";
 import Group from "./pages/Group/Group";
 import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
 import Sidebar from "./pages/Sidebar/Sidebar";
-import SignIn from "./pages/SignIn/SignIn";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import UserSettings from "./pages/UserSettings/UserSettings";
+import Welcome from "./pages/Welcome/Welcome";
 
 export default function App() {
   return (
@@ -26,7 +26,7 @@ export default function App() {
               path="/"
               element={
                 <PublicRoute>
-                  <SignIn />
+                  <Welcome />
                 </PublicRoute>
               }
             />
@@ -40,10 +40,7 @@ export default function App() {
                         <Route path="/home" element={<Entries />} />
                         <Route path="/groups" element={<UserGroups />} />
                         <Route path="/groups/:groupID" element={<Group />} />
-                        <Route
-                          path="/groups/create"
-                          element={<CreateGroup />}
-                        />
+                        <Route path="/groups/create" element={<CreateGroup />} />
                         <Route path="/journal" element={<PrivateEntries />} />
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/search" element={<AllSearchResults />} />
