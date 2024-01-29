@@ -218,7 +218,7 @@ export function getDefaultDate(): Date {
   const date = new Date();
   const hours = date.getHours();
 
-  if (hours >= 18) {
+  if (hours >= 5) {
     return date;
   } else {
     date.setDate(date.getDate() - 1);
