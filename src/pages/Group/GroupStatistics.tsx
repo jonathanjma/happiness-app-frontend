@@ -7,58 +7,47 @@ import DateRangeSwitcher from "../../components/DateRangeSwitcher";
 import Graph from "../../components/Graph";
 import HappinessCalendar from "../../components/HappinessCalendar";
 import Row from "../../components/layout/Row";
-import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
+import GroupHappinessModal from "../../components/modals/GroupHappinessModal";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate, useWindowDimensions } from "../../utils";
-import SearchBar from "./SearchBar";
-import Stat from "./Stat";
+import Stat from "../Statistics/Stat";
+import { Group } from "../../data/models/Group";
+import { format } from "mathjs";
+import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 
 /**
  * The page for displaying statistics for the current user
  */
-export default function Statistics() {
+export default function GroupStatistics({
+  groupData,
+  radioValue,
+  setRadioValue,
+  startDate,
+  endDate,
+  setCurDates,
+}: {
+  groupData: Group;
+  radioValue: number;
+  setRadioValue: (newValue: number) => void;
+  startDate: Date;
+  endDate: Date;
+  setCurDates: ((newValue: Date) => void)[];
+}) {
   const { api } = useApi();
-  const { user } = useUser();
-  const queryClient = useQueryClient();
 
-  const location = useLocation();
-  const [text, setText] = useState(location?.state?.text ?? "");
-  const [startValue, setStartValue] = useState(
-    location?.state?.startValue ?? 0,
-  );
-  const [endValue, setEndValue] = useState(location?.state?.endValue ?? 10);
-  const [startDate, setStartDate] = useState(location?.state?.startDate ?? "");
-  const [endDate, setEndDate] = useState(location?.state?.endDate ?? "");
-
-  const settingsNames = user!.settings.map((e) => e.key);
-  const [radioValue, setRadioValue] = useState(1);
   const [graphTitle, setGraphTitle] = useState("Weekly Happiness");
   const [graphSubTitle, setGraphSubTitle] = useState("");
-  const [viewingEntry, setViewingEntry] = useState<Happiness | undefined>(
+  const [viewingEntry, setViewingEntry] = useState<Happiness[] | undefined>(
     undefined,
   );
   const [calCollapsed, setCalCollapsed] = useState<boolean>(false);
-  const [start, setStart] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate() - 7,
-    ),
-  );
-  const [end, setEnd] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    ),
-  );
 
   useEffect(() => {
     if (viewingEntry) {
-      window.HSOverlay.open(document.querySelector("#show-happiness-modal"));
+      window.HSOverlay.open(document.querySelector("#group-happiness-modal"));
     }
   }, [viewingEntry]);
 
@@ -66,8 +55,8 @@ export default function Statistics() {
 
   const {
     isLoading,
-    data,
     isError,
+    data,
     refetch,
   }: {
     isLoading: boolean;
@@ -78,70 +67,46 @@ export default function Statistics() {
     ) => Promise<Happiness[] | undefined | unknown>;
   } = useQuery({
     queryKey: [
-      QueryKeys.FETCH_HAPPINESS,
-      " graph query",
-      { start: start },
-      { end: end },
+      QueryKeys.FETCH_GROUP_HAPPINESS,
+      {
+        start: formatDate(startDate),
+        end: formatDate(endDate),
+        id: groupData.id,
+      },
     ],
     queryFn: () =>
       api
-        .get("/happiness/", {
-          start: formatDate(start),
-          end: formatDate(end),
+        .get<Happiness[]>(`/group/${groupData.id}/happiness`, {
+          start: formatDate(startDate),
+          end: formatDate(endDate),
         })
         .then((res) => res.data),
   });
 
-  // Changes selected date range between current week and current month when radioValue variable changes.
-  useEffect(() => {
-    setStart(() => {
-      if (radioValue === 1) {
-        return new Date(
-          start.getFullYear(),
-          start.getMonth(),
-          start.getDate() - start.getDay(),
-        );
-      } else {
-        return new Date(end.getFullYear(), end.getMonth(), 1);
-      }
-    });
-    setEnd(() => {
-      if (radioValue === 1) {
-        return new Date(
-          start.getFullYear(),
-          start.getMonth(),
-          start.getDate() - start.getDay() + 6,
-        );
-      } else {
-        return new Date(end.getFullYear(), end.getMonth() + 1, 0);
-      }
-    });
-    setGraphTitle(() =>
-      radioValue === 1 ? "Weekly Happiness" : "Monthly Happiness",
-    );
-  }, [radioValue]);
+  console.log(formatDate(startDate));
+  console.log(formatDate(endDate));
 
   // change subtitle when data changes
   useEffect(() => {
     setGraphSubTitle(
       () =>
-        start.toLocaleString("default", { month: "long" }) +
+        startDate.toLocaleString("default", { month: "long" }) +
         " " +
         (radioValue === 1
-          ? start.getDate() +
+          ? startDate.getDate() +
             "-" +
-            (start.getMonth() === end.getMonth()
+            (startDate.getMonth() === endDate.getMonth()
               ? ""
-              : end.toLocaleString("default", { month: "long" }) + " ") +
-            end.getDate()
-          : start.getFullYear()),
+              : endDate.toLocaleString("default", { month: "long" }) + " ") +
+            endDate.getDate()
+          : startDate.getFullYear()),
     );
-  }, [data, radioValue, start, end]);
+  }, [data, radioValue, startDate, endDate]);
 
   // react to changes in data
   useEffect(() => {
     refetch();
-  }, [data, start, end]);
+  }, [data, startDate, endDate]);
 
   // list of statistic settings
   const setNames = [
@@ -152,42 +117,17 @@ export default function Statistics() {
     "Show Minimum Value",
     "Show Maximum Value",
   ];
-  // create stat names
-  const statNames = setNames.map((name) => {
-    if (settingsNames!.includes(name)) {
-      for (const e of user!.settings) {
-        if (name === e.key) {
-          return e.enabled;
-        }
-      }
-    } else return false;
-  });
 
   return (
     <>
-      <div className="mx-[32px] my-[96px] flex-1">
-        <Row>
-          <div className="text-4xl font-medium">Your Stats</div>
+      <div className="mx-[32px] flex-1">
+        <Row className="pb-8">
           <div className="flex flex-1" />
           <DateRangeSwitcher
             radioValue={radioValue}
             setRadioValue={setRadioValue}
-            dates={[start, end]}
-            setCurDates={[setStart, setEnd]}
-          />
-        </Row>
-        <Row className="my-8">
-          <SearchBar
-            text={text}
-            setText={setText}
-            startValue={startValue}
-            setStartValue={setStartValue}
-            endValue={endValue}
-            setEndValue={setEndValue}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
+            dates={[startDate, endDate]}
+            setCurDates={setCurDates}
           />
         </Row>
         {isError || isLoading || data === undefined ? (
@@ -202,15 +142,14 @@ export default function Statistics() {
                   graphSubTitle={graphSubTitle}
                   showDay={radioValue === 1}
                   uniqDays={true}
-                  range={[start, end]}
+                  range={[startDate, endDate]}
                   onSelectEntry={(entry: Happiness[]) => {
-                    if (viewingEntry && viewingEntry.id === entry[0].id) {
-                      // @ts-ignore
+                    if (viewingEntry && viewingEntry[0].id === entry[0].id) {
                       window.HSOverlay.open(
-                        document.querySelector("#show-happiness-modal"),
+                        document.querySelector("#group-happiness-modal"),
                       );
                     } else {
-                      setViewingEntry(entry[0]);
+                      setViewingEntry(entry);
                     }
                   }}
                 />
@@ -218,16 +157,14 @@ export default function Statistics() {
                   {data.length === 0 ? (
                     <></>
                   ) : (
-                    statNames.map((val, t) => {
-                      if (val) {
-                        return (
-                          <Stat
-                            values={data.map((e) => e.value)}
-                            key={t}
-                            statName={t}
-                          />
-                        );
-                      }
+                    setNames.map((val, t) => {
+                      return (
+                        <Stat
+                          values={data.map((e) => e.value)}
+                          key={t}
+                          statName={t}
+                        />
+                      );
                     })
                   )}
                 </Row>
@@ -252,27 +189,28 @@ export default function Statistics() {
                   <></>
                 ) : (
                   <div className="-z-50 p-1">
-                    <HappinessCalendar
-                      startDate={start}
+                    {/* <HappinessCalendar
+                      startDate={startDate}
                       variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
                       selectedEntry={viewingEntry}
                       onSelectEntry={(entry: Happiness) => {
                         if (viewingEntry && viewingEntry.id === entry.id) {
                           window.HSOverlay.open(
-                            document.querySelector("#show-happiness-modal"),
+                            document.querySelector("#group-happiness-modal"),
                           );
                         } else {
                           setViewingEntry(entry);
                         }
                       }}
-                    />
+                    /> */}
                   </div>
                 )}
               </div>
               {viewingEntry && (
-                <HappinessViewerModal
-                  happiness={viewingEntry}
-                  id="show-happiness-modal"
+                // add group modal here
+                <GroupHappinessModal
+                  entries={viewingEntry}
+                  id="group-happiness-modal"
                 />
               )}
             </Row>

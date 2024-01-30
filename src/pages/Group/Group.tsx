@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import GraphIcon from "../../assets/graph.svg";
@@ -13,6 +14,7 @@ import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Group } from "../../data/models/Group";
 import FeedPanel from "./FeedPanel";
+import GroupStatistics from "./GroupStatistics";
 
 function TabButton({
   index,
@@ -68,6 +70,42 @@ export default function Group() {
     () => api.get<Group>("/group/" + groupID).then((res) => res.data),
   );
 
+  const [startDate, setStartDate] = useState(
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() - 7,
+    ),
+  );
+  const [endDate, setEndDate] = useState(new Date());
+  const [radioValue, setRadioValue] = useState(1);
+
+  // Changes selected date range between current week and current month when radioValue variable changes.
+  useEffect(() => {
+    setStartDate(() => {
+      if (radioValue === 1) {
+        return new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() - startDate.getDay(),
+        );
+      } else {
+        return new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+      }
+    });
+    setEndDate(() => {
+      if (radioValue === 1) {
+        return new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() - startDate.getDay() + 6,
+        );
+      } else {
+        return new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+      }
+    });
+  }, [radioValue]);
+
   return (
     <div>
       {isLoading ? (
@@ -110,14 +148,26 @@ export default function Group() {
                   <FeedPanel groupData={data!} />
                 </TabPanel>
                 <TabPanel index={2}>
-                  <p>Graph View</p>
+                  <div className="mx-8 my-6 overflow-auto">
+                    <GroupStatistics
+                      groupData={data!}
+                      radioValue={radioValue}
+                      setRadioValue={setRadioValue}
+                      startDate={startDate}
+                      endDate={endDate}
+                      setCurDates={[setStartDate, setEndDate]}
+                    />
+                  </div>
                 </TabPanel>
                 <TabPanel index={3}>
-                  <div className="m-12  overflow-auto">
+                  <div className="mx-8 my-6 overflow-auto">
                     <HappinessTable
                       group={data!}
-                      startDate="2023-12-01"
-                      endDate="2023-12-31"
+                      radioValue={radioValue}
+                      setRadioValue={setRadioValue}
+                      startDate={startDate}
+                      endDate={endDate}
+                      setCurDates={[setStartDate, setEndDate]}
                     />
                   </div>
                 </TabPanel>

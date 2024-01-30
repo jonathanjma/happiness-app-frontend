@@ -74,6 +74,7 @@ export default function Graph({
   let usernameList: string[] = [
     ...new Set(entries.map((e) => e.author.username)),
   ];
+  usernameList.sort();
 
   // define happiness data, which is then sorted by chronological order
   let happinessData: Happiness[] = entries;

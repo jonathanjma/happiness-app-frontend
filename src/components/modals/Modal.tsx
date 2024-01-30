@@ -3,6 +3,7 @@
 interface RequiredModalProps {
   id: string;
   children: React.ReactNode;
+  noCard?: boolean;
 }
 
 /**
@@ -10,11 +11,13 @@ interface RequiredModalProps {
  * for the modal to function properly.
  * @see EntriesCard.tsx for an example of use.
  * @param className style additions to the modal
+ * @param noCard boolean that hides white card if true (default = false)
  * @returns
  */
 export default function Modal({
   children,
   className,
+  noCard = false,
   ...rest
 }: React.HTMLProps<HTMLDivElement> & RequiredModalProps) {
   return (
@@ -25,7 +28,12 @@ export default function Modal({
         className
       }
     >
-      <div className=" mx-auto mt-16 w-fit rounded-3xl bg-white p-8 opacity-0 transition-all hs-overlay-open:opacity-100 hs-overlay-open:duration-500 ">
+      <div
+        className={
+          "mx-auto mt-16 w-fit rounded-3xl p-8 opacity-0 transition-all hs-overlay-open:opacity-100 hs-overlay-open:duration-500" +
+          (noCard ? "" : " bg-white")
+        }
+      >
         {children}
       </div>
     </div>

@@ -7,23 +7,30 @@ import { Happiness } from "../data/models/Happiness";
 import { floatToColor, formatDate, parseYYYYmmddFormat } from "../utils";
 import Row from "./layout/Row";
 import HappinessViewerModal from "./modals/HappinessViewerModal";
+import DateRangeSwitcher from "./DateRangeSwitcher";
 /**
  *
  * @param startDate a string in the YYYY-MM-DD format representing the start of
  * the happiness date range
  * @param endDate a string in the YYYY-MM-DD format representing the end of
- * the happiness date range (defaults to today if unspecified)
+ * the happiness date range
  * @param groupId the associated group ID for the happiness table
  * @returns
  */
 export default function HappinessTable({
   group,
+  radioValue,
+  setRadioValue,
   startDate,
-  endDate = formatDate(new Date()),
+  endDate,
+  setCurDates,
 }: {
   group: Group;
-  startDate: string;
-  endDate?: string;
+  radioValue: number;
+  setRadioValue: (newValue: number) => void;
+  startDate: Date;
+  endDate: Date;
+  setCurDates: ((newValue: Date) => void)[];
 }) {
   const { api } = useApi();
   const [selectedHappiness, setSelectedHappiness] = useState<
@@ -39,8 +46,11 @@ export default function HappinessTable({
     }
   }, [selectedHappiness]);
 
-  const start = parseYYYYmmddFormat(startDate);
-  const end = endDate ? parseYYYYmmddFormat(endDate) : new Date();
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const start = parseYYYYmmddFormat(formattedStartDate);
+  const end = parseYYYYmmddFormat(formattedEndDate);
 
   const dateList: Date[] = [];
   const tempStart = new Date(start);
@@ -53,16 +63,16 @@ export default function HappinessTable({
     queryKey: [
       QueryKeys.FETCH_GROUP_HAPPINESS,
       {
-        start: startDate,
-        end: endDate,
+        start: formattedStartDate,
+        end: formattedEndDate,
         id: group.id,
       },
     ],
     queryFn: () =>
       api
         .get<Happiness[]>(`/group/${group.id}/happiness`, {
-          start: startDate,
-          end: endDate,
+          start: formattedStartDate,
+          end: formattedEndDate,
         })
         .then((res) => res.data),
   });
@@ -85,6 +95,15 @@ export default function HappinessTable({
           id="view-happiness"
         />
       )}
+      <Row className="pb-8">
+        <div className="flex flex-1" />
+        <DateRangeSwitcher
+          radioValue={radioValue}
+          setRadioValue={setRadioValue}
+          dates={[startDate, endDate]}
+          setCurDates={setCurDates}
+        />
+      </Row>
       <table className="min-w-full border-separate border-spacing-0 divide-x-1 divide-y divide-secondary">
         <thead className="border-1 border-gray-200 bg-gray-50">
           <tr>
