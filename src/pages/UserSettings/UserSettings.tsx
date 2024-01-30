@@ -283,7 +283,7 @@ export default function UserSettings() {
 
         <h4 className="text-gray-600">Private Journals</h4>
         <Button
-          label="Set Up Recovery Key"
+          label="Set Up Recovery Phrase"
           onClick={() => {
             window.HSOverlay.open(document.querySelector("#recovery"));
           }}

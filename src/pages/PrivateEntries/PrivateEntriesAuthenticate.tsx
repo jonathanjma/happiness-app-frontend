@@ -17,8 +17,10 @@ export default function PrivateEntriesAuthenticate({
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   setRetry: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [passwordText, setPasswordText] = useState("");
   const { api } = useApi();
+  const [passwordText, setPasswordText] = useState("");
+  const [forgotVisible, setForgotVisible] = useState(false);
+
   const submitPassword = useMutation({
     mutationFn: () =>
       api.post(
@@ -56,7 +58,7 @@ export default function PrivateEntriesAuthenticate({
         </Column>
         <TextField
           label="Password"
-          supportingText={hasError ? "Please enter the correct password" : ""}
+          errorText={hasError ? "Please enter the correct password" : ""}
           value={passwordText}
           onChangeValue={(v) => {
             setHasError(false);
@@ -68,6 +70,10 @@ export default function PrivateEntriesAuthenticate({
           }
           type="password"
         />
+        <p className="font-normal text-gray-600">
+          First time using Private Journals? <br /> Make sure to set up a
+          <b> recovery phrase </b> in Settings in case you forget your password!
+        </p>
         <Row>
           <Button
             onClick={() => {
@@ -75,8 +81,18 @@ export default function PrivateEntriesAuthenticate({
             }}
             label="Enter"
           />
-          <Button label="Forgot Password?" variation="TEXT" />
+          <Button
+            label="Forgot Password?"
+            variation="TEXT"
+            onClick={() => setForgotVisible(!forgotVisible)}
+          />
         </Row>
+        <p className="font-normal text-gray-600" hidden={!forgotVisible}>
+          If you forgot your password, <b> logout and request </b> a password
+          reset.
+          <br /> You will then be prompted to enter your
+          <b> journal recovery phrase. </b>
+        </p>
       </Column>
     </div>
   );
