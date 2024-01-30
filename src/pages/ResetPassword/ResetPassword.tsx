@@ -9,6 +9,7 @@ import ToastMessage from "../../components/ToastMessage";
 import { useApi } from "../../contexts/ApiProvider";
 import Spinner from "../../components/Spinner";
 import Row from "../../components/layout/Row";
+import TextField from "../../components/TextField";
 
 export default function ResetPassword() {
   const { api } = useApi();
@@ -18,6 +19,8 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [hasPasswordError, setHasPasswordError] = useState(true);
   const [triedToSubmit, setTriedToSubmit] = useState(false);
+  const [recover, setRecover] = useState(false);
+  const [recoveryPhrase, setRecoveryPhrase] = useState("");
 
   const [error, setError] = useState("");
 
@@ -34,13 +37,20 @@ export default function ResetPassword() {
     mutationFn: () =>
       api.post<void>("/user/reset_password/" + resetToken, {
         password: password,
+        recovery_phrase: recover ? recoveryPhrase : "",
       }),
     onSuccess: () => {
       navigate("/");
       toast.custom(<ToastMessage message="✅ Password has been reset" />);
     },
-    onError: () => {
-      setError("Token is invalid. Please request another reset email.");
+    onError: (error: { response: { data: string } }) => {
+      const errorMsg = error.response.data;
+      if (errorMsg.indexOf("recovery") != -1) {
+        setError("Incorrect Recovery Phrase");
+      } else {
+        // token related error
+        setError("Token is invalid. Please request another reset email.");
+      }
     },
   });
 
@@ -48,7 +58,11 @@ export default function ResetPassword() {
     setTriedToSubmit(true);
 
     if (!hasPasswordError) {
-      resetPassword.mutate();
+      if (recover && recoveryPhrase.trim().length > 0) {
+        resetPassword.mutate();
+      } else {
+        setError("Recovery Phrase is empty.");
+      }
     }
   };
 
@@ -66,6 +80,22 @@ export default function ResetPassword() {
             triedSubmit={triedToSubmit}
             label="New password"
           />
+          <Row className="mb-2 mt-4 gap-x-2">
+            <input type="checkbox" onChange={() => setRecover(!recover)} />
+            <p className="font-normal text-gray-400">
+              Recover Journal Entries? (otherwise they will be{" "}
+              <b className="text-error">lost</b>)
+            </p>
+          </Row>
+          <div hidden={!recover}>
+            <TextField
+              label="Recovery Phrase"
+              value={recoveryPhrase}
+              onChangeValue={setRecoveryPhrase}
+              type="password"
+              autocomplete="current-password"
+            />
+          </div>
           <p className="mt-4 text-error">{error}</p>
           <Row className="mt-4 gap-x-4">
             <Button
