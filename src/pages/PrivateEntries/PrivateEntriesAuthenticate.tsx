@@ -67,6 +67,7 @@ export default function PrivateEntriesAuthenticate({
             hasError ? <IconWarningOutline color="#EC7070" /> : undefined
           }
           type="password"
+          className="w-[250px]"
         />
         <Row>
           <Button

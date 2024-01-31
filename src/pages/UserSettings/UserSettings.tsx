@@ -183,6 +183,7 @@ export default function UserSettings() {
               }}
               label="Pick a time to receive notifications:"
               type="time"
+              className="w-[250px]"
             />
             <label className="font-normal text-gray-600">
               {emailTimeNetworkingState}
@@ -197,6 +198,7 @@ export default function UserSettings() {
           onChangeValue={setEmail}
           label="Change email:"
           type="email"
+          className="w-[250px]"
         />
         {changeEmailState && (
           <label
@@ -226,6 +228,7 @@ export default function UserSettings() {
           onChangeValue={setUsername}
           label="Change username:"
           type="username"
+          className="w-[250px]"
         />
         {changeUsernameState && (
           <label
@@ -255,6 +258,7 @@ export default function UserSettings() {
           type="password"
           value={oldPassword}
           onChangeValue={setOldPassword}
+          className="w-[250px]"
         />
         <NewPasswordInput
           hasPasswordError={hasPasswordError}
