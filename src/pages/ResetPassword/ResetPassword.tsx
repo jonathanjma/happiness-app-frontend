@@ -46,7 +46,7 @@ export default function ResetPassword() {
     onError: (error: { response: { data: string } }) => {
       const errorMsg = error.response.data;
       if (errorMsg.indexOf("recovery") != -1) {
-        setError("Incorrect Recovery Phrase");
+        setError("Incorrect Recovery Phrase.");
       } else {
         // token related error
         setError("Token is invalid. Please request another reset email.");
@@ -58,7 +58,7 @@ export default function ResetPassword() {
     setTriedToSubmit(true);
 
     if (!hasPasswordError) {
-      if (recover && recoveryPhrase.trim().length > 0) {
+      if (!recover || recoveryPhrase.trim().length > 0) {
         resetPassword.mutate();
       } else {
         setError("Recovery Phrase is empty.");
