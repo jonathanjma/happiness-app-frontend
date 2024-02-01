@@ -78,7 +78,7 @@ export default function Welcome() {
       </Row>
 
       {/* Fixed Div */}
-      <div className="fixed top-0 h-full w-full bg-light_yellow">
+      <div className="radial fixed top-0 h-full w-full bg-light_yellow">
         <Row className="items-center justify-between py-32 pl-12 pr-12 md:pl-28">
           <Column className="basis-1/2 pr-14">
             <p className="mb-12 text-5xl font-extrabold text-secondary">
