@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useUser } from "../../contexts/UserProvider";
 import ArrowDownIcon from "../../assets/ArrowDownIcon";
 import EntriesIcon from "../../assets/book.svg";
 import JournalIcon from "../../assets/encrypted.svg";
@@ -7,8 +6,9 @@ import StatsIcon from "../../assets/graph.svg";
 import GroupsIcon from "../../assets/groups.svg";
 import SettingsIcon from "../../assets/settings.svg";
 import LinkButton from "../../components/LinkButton";
-import HappinessForm from "./HappinessForm";
+import { useUser } from "../../contexts/UserProvider";
 import { useWindowDimensions } from "../../utils";
+import HappinessForm from "./HappinessForm";
 
 export default function Sidebar({ element }: { element: React.ReactElement }) {
   const { user } = useUser();
@@ -61,7 +61,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
               </div>
               {dropdownState ? (
                 <>
-                  <div className="absolute top-11 mt-2 w-full rounded-xl border border-1 border-gray-200 shadow-xl">
+                  <div className="absolute top-11 mt-2 w-full rounded-xl border border-gray-200 shadow-xl">
                     <LinkButton
                       label={"Profile"}
                       href={"/profile/" + user!.id}

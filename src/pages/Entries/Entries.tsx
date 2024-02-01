@@ -83,6 +83,13 @@ export default function Entries() {
     });
   }, [numStillMutating]);
 
+  // add leave without saving popup
+  window.onbeforeunload = () => {
+    if (networkingState === Constants.LOADING_MUTATION_TEXT) {
+      return Constants.LEAVE_WITHOUT_SAVING;
+    }
+  };
+
   return (
     <Row className="h-screen bg-[#FAFAFA]">
       <div className="pt-8">

@@ -1,20 +1,20 @@
-import Row from "../../components/layout/Row";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import RemoveIcon from "../../assets/close.svg";
-import React, { useState } from "react";
-import TextField from "../../components/TextField";
-import Column from "../../components/layout/Column";
-import Button from "../../components/Button";
-import { SimpleUser, User } from "../../data/models/User";
-import { useApi } from "../../contexts/ApiProvider";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
-import { Group } from "../../data/models/Group";
-import toast from "react-hot-toast";
-import { useUser } from "../../contexts/UserProvider";
-import ToastMessage from "../../components/ToastMessage";
 import BackButton from "../../components/BackButton";
-import { useMutation } from "react-query";
+import Button from "../../components/Button";
+import TextField from "../../components/TextField";
+import ToastMessage from "../../components/ToastMessage";
+import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { MutationKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { useUser } from "../../contexts/UserProvider";
+import { Group } from "../../data/models/Group";
+import { SimpleUser, User } from "../../data/models/User";
 
 export default function CreateGroup() {
   const { api } = useApi();
@@ -106,6 +106,7 @@ export default function CreateGroup() {
           label="Group Name:"
           errorText={nameError}
           hasError={nameError !== ""}
+          className="w-[250px]"
         />
         <TextField
           value={curUserAdd}
@@ -115,6 +116,7 @@ export default function CreateGroup() {
           hasError={userAddError !== ""}
           onEnterPressed={addUser}
           tooltip="(press enter to add user to list)"
+          className="w-[250px]"
           innerElements={
             groupUsers.length !== 0 ? (
               <>
