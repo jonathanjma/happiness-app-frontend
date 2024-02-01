@@ -8,6 +8,7 @@ import TextField from "../../components/TextField";
 import Toggle from "../../components/Toggle";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import ClosableModal from "../../components/modals/ClosableModal";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
@@ -39,12 +40,17 @@ export default function UserSettings() {
   // for changing password
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [hasPasswordError, setHasPasswordError] = useState(false);
 
   const handlePasswordSubmit = () => {
     setTriedSubmit(true);
     if (!hasPasswordError) {
-      changePassword();
+      if (confirmPassword !== newPassword) {
+        setChangePasswordState("Confirm password doesn't match new password");
+      } else {
+        changePassword();
+      }
     }
   };
 
@@ -70,6 +76,12 @@ export default function UserSettings() {
       updateEmailTimeout.current = setTimeout(updateEmailHandler, 500);
     }
   }, [emailTime]);
+
+  useEffect(() => {
+    if (confirmPassword === newPassword) {
+      setChangePasswordState("");
+    }
+  }, [confirmPassword, newPassword]);
 
   // DANGEROUS delete account mutation
   const deleteAccountMutation = useMutation({
@@ -163,8 +175,8 @@ export default function UserSettings() {
         <h2>Settings</h2>
 
         <h4 className="text-gray-600">Notification Settings</h4>
-        <Row className=" h-6 w-1/2 items-center">
-          <p className="text-gray-400">Email Alerts</p>
+        <Row className=" h-6 w-[250px] items-center">
+          <p className="font-normal text-gray-400">Daily reminders</p>
           <div className="flex flex-1" />
           <Toggle
             toggled={hasEmailAlerts}
@@ -181,7 +193,7 @@ export default function UserSettings() {
                 setEmailTimeNetworkingState(Constants.LOADING_MUTATION_TEXT);
                 setEmailTime(emailTime);
               }}
-              label="Pick a time to receive notifications:"
+              label="Reminder Time"
               type="time"
             />
             <label className="font-normal text-gray-600">
@@ -191,35 +203,6 @@ export default function UserSettings() {
         )}
 
         <h4 className="text-gray-600">Account Settings</h4>
-        <TextField
-          value={email}
-          hint={user!.email}
-          onChangeValue={setEmail}
-          label="Change email:"
-          type="email"
-        />
-        {changeEmailState && (
-          <label
-            className={`font-normal ${
-              emailError || changeEmailState === "Email not valid"
-                ? "text-error"
-                : "text-gray-400"
-            }`}
-          >
-            {changeEmailState}
-          </label>
-        )}
-        <Button
-          label="Change Email"
-          icon={emailChangeLoading ? <Spinner variaton="SMALL" /> : undefined}
-          onClick={() => {
-            if (EmailValidator.validate(email)) {
-              changeEmail(email);
-            } else {
-              setChangeEmailState("Email not valid");
-            }
-          }}
-        />
         <TextField
           value={username}
           hint={user!.username}
@@ -248,38 +231,40 @@ export default function UserSettings() {
               setChangeUsernameState("Username must not be empty");
             }
           }}
+          variation="GRAY"
         />
-        <p className="font-normal text-gray-400">Change password:</p>
         <TextField
-          label="Old password"
-          type="password"
-          value={oldPassword}
-          onChangeValue={setOldPassword}
+          value={email}
+          hint={user!.email}
+          onChangeValue={setEmail}
+          label="Change email:"
+          type="email"
         />
-        <NewPasswordInput
-          hasPasswordError={hasPasswordError}
-          setPasswordError={setHasPasswordError}
-          password={newPassword}
-          setPassword={setNewPassword}
-          triedSubmit={triedSubmit}
-          label="New password"
-        />
-        {changePasswordState && (
+        {changeEmailState && (
           <label
             className={`font-normal ${
-              changePasswordError ? "text-error" : "text-gray-400"
+              emailError || changeEmailState === "Email not valid"
+                ? "text-error"
+                : "text-gray-400"
             }`}
           >
-            {changePasswordState}
+            {changeEmailState}
           </label>
         )}
         <Button
-          label="Change Password"
-          onClick={handlePasswordSubmit}
-          icon={
-            changePasswordLoading ? <Spinner variaton="SMALL" /> : undefined
-          }
+          label="Change Email"
+          icon={emailChangeLoading ? <Spinner variaton="SMALL" /> : undefined}
+          onClick={() => {
+            if (EmailValidator.validate(email)) {
+              changeEmail(email);
+            } else {
+              setChangeEmailState("Email not valid");
+            }
+          }}
+          variation="GRAY"
         />
+        <p className="font-normal text-gray-400">Change password:</p>
+        <Button label="Change Password" associatedModalId="change-password" />
 
         <h4 className="text-gray-600">Private Journals</h4>
         <Button
@@ -313,6 +298,50 @@ export default function UserSettings() {
         }}
       />
       <RecoveryPhraseModal id="recovery" />
+      <ClosableModal
+        id="change-password"
+        leftContent={<h4>Change Password</h4>}
+      >
+        <div className="mb-6 mt-4 h-[1px] w-[500px] bg-gray-100 " />
+        <Column className="gap-6">
+          <TextField
+            label="Old password"
+            type="password"
+            value={oldPassword}
+            onChangeValue={setOldPassword}
+          />
+          <NewPasswordInput
+            hasPasswordError={hasPasswordError}
+            setPasswordError={setHasPasswordError}
+            password={newPassword}
+            setPassword={setNewPassword}
+            triedSubmit={triedSubmit}
+            label="New password"
+          />
+          <TextField
+            label="Re-type New Password"
+            value={confirmPassword}
+            onChangeValue={setConfirmPassword}
+            type="password"
+          />
+          {changePasswordState && (
+            <label
+              className={`font-normal ${
+                changePasswordError ? "text-error" : "text-gray-400"
+              }`}
+            >
+              {changePasswordState}
+            </label>
+          )}
+          <Button
+            label="Enter"
+            onClick={handlePasswordSubmit}
+            icon={
+              changePasswordLoading ? <Spinner variaton="SMALL" /> : undefined
+            }
+          />
+        </Column>
+      </ClosableModal>
     </>
   );
 }

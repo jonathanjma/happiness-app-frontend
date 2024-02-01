@@ -2,7 +2,7 @@ export interface ButtonProps {
   icon?: React.ReactElement;
   label?: string;
   onClick?: () => void;
-  variation?: "OUTLINED" | "FILLED" | "TEXT" | "DANGEROUS";
+  variation?: "OUTLINED" | "FILLED" | "TEXT" | "DANGEROUS" | "GRAY";
   size?: "SMALL" | "LARGE";
   associatedModalId?: string;
   classNameBtn?: string;
@@ -47,6 +47,10 @@ export default function Button({
       break;
     case "DANGEROUS":
       className += "bg-gray-50 text-error shadow-md1 ";
+      break;
+    case "GRAY":
+      className += "bg-gray-50 shadow-md1 text-gray-600 ";
+      break;
   }
 
   return (
