@@ -8,7 +8,12 @@ import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
-import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
+import {
+  dateFromStr,
+  formatDate,
+  getDefaultDate,
+  modifyDateDay,
+} from "../../utils";
 import HappinessPreviewCard from "./HappinessPreviewCard";
 
 // Infinite scrollable calendar for viewing happiness entries
@@ -34,10 +39,10 @@ export default function ScrollableCalendar({
     location.state?.date ??
     new URLSearchParams(useLocation().search).get("date");
   const today = modifyDateDay(new Date(), 0);
-  const startDate =
+  const startDate: Date =
     startDateStr && !isNaN(dateFromStr(startDateStr).getTime())
       ? dateFromStr(startDateStr)
-      : today;
+      : modifyDateDay(getDefaultDate(), 0);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
@@ -180,7 +185,7 @@ export default function ScrollableCalendar({
         setPrevScrollHeight(scrollRef.current!.scrollHeight);
       }
       // new scroll height is simply: current - previous
-      else if (!isFetchingPreviousPage && data) {
+      else if (data) {
         scrollRef.current!.scrollTo({
           top: scrollRef.current!.scrollHeight - prevScrollHeight,
           behavior: "instant",

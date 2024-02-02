@@ -69,6 +69,7 @@ export default function PrivateEntriesAuthenticate({
             hasError ? <IconWarningOutline color="#EC7070" /> : undefined
           }
           type="password"
+          className="w-[250px]"
         />
         <p className="font-normal text-gray-600">
           First time using Private Journals? <br /> Make sure to set up a

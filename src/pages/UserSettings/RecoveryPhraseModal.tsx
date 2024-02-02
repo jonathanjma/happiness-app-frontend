@@ -58,12 +58,14 @@ export default function RecoveryPhraseModal({ id }: { id: string }) {
           value={password}
           onChangeValue={setPassword}
           type="password"
+          className="w-[250px]"
         />
         <TextField
           label="Recovery phrase"
           hint="I will remember this"
           value={recoveryPhrase}
           onChangeValue={setRecoveryPhrase}
+          className="w-[250px]"
         />
         {recoveryPhraseState && (
           <label className="text-error">{recoveryPhraseState}</label>

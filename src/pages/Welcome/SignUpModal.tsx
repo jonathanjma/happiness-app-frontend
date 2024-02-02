@@ -170,6 +170,7 @@ export default function SignUpModal({
           onChangeValue={setUsername}
           errorText={usernameError}
           hasError={usernameError !== ""}
+          className="w-[250px]"
         />
         <TextField
           label="Email Address"
@@ -177,6 +178,7 @@ export default function SignUpModal({
           onChangeValue={setEmail}
           hasError={!validEmail}
           errorText="Email address is invalid."
+          className="w-[250px]"
         />
         <NewPasswordInput
           password={password}
@@ -193,6 +195,7 @@ export default function SignUpModal({
           type="password"
           hasError={!matchesConfirmPassword}
           errorText="Passwords are not matching."
+          className="w-[250px]"
         />
       </Column>
       <Button

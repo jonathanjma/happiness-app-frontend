@@ -62,6 +62,7 @@ export default function ForgotPasswordModal({
         onEnterPressed={handlePasswordReset}
         errorText={emailError}
         hasError={emailError !== ""}
+        className="w-[250px]"
       />
       <div className="h-6" />
       <Row className="gap-4">

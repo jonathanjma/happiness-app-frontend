@@ -61,6 +61,7 @@ export default function NewPasswordInput({
         onChangeValue={setPassword}
         type="password"
         autocomplete="new-password"
+        className="w-[250px]"
       />
       {triedSubmit && (
         <>

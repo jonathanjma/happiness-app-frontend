@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useApi } from "../../contexts/ApiProvider";
-import { Happiness, NewHappiness } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import TextareaAutosize from "react-textarea-autosize";
 import HappinessNumber from "../../components/HappinessNumber";
-import { Constants, QueryKeys } from "../../constants";
 import RadioButton from "../../components/RadioButton";
+import { Constants, QueryKeys } from "../../constants";
+import { useApi } from "../../contexts/ApiProvider";
+import { Happiness, NewHappiness } from "../../data/models/Happiness";
+import { formatDate, getDefaultDate } from "../../utils";
 
 export default function HappinessForm({ height }: { height: number }) {
   const { api } = useApi();
@@ -19,19 +19,22 @@ export default function HappinessForm({ height }: { height: number }) {
 
   const postHappinessTimeout = useRef<number | undefined>(undefined);
 
-  const [radioValue, setRadioValue] = useState(2);
-  const [selDate, setSelDate] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    ),
+  const [radioValue, setRadioValue] = useState(
+    formatDate(getDefaultDate()) === formatDate(new Date()) ? 2 : 1,
   );
+  const [selDate, setSelDate] = useState(getDefaultDate());
   const [happiness, setHappiness] = useState(-1);
 
   const postHappinessMutation = useMutation((newHappiness: NewHappiness) =>
     api.post("/happiness/", newHappiness),
   );
+
+  // add leave without saving popup
+  window.onbeforeunload = () => {
+    if (networkingState === Constants.LOADING_MUTATION_TEXT) {
+      return Constants.LEAVE_WITHOUT_SAVING;
+    }
+  };
 
   // Updates comment and happiness when comment or happiness value changes.
   // If happiness value is not entered, does not submit anything.
@@ -136,7 +139,7 @@ export default function HappinessForm({ height }: { height: number }) {
           labels={["Yesterday", "Today"]}
         />
       </div>
-      <div className="mb-4 rounded-xl border border-1 border-gray-100 bg-white p-4">
+      <div className="mb-4 rounded-xl border border-gray-100 bg-white p-4">
         <div className="text-sm font-medium text-gray-600">
           {selDate.toLocaleString("en-us", { weekday: "long" })}
         </div>
