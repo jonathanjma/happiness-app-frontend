@@ -26,7 +26,8 @@ export default function ResetPassword() {
 
   useEffect(() => {
     // redirect to home if no token is provided
-    if (resetToken) {
+    // sometimes the HSOverlay plugin loads slowly over slow connections
+    if (resetToken && window.HSOverlay) {
       window.HSOverlay.open(document.querySelector("#reset-pass-modal"));
     } else {
       navigate("/");
