@@ -163,7 +163,7 @@ export default function UserSettings() {
 
   return (
     <>
-      <Column className="mx-8 my-16 w-full gap-6">
+      <Column className="mx-8 my-16 gap-6">
         <h2>Settings</h2>
         <h4 className="text-gray-600">Notification Settings</h4>
         <Row className=" h-6 w-[250px] items-center">
