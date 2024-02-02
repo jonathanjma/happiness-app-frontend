@@ -34,6 +34,7 @@ export default function UserSettings() {
 
   const [username, setUsername] = useState("");
   const [changeUsernameState, setChangeUsernameState] = useState("");
+  const [usernameIsError, setUsernameIsError] = useState(false);
 
   const [changePasswordState, setChangePasswordState] = useState("");
 
@@ -103,23 +104,26 @@ export default function UserSettings() {
   });
 
   // Changing username mutation
-  const {
-    isLoading: usernameChangeLoading,
-    mutate: changeUsername,
-    isError: usernameIsError,
-  } = useMutation({
-    mutationFn: (username: string) =>
-      api.put("/user/info/", {
-        data_type: "username",
-        data: username,
-      }),
-    onError: () => {
-      setChangeUsernameState("Username already taken.");
-    },
-    onSuccess: () => {
-      setChangeUsernameState("Username updated. Refresh to see changes.");
-    },
-  });
+  const { isLoading: usernameChangeLoading, mutate: changeUsername } =
+    useMutation({
+      mutationFn: (username: string) =>
+        api.put("/user/info/", {
+          data_type: "username",
+          data: username,
+        }),
+      onError: () => {
+        setUsernameIsError(true);
+        setChangeUsernameState("Username already taken.");
+      },
+      onSuccess: () => {
+        setChangeUsernameState("Username updated. Refresh to see changes.");
+      },
+    });
+
+  // We don't want username error to persist if user edits username
+  useEffect(() => {
+    setUsernameIsError(false);
+  }, [username]);
 
   // Changing email mutation
   const {
@@ -200,8 +204,10 @@ export default function UserSettings() {
           onChangeValue={setUsername}
           label="Change username:"
           type="username"
+          errorText={changeUsernameState}
+          hasError={usernameIsError}
         />
-        {changeUsernameState && (
+        {/* {changeUsernameState && (
           <label
             className={`font-normal ${
               usernameIsError ? "text-error" : "text-gray-400"
@@ -209,7 +215,7 @@ export default function UserSettings() {
           >
             {changeUsernameState}
           </label>
-        )}
+        )} */}
         <Button
           label="Change Username"
           icon={
