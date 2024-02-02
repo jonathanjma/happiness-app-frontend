@@ -2,7 +2,13 @@ export interface ButtonProps {
   icon?: React.ReactElement;
   label?: string;
   onClick?: () => void;
-  variation?: "OUTLINED" | "FILLED" | "TEXT" | "DANGEROUS" | "GRAY";
+  variation?:
+    | "OUTLINED"
+    | "FILLED"
+    | "TEXT"
+    | "DANGEROUS"
+    | "GRAY"
+    | "SUPER_DANGEROUS";
   size?: "SMALL" | "LARGE";
   associatedModalId?: string;
   classNameBtn?: string;
@@ -50,6 +56,10 @@ export default function Button({
       className += "bg-gray-50 text-error shadow-md1 text-error ";
       textColor = "text-error";
       break;
+    case "SUPER_DANGEROUS":
+      className += "bg-error shadow-md1";
+      textColor = "text-white";
+      break;
     case "GRAY":
       className += "bg-gray-50 shadow-md1";
       textColor = "text-gray-600";
@@ -70,7 +80,7 @@ export default function Button({
         </>
       )}
       <label
-        className={`font-semibold hover:cursor-pointer ${classNameText} ${textColor}`}
+        className={` font-semibold hover:cursor-pointer ${classNameText} ${textColor}`}
       >
         {label}
       </label>

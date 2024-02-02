@@ -9,16 +9,16 @@ import Toggle from "../../components/Toggle";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
 import { getTimeZone } from "../../utils";
+import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
 export default function UserSettings() {
-  const { user, deleteUser } = useUser();
+  const { user } = useUser();
   const { api } = useApi();
   const [hasEmailAlerts, setHasEmailAlerts] = useState(
     user!.settings.find((s) => s.key === "notify" && s.enabled === true) !==
@@ -82,14 +82,6 @@ export default function UserSettings() {
       setChangePasswordState("");
     }
   }, [confirmPassword, newPassword]);
-
-  // DANGEROUS delete account mutation
-  const deleteAccountMutation = useMutation({
-    mutationFn: () => api.delete("/user/"),
-    onSuccess: () => {
-      deleteUser();
-    },
-  });
 
   // Updating email alerts setting
   const updateEmailAlerts = useMutation({
@@ -173,7 +165,6 @@ export default function UserSettings() {
     <>
       <Column className="mx-8 my-16 w-full gap-6">
         <h2>Settings</h2>
-
         <h4 className="text-gray-600">Notification Settings</h4>
         <Row className=" h-6 w-[250px] items-center">
           <p className="font-normal text-gray-400">Daily reminders</p>
@@ -281,22 +272,7 @@ export default function UserSettings() {
           variation="DANGEROUS"
         />
       </Column>
-      <ConfirmationModal
-        title="Delete your account"
-        body="Are you sure you want to delete your account? All your data will be lost and this action cannot be undone."
-        id="confirm-delete"
-        denyText={"Cancel"}
-        confirmText={"Delete Account"}
-        onConfirm={() => {
-          deleteAccountMutation.mutate();
-        }}
-        confirmButtonProps={{
-          icon: deleteAccountMutation.isLoading ? (
-            <Spinner variaton="SMALL" />
-          ) : undefined,
-          associatedModalId: "",
-        }}
-      />
+      <DeleteAccountModals id="confirm-delete" />
       <RecoveryPhraseModal id="recovery" />
       <ClosableModal
         id="change-password"
