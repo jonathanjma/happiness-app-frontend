@@ -40,7 +40,7 @@ export default function RecoveryPhraseModal({ id }: { id: string }) {
   return (
     <ClosableModal
       id={id}
-      leftContent={<h4>Change or Create Your Recovery Key</h4>}
+      leftContent={<h4>Change or Create Your Recovery Phrase</h4>}
     >
       <div className="h-4" />
       <div className="h-[1px] w-full bg-gray-100" />
