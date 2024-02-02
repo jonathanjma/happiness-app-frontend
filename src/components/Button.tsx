@@ -32,13 +32,14 @@ export default function Button({
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 text-secondary ";
 
   className += icon ? "pl-3 pr-4.5 " : "px-4.5 ";
-
   className += size === "LARGE" ? "h-12 " : "h-10 ";
+
+  let textColor = "text-secondary";
 
   switch (variation) {
     case "FILLED":
       className +=
-        "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)] ";
+        "bg-light_yellow shadow-md1 border-1 border-solid border-[rgba(229,200,119,0.30)]  ";
       break;
     case "OUTLINED":
       className += "border-secondary border-1 ";
@@ -46,10 +47,12 @@ export default function Button({
     case "TEXT":
       break;
     case "DANGEROUS":
-      className += "bg-gray-50 text-error shadow-md1 ";
+      className += "bg-gray-50 text-error shadow-md1 text-error ";
+      textColor = "text-error";
       break;
     case "GRAY":
-      className += "bg-gray-50 shadow-md1 text-gray-600 ";
+      className += "bg-gray-50 shadow-md1";
+      textColor = "text-gray-600";
       break;
   }
 
@@ -67,9 +70,7 @@ export default function Button({
         </>
       )}
       <label
-        className={`${
-          variation === "DANGEROUS" ? "text-error" : "text-secondary"
-        } font-semibold hover:cursor-pointer ${classNameText}`}
+        className={`font-semibold hover:cursor-pointer ${classNameText} ${textColor}`}
       >
         {label}
       </label>
