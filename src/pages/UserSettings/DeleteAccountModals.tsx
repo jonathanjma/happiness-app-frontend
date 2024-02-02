@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
@@ -21,6 +22,8 @@ export default function DeleteAccountModals({ id }: { id: string }) {
     },
   });
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -79,7 +82,7 @@ export default function DeleteAccountModals({ id }: { id: string }) {
         <Button
           label="Done"
           onClick={() => {
-            window.location.href = "https://happinessapp.me";
+            navigate("/");
           }}
         />
       </ClosableModal>
