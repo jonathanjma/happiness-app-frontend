@@ -207,15 +207,6 @@ export default function UserSettings() {
           errorText={changeUsernameState}
           hasError={usernameIsError}
         />
-        {/* {changeUsernameState && (
-          <label
-            className={`font-normal ${
-              usernameIsError ? "text-error" : "text-gray-400"
-            }`}
-          >
-            {changeUsernameState}
-          </label>
-        )} */}
         <Button
           label="Change Username"
           icon={
