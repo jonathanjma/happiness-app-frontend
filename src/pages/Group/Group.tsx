@@ -70,13 +70,7 @@ export default function Group() {
     () => api.get<Group>("/group/" + groupID).then((res) => res.data),
   );
 
-  const [startDate, setStartDate] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate() - 7,
-    ),
-  );
+  const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [radioValue, setRadioValue] = useState(1);
 

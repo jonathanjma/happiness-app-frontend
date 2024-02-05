@@ -38,7 +38,7 @@ export default function GroupStatistics({
 }) {
   const { api } = useApi();
 
-  const [graphTitle, setGraphTitle] = useState("Weekly Happiness");
+  const [graphTitle, setGraphTitle] = useState<string>("Weekly Happiness");
   const [graphSubTitle, setGraphSubTitle] = useState("");
   const [viewingEntry, setViewingEntry] = useState<Happiness[] | undefined>(
     undefined,
@@ -83,8 +83,10 @@ export default function GroupStatistics({
         .then((res) => res.data),
   });
 
-  console.log(formatDate(startDate));
-  console.log(formatDate(endDate));
+  // change title when data changes
+  useEffect(() => {
+    setGraphTitle(radioValue === 1 ? "Weekly Happiness" : "Monthly Happiness");
+  }, [radioValue]);
 
   // change subtitle when data changes
   useEffect(() => {
@@ -189,12 +191,15 @@ export default function GroupStatistics({
                   <></>
                 ) : (
                   <div className="-z-50 p-1">
-                    {/* <HappinessCalendar
+                    <HappinessCalendar
                       startDate={startDate}
                       variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
                       selectedEntry={viewingEntry}
-                      onSelectEntry={(entry: Happiness) => {
-                        if (viewingEntry && viewingEntry.id === entry.id) {
+                      onSelectEntry={(entry: Happiness[]) => {
+                        if (
+                          viewingEntry &&
+                          viewingEntry[0].id === entry[0].id
+                        ) {
                           window.HSOverlay.open(
                             document.querySelector("#group-happiness-modal"),
                           );
@@ -202,7 +207,9 @@ export default function GroupStatistics({
                           setViewingEntry(entry);
                         }
                       }}
-                    /> */}
+                      isGroup={true}
+                      groupId={groupData.id}
+                    />
                   </div>
                 )}
               </div>

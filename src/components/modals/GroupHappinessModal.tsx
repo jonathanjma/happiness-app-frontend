@@ -6,6 +6,14 @@ import Modal from "./Modal";
 import Column from "../layout/Column";
 import Card from "../Card";
 import { dateFromStr } from "../../utils";
+import Button from "../Button";
+
+/**
+ * Group happiness modal component. Shows multiple happiness entries.
+ * @param entries happiness entries to show
+ * @param id id value for modal
+ * @returns
+ */
 
 export default function GroupHappinessModal({
   entries,

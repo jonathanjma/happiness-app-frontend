@@ -41,20 +41,8 @@ export default function Statistics() {
     undefined,
   );
   const [calCollapsed, setCalCollapsed] = useState<boolean>(false);
-  const [start, setStart] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate() - 7,
-    ),
-  );
-  const [end, setEnd] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    ),
-  );
+  const [start, setStart] = useState(new Date());
+  const [end, setEnd] = useState(new Date());
 
   useEffect(() => {
     if (viewingEntry) {
@@ -255,14 +243,14 @@ export default function Statistics() {
                     <HappinessCalendar
                       startDate={start}
                       variation={radioValue === 1 ? "WEEKLY" : "MONTHLY"}
-                      selectedEntry={viewingEntry}
-                      onSelectEntry={(entry: Happiness) => {
-                        if (viewingEntry && viewingEntry.id === entry.id) {
+                      selectedEntry={viewingEntry ? [viewingEntry] : undefined}
+                      onSelectEntry={(entry: Happiness[]) => {
+                        if (viewingEntry && viewingEntry.id === entry[0].id) {
                           window.HSOverlay.open(
                             document.querySelector("#show-happiness-modal"),
                           );
                         } else {
-                          setViewingEntry(entry);
+                          setViewingEntry(entry[0]);
                         }
                       }}
                     />
