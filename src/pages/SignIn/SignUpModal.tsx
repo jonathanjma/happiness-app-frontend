@@ -113,12 +113,10 @@ export default function SignUpModal({
       loginMutation.mutate();
     },
     onError: (error: any) => {
-      console.log(`error JSON: ${JSON.stringify(error)}`);
       if (error.response) {
         const parser = new DOMParser();
         const resDoc = parser.parseFromString(error.response.data, "text/html");
         const errorMessage = resDoc.querySelector("p")?.textContent;
-        console.log(`errorMessage: ${errorMessage}`);
         if (errorMessage?.includes("username")) {
           setUsernameError(errorMessage);
         } else if (errorMessage?.includes("email")) {

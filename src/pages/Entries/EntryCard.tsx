@@ -45,7 +45,7 @@ export default function EntryCard({
 }) {
   const navigate = useNavigate();
   const { api } = useApi();
-  // console.log(`happiness: ${JSON.stringify(happiness)}`);
+
   const { data: count } = useQuery(
     [QueryKeys.FETCH_JOURNAL_COUNT, { timestamp: happiness.timestamp }],
     {

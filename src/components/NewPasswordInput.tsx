@@ -37,7 +37,6 @@ export default function NewPasswordInput({
       setIsFirstRender(false);
       return;
     }
-    console.log(`thing happened, ${password.length >= 8}`);
     setIsLongEnough(password.length >= 8);
 
     const numberRegex = /[0-9]/;
