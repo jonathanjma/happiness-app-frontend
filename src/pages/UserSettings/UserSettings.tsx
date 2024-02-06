@@ -77,7 +77,9 @@ export default function UserSettings() {
       setIsFirstRender(false);
     } else {
       clearTimeout(updateEmailTimeout.current);
-      updateEmailTimeout.current = setTimeout(updateEmailHandler, 500);
+      // was getting weird TypeScript errors so I needed to prepend window.
+      // see https://stackoverflow.com/a/55550147
+      updateEmailTimeout.current = window.setTimeout(updateEmailHandler, 500);
     }
   }, [emailTime]);
 
