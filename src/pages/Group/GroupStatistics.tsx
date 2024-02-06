@@ -145,6 +145,7 @@ export default function GroupStatistics({
                   showDay={radioValue === 1}
                   uniqDays={true}
                   range={[startDate, endDate]}
+                  users={groupData.users.map((user) => user.username)}
                   onSelectEntry={(entry: Happiness[]) => {
                     if (viewingEntry && viewingEntry[0].id === entry[0].id) {
                       window.HSOverlay.open(

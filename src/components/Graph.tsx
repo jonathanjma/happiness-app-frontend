@@ -13,9 +13,10 @@ Chart.register(...registerables);
  * @param graphTitle the title of the graph, displayed above graph
  * @param graphSubTitle the subtitle of the graph, displayed above graph and below graph title
  * @param showDay boolean determining whether to show day of week as label instead of date
- * @param uniqDays if true, shows only the days with happiness entered over all users, otherwise shows all dates in given range
- * @param range two-element list containing the start and end date objects for the graph (required if uniqDays = false
+ * @param uniqDays if false, shows only the days with happiness entered over all users, otherwise shows all dates in given range
+ * @param range two-element list containing the start and end date objects for the graph (required if uniqDays = false)
  * @param onSelectEntry function describing what happens when a specific list of happiness values is clicked
+ * @param users list of usernames of users in group (to maintain color consistency when switching date range)
  * @returns
  */
 
@@ -26,6 +27,7 @@ export default function Graph({
   showDay = false,
   uniqDays = true,
   range,
+  users,
   onSelectEntry,
 }: {
   entries: Happiness[];
@@ -34,6 +36,7 @@ export default function Graph({
   showDay?: boolean;
   uniqDays?: boolean;
   range: Date[];
+  users?: string[];
   onSelectEntry: (selectedEntry: Happiness[]) => void;
 }) {
   // define colors for graph
@@ -62,9 +65,10 @@ export default function Graph({
   ];
 
   // define names
-  let usernameList: string[] = [
-    ...new Set(entries.map((e) => e.author.username)),
-  ];
+  let usernameList: string[] =
+    users === undefined
+      ? [...new Set(entries.map((e) => e.author.username))]
+      : users;
   usernameList.sort();
 
   // define happiness data, which is then sorted by chronological order
