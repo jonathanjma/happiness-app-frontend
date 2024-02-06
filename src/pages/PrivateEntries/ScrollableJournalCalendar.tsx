@@ -161,16 +161,18 @@ export default function ScrollableJournalCalendar({
 
   // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
-    // remember div scroll height before previous page fetch
-    if (isFetchingPreviousPage) {
-      setPrevScrollHeight(scrollRef.current!.scrollHeight);
-    }
-    // new scroll height is simply: current - previous
-    if (!isFetchingPreviousPage && data) {
-      scrollRef.current!.scrollTo({
-        top: scrollRef.current!.scrollHeight - prevScrollHeight,
-        behavior: "instant",
-      });
+    if (startDateStr) {
+      // remember div scroll height before previous page fetch
+      if (isFetchingPreviousPage) {
+        setPrevScrollHeight(scrollRef.current!.scrollHeight);
+      }
+      // new scroll height is simply: current - previous
+      else if (data) {
+        scrollRef.current!.scrollTo({
+          top: scrollRef.current!.scrollHeight - prevScrollHeight,
+          behavior: "instant",
+        });
+      }
     }
   }, [isFetchingPreviousPage]);
 

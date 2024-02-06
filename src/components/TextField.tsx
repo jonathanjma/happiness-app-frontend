@@ -8,7 +8,6 @@ interface TextFieldProps {
   type?: React.HTMLInputTypeAttribute;
   hint?: string;
   autocomplete?: string;
-  inputID?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
   innerElements?: React.ReactElement;
@@ -46,7 +45,6 @@ export default function TextField({
   type = "text",
   hint,
   autocomplete,
-  inputID,
   supportingText = "",
   supportingIcon,
   innerElements,
@@ -64,7 +62,7 @@ export default function TextField({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderStyle =
-    "w-[250px] focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 " +
+    `flex flex-grow focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 ` +
     (isFocused
       ? " shadow-form-selected border-yellow hover:border-yellow"
       : "") +
@@ -73,14 +71,13 @@ export default function TextField({
       : " border-gray-300 hover:border-gray-400");
 
   return (
-    <Column className={"gap-1 " + className}>
+    <Column className={`gap-1 ` + className}>
       {label && <p className="font-normal text-gray-400">{label}</p>}
       <Row className={borderStyle}>
         {innerElements}
         {innerElements && <div className="mr-2"></div>}
         <input
-          className="flex-grow focus:outline-none"
-          id={inputID}
+          className="flex flex-grow focus:outline-none"
           ref={input}
           type={type}
           autoComplete={autocomplete}
@@ -103,7 +100,8 @@ export default function TextField({
           }}
           title={tooltip}
         />
-        {innerIcon && <span className="my-0 mr-4 h-6 py-0">{innerIcon}</span>}
+        {innerIcon && <div className="flex flex-1" />}
+        {innerIcon && <span className="my-0 h-6 py-0">{innerIcon}</span>}
       </Row>
       {(supportingText || supportingIcon || hasError) && (
         <Row className="items-center gap-1">

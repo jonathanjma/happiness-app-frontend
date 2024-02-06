@@ -37,6 +37,7 @@ export default function NewPasswordInput({
       setIsFirstRender(false);
       return;
     }
+
     setIsLongEnough(password.length >= 8);
 
     const numberRegex = /[0-9]/;
@@ -60,10 +61,15 @@ export default function NewPasswordInput({
         onChangeValue={setPassword}
         type="password"
         autocomplete="new-password"
+        className="w-[250px]"
       />
       {triedSubmit && (
         <>
-          <p className={hasPasswordError ? "text-error" : "text-green"}>
+          <p
+            className={
+              "mt-2 " + (hasPasswordError ? "text-error" : "text-green")
+            }
+          >
             {hasPasswordError
               ? "Your password does not meet one of the following:"
               : "Your password meets all of the following:"}

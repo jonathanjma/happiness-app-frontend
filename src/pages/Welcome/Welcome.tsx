@@ -4,8 +4,11 @@ import WelcomeImg from "../../assets/welcome_placeholder.png";
 import WelcomeJournal from "../../assets/welcome_journal.svg";
 import WelcomeTrack from "../../assets/welcome_track.svg";
 import WelcomeShare from "../../assets/welcome_share.svg";
-import SignIn from "../SignIn/SignIn";
 import Column from "../../components/layout/Column";
+import Button from "../../components/Button";
+import ForgotPasswordModal from "./ForgotPasswordModal";
+import SignUpModal from "./SignUpModal";
+import LoginModal from "./LoginModal";
 
 function FeatureCard({
   title,
@@ -48,22 +51,47 @@ export default function Welcome() {
     },
   ];
 
+  const openLogin = () => {
+    window.HSOverlay.open(document.querySelector("#login-modal"));
+  };
+
+  const openSignUp = () => {
+    window.HSOverlay.open(document.querySelector("#sign-up-modal"));
+  };
+
+  const openForgotPassword = () => {
+    window.HSOverlay.open(document.querySelector("#forgot-pass-modal"));
+  };
+
   return (
     <div>
       {/* Navbar */}
       <Row className="sticky top-0 z-10 justify-between rounded-b-2xl bg-light_yellow pb-5 pl-12 pr-12 pt-8 md:pl-28">
         <img src={HappinessAppText} className="pr-4" />
-        <SignIn signUp={false} />
+        <Button
+          label="Log In"
+          associatedModalId="login-modal"
+          onClick={openLogin}
+          variation="OUTLINED"
+          classNameText="font-bold"
+        />
       </Row>
 
       {/* Fixed Div */}
-      <div className="fixed top-0 h-full w-full bg-light_yellow">
+      <div className="radial fixed top-0 h-full w-full bg-light_yellow">
         <Row className="items-center justify-between py-32 pl-12 pr-12 md:pl-28">
           <Column className="basis-1/2 pr-14">
             <p className="mb-12 text-5xl font-extrabold text-secondary">
               Begin Your <br /> Happiness Journey.
             </p>
-            <SignIn signUp={true} />
+            <Button
+              label="Get Started"
+              associatedModalId="sign-in-modal"
+              onClick={openSignUp}
+              variation="FILLED"
+              classNameBtn="h-auto bg-yellow px-7 py-5"
+              classNameText="text-[22px]"
+            />
           </Column>
           <img
             src={WelcomeImg}
@@ -113,6 +141,13 @@ export default function Welcome() {
           </Column>
         </Row>
       </div>
+      <ForgotPasswordModal id="forgot-pass-modal" onLoginClick={openLogin} />
+      <SignUpModal id="sign-up-modal" onLoginClick={openLogin} />
+      <LoginModal
+        id="login-modal"
+        onCreateAccountClick={openSignUp}
+        onForgotPassword={openForgotPassword}
+      />
     </div>
   );
 }
