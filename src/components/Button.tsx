@@ -63,9 +63,9 @@ export default function Button({
         </>
       )}
       <label
-        className={`${
+        className={`${classNameText}${
           variation === "DANGEROUS" ? "text-error" : "text-secondary"
-        } font-semibold hover:cursor-pointer ${classNameText}`}
+        } font-semibold hover:cursor-pointer`}
       >
         {label}
       </label>

@@ -1,17 +1,8 @@
 import LineChart from "./LineChart";
-import { User } from "../data/models/User";
-import { useState } from "react";
 import { Happiness } from "../data/models/Happiness";
-import {
-  ChartConfiguration,
-  ChartDataset,
-  RadialLinearScaleOptions,
-  ScriptableChartContext,
-  ScriptableLineSegmentContext,
-  ScriptableTooltipContext,
-} from "chart.js";
+import { ScriptableLineSegmentContext } from "chart.js";
 import { Chart, ChartData, registerables } from "chart.js";
-import { formatDate, parseYYYYmmddFormat, getDaysArray } from "../utils";
+import { parseYYYYmmddFormat, getDaysArray } from "../utils";
 import { ChartEvent } from "chart.js/dist/core/core.plugins";
 import { ActiveElement } from "chart.js/dist/plugins/plugin.tooltip";
 Chart.register(...registerables);

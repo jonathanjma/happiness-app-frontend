@@ -6,6 +6,7 @@ import Modal from "./Modal";
 import Column from "../layout/Column";
 import Card from "../Card";
 import { dateFromStr } from "../../utils";
+import Row from "../layout/Row";
 import Button from "../Button";
 
 /**
@@ -32,22 +33,22 @@ export default function GroupHappinessModal({
   return (
     <Modal id={id} className="w-full" noCard={true}>
       <>
-        <Column className="space-y-3">
-          <Card className="rounded-xl bg-yellow px-4 py-2">
-            <div className="text-base font-medium text-secondary">
-              {headerText}
-              <span className="font-bold text-secondary">
-                {curDate.toLocaleString("en-us", {
-                  weekday: "long",
-                })}
-                ,{" "}
-                {curDate.toLocaleString("en-us", {
-                  month: "long",
-                })}{" "}
-                {curDate.getDate()}
-              </span>
-            </div>
-          </Card>
+        <Card className="mb-3 rounded-xl bg-yellow px-4 py-2">
+          <div className="text-base font-medium text-secondary">
+            {headerText}
+            <span className="font-bold text-secondary">
+              {curDate.toLocaleString("en-us", {
+                weekday: "long",
+              })}
+              ,{" "}
+              {curDate.toLocaleString("en-us", {
+                month: "long",
+              })}{" "}
+              {curDate.getDate()}
+            </span>
+          </div>
+        </Card>
+        <Column className="static z-[5] space-y-3 overflow-hidden bg-gradient-to-b bg-fixed">
           {entries.map((happiness) => (
             <div className="w-[600px]">
               <SmallHappinessCard
@@ -68,6 +69,14 @@ export default function GroupHappinessModal({
             </div>
           ))}
         </Column>
+        <Row className="z-[10] mt-6 w-full justify-center">
+          <Button
+            label="Close"
+            classNameBtn="bg-white border-gray-300"
+            classNameText="text-gray-400 -text-secondary"
+            associatedModalId={id}
+          ></Button>
+        </Row>
       </>
     </Modal>
   );
