@@ -46,9 +46,12 @@ export default function UserSettings() {
 
   const handlePasswordSubmit = () => {
     setTriedSubmit(true);
-    if (!hasPasswordError) {
+    if (!newPassword) {
+      setHasPasswordError(true);
+    }
+    if (!hasPasswordError && newPassword) {
       if (confirmPassword !== newPassword) {
-        setChangePasswordState("Confirm password doesn't match new password");
+        setChangePasswordState(Constants.CONFIRM_PASSWORD_ERROR);
       } else {
         changePassword();
       }
@@ -158,7 +161,9 @@ export default function UserSettings() {
         data2: newPassword,
       }),
     onError: () => {
-      setChangePasswordState("Your old password may be incorrect.");
+      setChangePasswordState(
+        "Your old password may be incorrect, or check your internet connection",
+      );
     },
     onSuccess: () => {
       setChangePasswordState("Password changed.");
@@ -227,18 +232,9 @@ export default function UserSettings() {
           onChangeValue={setEmail}
           label="Change email:"
           type="email"
+          errorText={changeEmailState}
+          hasError={emailError}
         />
-        {changeEmailState && (
-          <label
-            className={`font-normal ${
-              emailError || changeEmailState === "Email not valid"
-                ? "text-error"
-                : "text-gray-400"
-            }`}
-          >
-            {changeEmailState}
-          </label>
-        )}
         <Button
           label="Change Email"
           icon={emailChangeLoading ? <Spinner variaton="SMALL" /> : undefined}
@@ -296,16 +292,23 @@ export default function UserSettings() {
             value={confirmPassword}
             onChangeValue={setConfirmPassword}
             type="password"
+            errorText={Constants.CONFIRM_PASSWORD_ERROR}
+            hasError={changePasswordState === Constants.CONFIRM_PASSWORD_ERROR}
           />
-          {changePasswordState && (
-            <label
-              className={`font-normal ${
-                changePasswordError ? "text-error" : "text-gray-400"
-              }`}
-            >
-              {changePasswordState}
-            </label>
-          )}
+          {/* I am going to keep this here for password networking errors,
+          since this type of error is not explicitly associated with the
+          password textbox.
+          */}
+          {changePasswordState &&
+            changePasswordState !== Constants.CONFIRM_PASSWORD_ERROR && (
+              <label
+                className={`font-normal ${
+                  changePasswordError ? "text-error" : "text-gray-400"
+                }`}
+              >
+                {changePasswordState}
+              </label>
+            )}
           <Button
             label="Enter"
             onClick={handlePasswordSubmit}
