@@ -197,6 +197,7 @@ export default function UserSettings() {
               }}
               label="Reminder Time"
               type="time"
+              className="w-[250px]"
             />
             <label className="font-normal text-gray-600">
               {emailTimeNetworkingState}
@@ -213,6 +214,7 @@ export default function UserSettings() {
           type="username"
           errorText={changeUsernameState}
           hasError={usernameIsError}
+          className="w-[250px]"
         />
         <Button
           label="Change Username"
@@ -236,6 +238,7 @@ export default function UserSettings() {
           type="email"
           errorText={changeEmailState}
           hasError={emailError}
+          className="w-[250px]"
         />
         <Button
           label="Change Email"
@@ -280,6 +283,7 @@ export default function UserSettings() {
             type="password"
             value={oldPassword}
             onChangeValue={setOldPassword}
+            className="w-[250px]"
           />
           <NewPasswordInput
             hasPasswordError={hasPasswordError}
@@ -296,6 +300,7 @@ export default function UserSettings() {
             type="password"
             errorText={Constants.CONFIRM_PASSWORD_ERROR}
             hasError={changePasswordState === Constants.CONFIRM_PASSWORD_ERROR}
+            className="w-[250px]"
           />
           {/* I am going to keep this here for password networking errors,
           since this type of error is not explicitly associated with the
