@@ -8,7 +8,7 @@ import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
 import { formatDate } from "../../utils";
 
-export default function CalendarTab({ userId }: { userId?: number }) {
+export default function CalendarPanel({ userId }: { userId: number }) {
   const [startDate, setStartDate] = useState<Date>(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
@@ -23,7 +23,7 @@ export default function CalendarTab({ userId }: { userId?: number }) {
   }, [startDate]);
 
   return (
-    <Column className="h-full w-full">
+    <Column className="scroll-hidden h-full w-full items-center overflow-scroll">
       <Row className="w-full items-baseline px-8">
         <label className="text-gray-400">
           {startDate.toLocaleString("en-US", {
@@ -38,6 +38,7 @@ export default function CalendarTab({ userId }: { userId?: number }) {
           setCurDates={[setStartDate]}
           dates={[startDate]}
         />
+        <div className="w-1"></div>
         <DateArrow
           change={1}
           variation="MONTHLY"
@@ -45,7 +46,7 @@ export default function CalendarTab({ userId }: { userId?: number }) {
           dates={[startDate]}
         />
       </Row>
-      <div className="h-4" />
+      <div className="h-6" />
       <HappinessCalendar
         selectedEntry={selectedHappiness}
         onSelectEntry={setSelectedHappiness}
@@ -55,7 +56,7 @@ export default function CalendarTab({ userId }: { userId?: number }) {
       />
 
       {selectedHappiness && (
-        <>
+        <div className="w-11/12">
           <div className="h-8" />
           <SmallHappinessCard
             happiness={selectedHappiness}
@@ -68,7 +69,7 @@ export default function CalendarTab({ userId }: { userId?: number }) {
               },
             ]}
           />
-        </>
+        </div>
       )}
     </Column>
   );

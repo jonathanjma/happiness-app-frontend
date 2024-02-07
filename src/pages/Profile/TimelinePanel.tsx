@@ -55,7 +55,7 @@ export default function TimelinePanel({ userId }: { userId: number }) {
   return (
     <div className="scroll-hidden h-full overflow-auto py-4">
       {isLoading ? (
-        <Spinner />
+        <Spinner className="ml-8" />
       ) : (
         <>
           {isError ? (
@@ -85,7 +85,7 @@ export default function TimelinePanel({ userId }: { userId: number }) {
               </Column>
               <div ref={bottomRef}>
                 <Spinner
-                  className="m-3 min-h-[100px]"
+                  className="m-4 min-h-[100px]"
                   text="Loading entries..."
                 />
               </div>

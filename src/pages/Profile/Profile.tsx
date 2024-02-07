@@ -13,6 +13,7 @@ import { useApi } from "../../contexts/ApiProvider";
 import toast from "react-hot-toast";
 import ToastMessage from "../../components/ToastMessage";
 import Spinner from "../../components/Spinner";
+import CalendarPanel from "./CalendarPanel";
 
 export default function Profile() {
   const { api } = useApi();
@@ -45,7 +46,7 @@ export default function Profile() {
 
   return (
     <Row className="mt-16 justify-center">
-      <div className="xl:w-2/3">
+      <div className="lg:w-3/4">
         <div className="mx-8">
           <Row className="mb-6 gap-x-6">
             <img
@@ -98,7 +99,7 @@ export default function Profile() {
             <TimelinePanel userId={user!.id} />
           </TabPanel>
           <TabPanel index={2}>
-            <p>Calendar View</p>
+            <CalendarPanel userId={user!.id} />
           </TabPanel>
           <TabPanel index={3}>
             <p>Graph View</p>

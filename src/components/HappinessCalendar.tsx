@@ -9,6 +9,8 @@ import {
   parseYYYYmmddFormat,
 } from "../utils";
 import Row from "./layout/Row";
+import Spinner from "./Spinner";
+import React from "react";
 
 export default function HappinessCalendar({
   startDate,
@@ -96,9 +98,9 @@ export default function HappinessCalendar({
           ))}
 
       {isLoading ? (
-        <p>loading</p>
+        <Spinner className="ml-8" />
       ) : isError ? (
-        <p>error</p>
+        <p className="text-gray-400">Error: Could not load entries.</p>
       ) : (
         days.map((date) => {
           const matchingHappiness = data?.find(
