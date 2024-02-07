@@ -48,10 +48,11 @@ export default function SmallHappinessCard({
         </Column>
         <div className="flex flex-grow" />
         <Row className="gap-3">
-          {actions.map((action) => (
+          {actions.map((action, i) => (
             <div
               className="rounded-[4px] bg-gray-50 px-3 py-1 hover:cursor-pointer"
               onClick={action.onClick}
+              key={i}
             >
               <label className="text-gray-400">{action.label}</label>
             </div>
