@@ -33,14 +33,14 @@ export default function CalendarPanel({ userId }: { userId: number }) {
         </label>
         <div className="flex flex-1" />
         <DateArrow
-          change={-1}
+          change={1}
           variation="MONTHLY"
           setCurDates={[setStartDate]}
           dates={[startDate]}
         />
         <div className="w-1"></div>
         <DateArrow
-          change={1}
+          change={-1}
           variation="MONTHLY"
           setCurDates={[setStartDate]}
           dates={[startDate]}
