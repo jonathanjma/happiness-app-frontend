@@ -90,7 +90,7 @@ export default function HappinessCalendar({
         Array(7)
           .fill(0)
           .map((_, i) => (
-            <Row className="w-full justify-center">
+            <Row key={i} className="w-full justify-center">
               <label className="text-xs text-gray-400">
                 {getWeekdayFromNumber(i)}
               </label>
@@ -102,13 +102,13 @@ export default function HappinessCalendar({
       ) : isError ? (
         <p className="text-gray-400">Error: Could not load entries.</p>
       ) : (
-        days.map((date) => {
+        days.map((date, i) => {
           const matchingHappiness = data?.find(
             (h) => h.timestamp === formatDate(date),
           );
           if (matchingHappiness) {
             return (
-              <Row className="w-full justify-center">
+              <Row key={i} className="w-full justify-center">
                 <DayCell
                   happiness={matchingHappiness}
                   isSelected={
@@ -126,7 +126,7 @@ export default function HappinessCalendar({
             );
           }
           return (
-            <Row className="w-full justify-center">
+            <Row key={i} className="w-full justify-center">
               <EmptyCell
                 showWeekday={variation === "WEEKLY"}
                 key={date.getDate() + date.getMonth() * 1000}

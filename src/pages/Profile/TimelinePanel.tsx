@@ -8,9 +8,11 @@ import Spinner from "../../components/Spinner";
 import Column from "../../components/layout/Column";
 import SmallHappinessCard from "../../components/SmallHappinessCard";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserProvider";
 
 export default function TimelinePanel({ userId }: { userId: number }) {
   const { api } = useApi();
+  const { user } = useUser();
   const navigate = useNavigate();
   const [bottomRef, bottomInView] = useInView();
 
@@ -69,7 +71,7 @@ export default function TimelinePanel({ userId }: { userId: number }) {
                       key={entry.id}
                       happiness={entry}
                       actions={
-                        entry.author.id === userId
+                        userId === user!.id
                           ? [
                               {
                                 label: "Open In Entries",

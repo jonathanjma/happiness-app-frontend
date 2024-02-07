@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateArrow from "../../components/DateArrow";
 import HappinessCalendar from "../../components/HappinessCalendar";
@@ -6,9 +6,10 @@ import SmallHappinessCard from "../../components/SmallHappinessCard";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
+import { useUser } from "../../contexts/UserProvider";
 
 export default function CalendarPanel({ userId }: { userId: number }) {
+  const { user } = useUser();
   const [startDate, setStartDate] = useState<Date>(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
@@ -17,10 +18,6 @@ export default function CalendarPanel({ userId }: { userId: number }) {
   >(undefined);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(`startDate: ${formatDate(startDate)}`);
-  }, [startDate]);
 
   return (
     <Column className="scroll-hidden h-full w-full items-center overflow-scroll">
@@ -60,14 +57,18 @@ export default function CalendarPanel({ userId }: { userId: number }) {
           <div className="h-8" />
           <SmallHappinessCard
             happiness={selectedHappiness}
-            actions={[
-              {
-                label: "Open In Entries",
-                onClick: () => {
-                  navigate(`/home?date=${selectedHappiness.timestamp}`);
-                },
-              },
-            ]}
+            actions={
+              userId === user!.id
+                ? [
+                    {
+                      label: "Open In Entries",
+                      onClick: () => {
+                        navigate(`/home?date=${selectedHappiness.timestamp}`);
+                      },
+                    },
+                  ]
+                : []
+            }
           />
         </div>
       )}
