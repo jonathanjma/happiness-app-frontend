@@ -9,6 +9,7 @@ import CreateGroup from "./pages/CreateGroup/CreateGroup";
 import Entries from "./pages/Entries/Entries";
 import Group from "./pages/Group/Group";
 import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
+import CalendarTab from "./pages/Profile/CalendarTab";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
@@ -56,7 +57,10 @@ export default function App() {
                         <Route path="/journal" element={<PrivateEntries />} />
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/search" element={<AllSearchResults />} />
-                        {/* <Route path="/profile/:userID" element={<Profile />} /> */}
+                        <Route
+                          path="/profile/:userID"
+                          element={<CalendarTab userId={2} />}
+                        />
                         <Route path="/settings" element={<UserSettings />} />
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>

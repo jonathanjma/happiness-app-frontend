@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
+import { useUser } from "../contexts/UserProvider";
 import { Happiness } from "../data/models/Happiness";
 import {
   formatDate,
@@ -14,13 +15,16 @@ export default function HappinessCalendar({
   variation,
   selectedEntry,
   onSelectEntry,
+  userId,
 }: {
   startDate: Date;
   variation: "MONTHLY" | "WEEKLY";
   selectedEntry: Happiness | undefined;
   onSelectEntry: (selectedEntry: Happiness) => void;
+  userId?: number;
 }) {
   const { api } = useApi();
+  const { user } = useUser();
   let endDate = new Date(startDate);
   const days = [];
   // Check the variation to format the query to send to the backend
@@ -68,6 +72,7 @@ export default function HappinessCalendar({
       const res = await api.get<Happiness[]>("/happiness/", {
         start: formatDate(finalStartDate),
         end: formatDate(finalEndDate),
+        id: userId ?? user!.id,
       });
       return res.data;
     },
