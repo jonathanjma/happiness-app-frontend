@@ -8,16 +8,17 @@ import TextField from "../../components/TextField";
 import Toggle from "../../components/Toggle";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import ClosableModal from "../../components/modals/ClosableModal";
 import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
 import { getTimeZone } from "../../utils";
+import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
 export default function UserSettings() {
-  const { user, deleteUser } = useUser();
+  const { user } = useUser();
   const { api } = useApi();
   const [hasEmailAlerts, setHasEmailAlerts] = useState(
     user!.settings.find((s) => s.key === "notify" && s.enabled === true) !==
@@ -33,18 +34,27 @@ export default function UserSettings() {
 
   const [username, setUsername] = useState("");
   const [changeUsernameState, setChangeUsernameState] = useState("");
+  const [usernameIsError, setUsernameIsError] = useState(false);
 
   const [changePasswordState, setChangePasswordState] = useState("");
 
   // for changing password
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [hasPasswordError, setHasPasswordError] = useState(false);
 
   const handlePasswordSubmit = () => {
     setTriedSubmit(true);
-    if (!hasPasswordError) {
-      changePassword();
+    if (!newPassword) {
+      setHasPasswordError(true);
+    }
+    if (!hasPasswordError && newPassword) {
+      if (confirmPassword !== newPassword) {
+        setChangePasswordState(Constants.CONFIRM_PASSWORD_ERROR);
+      } else {
+        changePassword();
+      }
     }
   };
 
@@ -67,17 +77,17 @@ export default function UserSettings() {
       setIsFirstRender(false);
     } else {
       clearTimeout(updateEmailTimeout.current);
-      updateEmailTimeout.current = setTimeout(updateEmailHandler, 500);
+      // was getting weird TypeScript errors so I needed to prepend window.
+      // see https://stackoverflow.com/a/55550147
+      updateEmailTimeout.current = window.setTimeout(updateEmailHandler, 500);
     }
   }, [emailTime]);
 
-  // DANGEROUS delete account mutation
-  const deleteAccountMutation = useMutation({
-    mutationFn: () => api.delete("/user/"),
-    onSuccess: () => {
-      deleteUser();
-    },
-  });
+  useEffect(() => {
+    if (confirmPassword === newPassword) {
+      setChangePasswordState("");
+    }
+  }, [confirmPassword, newPassword]);
 
   // Updating email alerts setting
   const updateEmailAlerts = useMutation({
@@ -99,23 +109,26 @@ export default function UserSettings() {
   });
 
   // Changing username mutation
-  const {
-    isLoading: usernameChangeLoading,
-    mutate: changeUsername,
-    isError: usernameIsError,
-  } = useMutation({
-    mutationFn: (username: string) =>
-      api.put("/user/info/", {
-        data_type: "username",
-        data: username,
-      }),
-    onError: () => {
-      setChangeUsernameState("Username already taken.");
-    },
-    onSuccess: () => {
-      setChangeUsernameState("Username updated. Refresh to see changes.");
-    },
-  });
+  const { isLoading: usernameChangeLoading, mutate: changeUsername } =
+    useMutation({
+      mutationFn: (username: string) =>
+        api.put("/user/info/", {
+          data_type: "username",
+          data: username,
+        }),
+      onError: () => {
+        setUsernameIsError(true);
+        setChangeUsernameState("Username already taken.");
+      },
+      onSuccess: () => {
+        setChangeUsernameState("Username updated. Refresh to see changes.");
+      },
+    });
+
+  // We don't want username error to persist if user edits username
+  useEffect(() => {
+    setUsernameIsError(false);
+  }, [username]);
 
   // Changing email mutation
   const {
@@ -150,7 +163,9 @@ export default function UserSettings() {
         data2: newPassword,
       }),
     onError: () => {
-      setChangePasswordState("Your old password may be incorrect.");
+      setChangePasswordState(
+        "Your old password may be incorrect, or check your internet connection",
+      );
     },
     onSuccess: () => {
       setChangePasswordState("Password changed.");
@@ -159,12 +174,11 @@ export default function UserSettings() {
 
   return (
     <>
-      <Column className="mx-8 my-16 w-full gap-6">
+      <Column className="mx-8 my-16 gap-6">
         <h2>Settings</h2>
-
         <h4 className="text-gray-600">Notification Settings</h4>
-        <Row className=" h-6 w-1/2 items-center">
-          <p className="text-gray-400">Email Alerts</p>
+        <Row className=" h-6 w-[250px] items-center">
+          <p className="font-normal text-gray-400">Daily reminders</p>
           <div className="flex flex-1" />
           <Toggle
             toggled={hasEmailAlerts}
@@ -181,7 +195,7 @@ export default function UserSettings() {
                 setEmailTimeNetworkingState(Constants.LOADING_MUTATION_TEXT);
                 setEmailTime(emailTime);
               }}
-              label="Pick a time to receive notifications:"
+              label="Reminder Time"
               type="time"
               className="w-[250px]"
             />
@@ -193,52 +207,15 @@ export default function UserSettings() {
 
         <h4 className="text-gray-600">Account Settings</h4>
         <TextField
-          value={email}
-          hint={user!.email}
-          onChangeValue={setEmail}
-          label="Change email:"
-          type="email"
-          className="w-[250px]"
-        />
-        {changeEmailState && (
-          <label
-            className={`font-normal ${
-              emailError || changeEmailState === "Email not valid"
-                ? "text-error"
-                : "text-gray-400"
-            }`}
-          >
-            {changeEmailState}
-          </label>
-        )}
-        <Button
-          label="Change Email"
-          icon={emailChangeLoading ? <Spinner variaton="SMALL" /> : undefined}
-          onClick={() => {
-            if (EmailValidator.validate(email)) {
-              changeEmail(email);
-            } else {
-              setChangeEmailState("Email not valid");
-            }
-          }}
-        />
-        <TextField
           value={username}
           hint={user!.username}
           onChangeValue={setUsername}
           label="Change username:"
           type="username"
+          errorText={changeUsernameState}
+          hasError={usernameIsError}
           className="w-[250px]"
         />
-        {changeUsernameState && (
-          <label
-            className={`font-normal ${
-              usernameIsError ? "text-error" : "text-gray-400"
-            }`}
-          >
-            {changeUsernameState}
-          </label>
-        )}
         <Button
           label="Change Username"
           icon={
@@ -251,43 +228,36 @@ export default function UserSettings() {
               setChangeUsernameState("Username must not be empty");
             }
           }}
+          variation="GRAY"
         />
-        <p className="font-normal text-gray-400">Change password:</p>
         <TextField
-          label="Old password"
-          type="password"
-          value={oldPassword}
-          onChangeValue={setOldPassword}
+          value={email}
+          hint={user!.email}
+          onChangeValue={setEmail}
+          label="Change email:"
+          type="email"
+          errorText={changeEmailState}
+          hasError={emailError}
           className="w-[250px]"
         />
-        <NewPasswordInput
-          hasPasswordError={hasPasswordError}
-          setPasswordError={setHasPasswordError}
-          password={newPassword}
-          setPassword={setNewPassword}
-          triedSubmit={triedSubmit}
-          label="New password"
-        />
-        {changePasswordState && (
-          <label
-            className={`font-normal ${
-              changePasswordError ? "text-error" : "text-gray-400"
-            }`}
-          >
-            {changePasswordState}
-          </label>
-        )}
         <Button
-          label="Change Password"
-          onClick={handlePasswordSubmit}
-          icon={
-            changePasswordLoading ? <Spinner variaton="SMALL" /> : undefined
-          }
+          label="Change Email"
+          icon={emailChangeLoading ? <Spinner variaton="SMALL" /> : undefined}
+          onClick={() => {
+            if (EmailValidator.validate(email)) {
+              changeEmail(email);
+            } else {
+              setChangeEmailState("Email not valid");
+            }
+          }}
+          variation="GRAY"
         />
+        <p className="font-normal text-gray-400">Change password:</p>
+        <Button label="Change Password" associatedModalId="change-password" />
 
         <h4 className="text-gray-600">Private Journals</h4>
         <Button
-          label="Set Up Recovery Phrase"
+          label="Set Up Recovery Key"
           onClick={() => {
             window.HSOverlay.open(document.querySelector("#recovery"));
           }}
@@ -300,23 +270,61 @@ export default function UserSettings() {
           variation="DANGEROUS"
         />
       </Column>
-      <ConfirmationModal
-        title="Delete your account"
-        body="Are you sure you want to delete your account? All your data will be lost and this action cannot be undone."
-        id="confirm-delete"
-        denyText={"Cancel"}
-        confirmText={"Delete Account"}
-        onConfirm={() => {
-          deleteAccountMutation.mutate();
-        }}
-        confirmButtonProps={{
-          icon: deleteAccountMutation.isLoading ? (
-            <Spinner variaton="SMALL" />
-          ) : undefined,
-          associatedModalId: "",
-        }}
-      />
+      <DeleteAccountModals id="confirm-delete" />
       <RecoveryPhraseModal id="recovery" />
+      <ClosableModal
+        id="change-password"
+        leftContent={<h4>Change Password</h4>}
+      >
+        <div className="mb-6 mt-4 h-[1px] w-[500px] bg-gray-100 " />
+        <Column className="gap-6">
+          <TextField
+            label="Old password"
+            type="password"
+            value={oldPassword}
+            onChangeValue={setOldPassword}
+            className="w-[250px]"
+          />
+          <NewPasswordInput
+            hasPasswordError={hasPasswordError}
+            setPasswordError={setHasPasswordError}
+            password={newPassword}
+            setPassword={setNewPassword}
+            triedSubmit={triedSubmit}
+            label="New password"
+          />
+          <TextField
+            label="Re-type New Password"
+            value={confirmPassword}
+            onChangeValue={setConfirmPassword}
+            type="password"
+            errorText={Constants.CONFIRM_PASSWORD_ERROR}
+            hasError={changePasswordState === Constants.CONFIRM_PASSWORD_ERROR}
+            className="w-[250px]"
+          />
+          {/* I am going to keep this here for password networking errors,
+          since this type of error is not explicitly associated with the
+          password textbox.
+          */}
+          {changePasswordState &&
+            changePasswordState !== Constants.CONFIRM_PASSWORD_ERROR && (
+              <label
+                className={`font-normal ${
+                  changePasswordError ? "text-error" : "text-gray-400"
+                }`}
+              >
+                {changePasswordState}
+              </label>
+            )}
+          <Button
+            label="Enter"
+            onClick={handlePasswordSubmit}
+            icon={
+              changePasswordLoading ? <Spinner variaton="SMALL" /> : undefined
+            }
+          />
+        </Column>
+      </ClosableModal>
     </>
   );
 }
