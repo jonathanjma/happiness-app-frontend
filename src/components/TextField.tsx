@@ -8,7 +8,6 @@ interface TextFieldProps {
   type?: React.HTMLInputTypeAttribute;
   hint?: string;
   autocomplete?: string;
-  inputID?: string;
   supportingText?: string;
   supportingIcon?: React.ReactElement;
   innerElements?: React.ReactElement;
@@ -21,7 +20,6 @@ interface TextFieldProps {
   className?: string;
   onEnterPressed?: () => void;
   tooltip?: string;
-  grow?: boolean;
 }
 
 /**
@@ -47,7 +45,6 @@ export default function TextField({
   type = "text",
   hint,
   autocomplete,
-  inputID,
   supportingText = "",
   supportingIcon,
   innerElements,
@@ -81,7 +78,6 @@ export default function TextField({
         {innerElements && <div className="mr-2"></div>}
         <input
           className="flex flex-grow focus:outline-none"
-          id={inputID}
           ref={input}
           type={type}
           autoComplete={autocomplete}

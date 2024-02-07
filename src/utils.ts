@@ -180,18 +180,54 @@ export function getDaysArray(start: Date, end: Date) {
  * 0 goes to yellow-50, 0.5 goes to yellow-100, etc. up to 10
  */
 export function floatToColor(float: number): string {
-  if (float === -1) return `rgba(255,255,255,1)`;
-  const rgb: number[] = [246, 226, 174];
-  let difference = float - 5;
-  if (difference === 0) return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
-  if (difference > 0) {
-    difference += 10;
-  } else {
-    difference = 10 - difference * -1;
+  switch (float) {
+    case -1:
+      return `rgba(234, 235, 234,1)`;
+    case 0:
+      return `rgba(239, 69, 56,1)`;
+    case 0.5:
+      return `rgba(241, 95, 84,1)`;
+    case 1:
+      return `rgba(246, 118, 108,1)`;
+    case 1.5:
+      return `rgba(245, 136, 128,1)`;
+    case 2:
+      return `rgba(247, 154, 148,1)`;
+    case 2.5:
+      return `rgba(249, 169, 163,1)`;
+    case 3:
+      return `rgba(249, 202, 198,1)`;
+    case 3.5:
+      return `rgba(250, 209, 206,1)`;
+    case 4:
+      return `rgba(252, 231, 229,1)`;
+    case 4.5:
+      return `rgba(251, 238, 237,1)`;
+    case 5:
+      return `rgba(255,255,255,1)`;
+    case 5.5:
+      return `rgba(240, 248, 240,1)`;
+    case 6:
+      return `rgba(222, 239, 223,1)`;
+    case 6.5:
+      return `rgba(203, 231, 204,1)`;
+    case 7:
+      return `rgba(181, 221, 183,1)`;
+    case 7.5:
+      return `rgba(160, 211, 162,1)`;
+    case 8:
+      return `rgba(138, 201, 141,1)`;
+    case 8.5:
+      return `rgba(112, 190, 115,1)`;
+    case 9:
+      return `rgba(94, 181, 97,1)`;
+    case 9.5:
+      return `rgba(76, 173, 80,1)`;
+    case 10:
+      return `rgba(64, 148, 68,1)`;
+    default:
+      return "rgba(234, 235, 234,1)";
   }
-  const modifiedColor = rgb.map((n) => (difference * n) / 10);
-
-  return `rgba(${modifiedColor[0]},${modifiedColor[1]},${modifiedColor[2]},1)`;
 }
 
 /**

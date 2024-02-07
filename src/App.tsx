@@ -15,6 +15,7 @@ import UserGroups from "./pages/UserGroups/UserGroups";
 import UserSettings from "./pages/UserSettings/UserSettings";
 import Welcome from "./pages/Welcome/Welcome";
 import Profile from "./pages/Profile/Profile";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 export default function App() {
   return (
@@ -28,6 +29,14 @@ export default function App() {
               element={
                 <PublicRoute>
                   <Welcome />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/reset_password"
+              element={
+                <PublicRoute>
+                  <ResetPassword />
                 </PublicRoute>
               }
             />

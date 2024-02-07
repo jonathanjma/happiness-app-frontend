@@ -27,10 +27,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
 
   return (
     <div className="flex w-full">
-      <div
-        id="docs-sidebar"
-        className="scrollbar-y scroll-hidden bottom-0 left-0 top-0 z-[60] h-screen min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0"
-      >
+      <div className="scrollbar-y scroll-hidden bottom-0 left-0 top-0 h-screen min-w-[320px] max-w-[320px] transform overflow-y-auto border-gray-200 bg-light_yellow transition-all duration-300 lg:bottom-0 lg:right-auto lg:block lg:translate-x-0">
         <div className="flex h-full flex-col">
           <div className="m-4 flex grow flex-col">
             <div className="relative m-4 flex grow flex-col">
