@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateArrow from "../../components/DateArrow";
 import HappinessCalendar from "../../components/HappinessCalendar";
@@ -8,7 +8,13 @@ import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
 import { useUser } from "../../contexts/UserProvider";
 
-export default function CalendarPanel({ userId }: { userId: number }) {
+export default function CalendarPanel({
+  userId,
+  setEntry,
+}: {
+  userId: number;
+  setEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+}) {
   const { user } = useUser();
   const [startDate, setStartDate] = useState<Date>(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -20,8 +26,8 @@ export default function CalendarPanel({ userId }: { userId: number }) {
   const navigate = useNavigate();
 
   return (
-    <Column className="scroll-hidden h-full w-full items-center overflow-scroll">
-      <Row className="w-full items-baseline px-8">
+    <Column className="scroll-hidden h-full w-full items-center overflow-scroll px-8">
+      <Row className="mb-4 w-full items-baseline px-4">
         <label className="text-gray-400">
           {startDate.toLocaleString("en-US", {
             month: "long",
@@ -43,7 +49,6 @@ export default function CalendarPanel({ userId }: { userId: number }) {
           dates={[startDate]}
         />
       </Row>
-      <div className="h-6" />
       <HappinessCalendar
         selectedEntry={selectedHappiness}
         onSelectEntry={setSelectedHappiness}
@@ -53,7 +58,7 @@ export default function CalendarPanel({ userId }: { userId: number }) {
       />
 
       {selectedHappiness && (
-        <div className="w-11/12">
+        <div>
           <div className="h-8" />
           <SmallHappinessCard
             happiness={selectedHappiness}
@@ -67,7 +72,15 @@ export default function CalendarPanel({ userId }: { userId: number }) {
                       },
                     },
                   ]
-                : []
+                : [
+                    {
+                      label: "Expand",
+                      modalId: "happiness-viewer",
+                      onClick: () => {
+                        setEntry(selectedHappiness);
+                      },
+                    },
+                  ]
             }
           />
         </div>

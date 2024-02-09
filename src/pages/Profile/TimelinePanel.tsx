@@ -10,7 +10,13 @@ import SmallHappinessCard from "../../components/SmallHappinessCard";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserProvider";
 
-export default function TimelinePanel({ userId }: { userId: number }) {
+export default function TimelinePanel({
+  userId,
+  setEntry,
+}: {
+  userId: number;
+  setEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+}) {
   const { api } = useApi();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -80,7 +86,15 @@ export default function TimelinePanel({ userId }: { userId: number }) {
                                 },
                               },
                             ]
-                          : []
+                          : [
+                              {
+                                label: "Expand",
+                                modalId: "happiness-viewer",
+                                onClick: () => {
+                                  setEntry(entry);
+                                },
+                              },
+                            ]
                       }
                     />
                   ))}

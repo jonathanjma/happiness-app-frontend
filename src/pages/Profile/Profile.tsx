@@ -16,12 +16,15 @@ import Spinner from "../../components/Spinner";
 import CalendarPanel from "./CalendarPanel";
 import { useParams } from "react-router-dom";
 import { User } from "../../data/models/User";
+import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
+import { Happiness } from "../../data/models/Happiness";
 
 export default function Profile() {
   const { api } = useApi();
   const { userID: uid } = useParams();
   const { user, getUserFromToken } = useUser();
   const [pfpError, setPfpError] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<Happiness>();
 
   const userId = parseInt(uid!);
   const loggedInUser = userId === user!.id;
@@ -126,10 +129,16 @@ export default function Profile() {
                 </div>
                 <div className="feed_height2">
                   <TabPanel index={1}>
-                    <TimelinePanel userId={userId} />
+                    <TimelinePanel
+                      userId={userId}
+                      setEntry={setSelectedEntry}
+                    />
                   </TabPanel>
                   <TabPanel index={2}>
-                    <CalendarPanel userId={userId} />
+                    <CalendarPanel
+                      userId={userId}
+                      setEntry={setSelectedEntry}
+                    />
                   </TabPanel>
                   <TabPanel index={3}>
                     <p>Graph View</p>
@@ -138,6 +147,12 @@ export default function Profile() {
               </>
             )}
           </>
+        )}
+        {!loggedInUser && selectedEntry && (
+          <HappinessViewerModal
+            happiness={selectedEntry}
+            id="happiness-viewer"
+          />
         )}
       </div>
     </Row>
