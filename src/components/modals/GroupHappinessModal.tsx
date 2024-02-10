@@ -31,7 +31,7 @@ export default function GroupHappinessModal({
   } on 
 `;
   return (
-    <Modal id={id} className="w-full" noCard={true}>
+    <Modal id={id} className="w-full bg-[rgba(247,239,215,0.75)]" noCard={true}>
       <>
         <Card className="mb-3 rounded-xl bg-yellow px-4 py-2">
           <div className="text-base font-medium text-secondary">
@@ -48,9 +48,9 @@ export default function GroupHappinessModal({
             </span>
           </div>
         </Card>
-        <Column className="static z-[5] space-y-3 overflow-hidden bg-gradient-to-b bg-fixed">
+        <Column className="scroll-hidden relative max-h-[69vh] space-y-3 overflow-auto">
           {entries.map((happiness) => (
-            <div className="w-[600px]">
+            <div className="bg-[rgba(247,239,215,0.75)] md:w-[600px]">
               <SmallHappinessCard
                 happiness={happiness}
                 actions={
@@ -68,8 +68,9 @@ export default function GroupHappinessModal({
               />
             </div>
           ))}
+          <div className="absolute sticky bottom-0 z-[10] min-h-[20px] w-full bg-gradient-to-b from-transparent to-[rgba(247,239,215,0.75)]"></div>
         </Column>
-        <Row className="z-[10] mt-6 w-full justify-center">
+        <Row className="z-[10] mt-3 w-full justify-center">
           <Button
             label="Close"
             classNameBtn="bg-white border-gray-300"
