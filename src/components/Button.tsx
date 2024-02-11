@@ -13,6 +13,8 @@ export interface ButtonProps {
   associatedModalId?: string;
   classNameBtn?: string;
   classNameText?: string;
+  fileInput?: boolean;
+  onFileChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -33,6 +35,8 @@ export default function Button({
   associatedModalId,
   classNameBtn = "",
   classNameText = "",
+  fileInput,
+  onFileChange,
 }: ButtonProps) {
   let className =
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 text-secondary ";
@@ -66,6 +70,8 @@ export default function Button({
       break;
   }
 
+  const labelProps = fileInput ? { role: "button", htmlFor: "file" } : {};
+
   return (
     <button
       data-hs-overlay={`#${associatedModalId}`}
@@ -80,10 +86,14 @@ export default function Button({
         </>
       )}
       <label
+        {...labelProps}
         className={` font-semibold hover:cursor-pointer ${classNameText} ${textColor}`}
       >
         {label}
       </label>
+      {fileInput && (
+        <input id="file" type="file" hidden onChange={onFileChange} />
+      )}
     </button>
   );
 }

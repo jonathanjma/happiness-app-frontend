@@ -6,6 +6,7 @@ import Row from "./layout/Row";
 
 interface Action {
   label: string;
+  modalId?: string;
   onClick?: () => void;
 }
 
@@ -48,10 +49,12 @@ export default function SmallHappinessCard({
         </Column>
         <div className="flex flex-grow" />
         <Row className="gap-3">
-          {actions.map((action) => (
+          {actions.map((action, i) => (
             <div
               className="rounded-[4px] bg-gray-50 px-3 py-1 hover:cursor-pointer"
               onClick={action.onClick}
+              data-hs-overlay={"#" + action.modalId}
+              key={i}
             >
               <label className="text-gray-400">{action.label}</label>
             </div>

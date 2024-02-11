@@ -72,6 +72,10 @@ input[type=number] {
     height: calc(100vh - 220px) !important;
 }
 
+.feed_height2 {
+    height: calc(100vh - 230px) !important;
+}
+
 label:hover {
     cursor: unset;
 }

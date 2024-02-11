@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateArrow from "../../components/DateArrow";
 import HappinessCalendar from "../../components/HappinessCalendar";
@@ -6,9 +6,16 @@ import SmallHappinessCard from "../../components/SmallHappinessCard";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
-import { formatDate } from "../../utils";
+import { useUser } from "../../contexts/UserProvider";
 
-export default function CalendarTab({ userId }: { userId?: number }) {
+export default function CalendarPanel({
+  userId,
+  setEntry,
+}: {
+  userId: number;
+  setEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
+}) {
+  const { user } = useUser();
   const [startDate, setStartDate] = useState<Date>(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
@@ -18,13 +25,9 @@ export default function CalendarTab({ userId }: { userId?: number }) {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(`startDate: ${formatDate(startDate)}`);
-  }, [startDate]);
-
   return (
-    <Column className="h-full w-full">
-      <Row className="w-full items-baseline px-8">
+    <Column className="scroll-hidden h-full w-full items-center overflow-scroll px-8">
+      <Row className="mb-4 w-full items-baseline px-4">
         <label className="text-gray-400">
           {startDate.toLocaleString("en-US", {
             month: "long",
@@ -33,19 +36,19 @@ export default function CalendarTab({ userId }: { userId?: number }) {
         </label>
         <div className="flex flex-1" />
         <DateArrow
-          change={-1}
-          variation="MONTHLY"
-          setCurDates={[setStartDate]}
-          dates={[startDate]}
-        />
-        <DateArrow
           change={1}
           variation="MONTHLY"
           setCurDates={[setStartDate]}
           dates={[startDate]}
         />
+        <div className="w-1"></div>
+        <DateArrow
+          change={-1}
+          variation="MONTHLY"
+          setCurDates={[setStartDate]}
+          dates={[startDate]}
+        />
       </Row>
-      <div className="h-4" />
       <HappinessCalendar
         selectedEntry={selectedHappiness}
         onSelectEntry={setSelectedHappiness}
@@ -55,20 +58,32 @@ export default function CalendarTab({ userId }: { userId?: number }) {
       />
 
       {selectedHappiness && (
-        <>
+        <div>
           <div className="h-8" />
           <SmallHappinessCard
             happiness={selectedHappiness}
-            actions={[
-              {
-                label: "Open In Entries",
-                onClick: () => {
-                  navigate(`/home?date=${selectedHappiness.timestamp}`);
-                },
-              },
-            ]}
+            actions={
+              userId === user!.id
+                ? [
+                    {
+                      label: "Open In Entries",
+                      onClick: () => {
+                        navigate(`/home?date=${selectedHappiness.timestamp}`);
+                      },
+                    },
+                  ]
+                : [
+                    {
+                      label: "Expand",
+                      modalId: "happiness-viewer",
+                      onClick: () => {
+                        setEntry(selectedHappiness);
+                      },
+                    },
+                  ]
+            }
           />
-        </>
+        </div>
       )}
     </Column>
   );

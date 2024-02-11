@@ -55,7 +55,7 @@ export default function DateArrow({
         }
       }}
     >
-      {change > 0 ? <ArrowUpIcon /> : <ArrowDownIcon />}
+      {change < 0 ? <ArrowUpIcon /> : <ArrowDownIcon />}
     </div>
   );
 }
