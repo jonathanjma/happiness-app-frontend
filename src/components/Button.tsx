@@ -65,7 +65,7 @@ export default function Button({
       textColor = "text-white";
       break;
     case "GRAY":
-      className += "bg-gray-50 shadow-md1";
+      className += "bg-gray-50 shadow-md1 border-gray-100 border-1 ";
       textColor = "text-gray-600";
       break;
   }
