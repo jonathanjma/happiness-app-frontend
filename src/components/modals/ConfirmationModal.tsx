@@ -27,7 +27,6 @@ export default function ConfirmationModal({
 }: ConfirmationModalProps) {
   return (
     <Modal id={id}>
-      {" "}
       <h3>{title}</h3>
       {subtitle && (
         <label className="leading-6 text-gray-400">{subtitle}</label>
