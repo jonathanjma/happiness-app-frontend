@@ -17,10 +17,6 @@ export default function UserGroups() {
     () => api.get<UserGroups>("/group/user").then((res) => res.data),
   );
 
-  useEffect(() => {
-    data?.groups.sort((a, b) => a.id - b.id);
-  }, [data]);
-
   return (
     <div className="my-16 me-6 ms-10">
       {/* Header */}
@@ -47,7 +43,7 @@ export default function UserGroups() {
                 </p>
               ) : (
                 <div className="grid w-full grid-cols-2 gap-6">
-                  {data!.groups.map((group) => (
+                  {data!.groups.sort((a, b) => a.id - b.id).map((group) => (
                     <GroupCard key={group.id} groupData={group} />
                   ))}
                 </div>
