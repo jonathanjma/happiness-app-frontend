@@ -4,7 +4,7 @@ import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { Group } from "../data/models/Group";
 import { Happiness } from "../data/models/Happiness";
-import { floatToColor, formatDate, parseYYYYmmddFormat } from "../utils";
+import { dateFromStr, floatToColor, formatDate } from "../utils";
 import Row from "./layout/Row";
 import HappinessViewerModal from "./modals/HappinessViewerModal";
 /**
@@ -39,8 +39,8 @@ export default function HappinessTable({
     }
   }, [selectedHappiness]);
 
-  const start = parseYYYYmmddFormat(startDate);
-  const end = endDate ? parseYYYYmmddFormat(endDate) : new Date();
+  const start = dateFromStr(startDate);
+  const end = endDate ? dateFromStr(endDate) : new Date();
 
   const dateList: Date[] = [];
   const tempStart = new Date(start);

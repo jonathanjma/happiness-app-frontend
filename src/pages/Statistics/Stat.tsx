@@ -1,5 +1,4 @@
-import Card from "../../components/Card";
-import { mean, median, mode, std, min, max } from "mathjs";
+import { max, mean, median, min, mode, std } from "mathjs";
 
 /**
  * Custom component for displaying stat cards

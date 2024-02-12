@@ -1,19 +1,14 @@
-import LineChart from "./LineChart";
-import { User } from "../data/models/User";
-import { useState } from "react";
-import { Happiness } from "../data/models/Happiness";
 import {
-  ChartConfiguration,
-  ChartDataset,
-  RadialLinearScaleOptions,
-  ScriptableChartContext,
+  Chart,
+  ChartData,
   ScriptableLineSegmentContext,
-  ScriptableTooltipContext,
+  registerables,
 } from "chart.js";
-import { Chart, ChartData, registerables } from "chart.js";
-import { formatDate, parseYYYYmmddFormat, getDaysArray } from "../utils";
 import { ChartEvent } from "chart.js/dist/core/core.plugins";
 import { ActiveElement } from "chart.js/dist/plugins/plugin.tooltip";
+import { Happiness } from "../data/models/Happiness";
+import { dateFromStr, getDaysArray } from "../utils";
+import LineChart from "./LineChart";
 Chart.register(...registerables);
 
 /**
@@ -90,7 +85,7 @@ export default function Graph({
   // graph label; converts to day of week if showDay is true, otherwise shows date as graph label
   const graphLabels: string[] = showDay
     ? datesList.map((d: string) =>
-        parseYYYYmmddFormat(d).toLocaleString("en-us", { weekday: "short" }),
+        dateFromStr(d).toLocaleString("en-us", { weekday: "short" }),
       )
     : datesList.map((dateString) => dateString.substring(5).replace("-", "/"));
 

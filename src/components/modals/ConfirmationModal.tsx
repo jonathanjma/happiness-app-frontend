@@ -35,7 +35,6 @@ export default function ConfirmationModal({
       <p> {body} </p>
       <div className="h-6" />
       <Row>
-        <div className="flex flex-grow" />
         <Button
           associatedModalId={id}
           variation="TEXT"

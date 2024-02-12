@@ -14,7 +14,7 @@
     }
 
     h2 {
-        @apply text-3xl font-medium;
+        @apply text-3xl font-semibold;
     }
 
     h3 {

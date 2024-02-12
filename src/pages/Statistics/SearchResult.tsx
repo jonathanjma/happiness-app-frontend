@@ -2,7 +2,7 @@ import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
 import Row from "../../components/layout/Row";
 import { Happiness } from "../../data/models/Happiness";
-import { parseYYYYmmddFormat } from "../../utils";
+import { dateFromStr } from "../../utils";
 
 export default function SearchResult({
   happiness,
@@ -47,14 +47,11 @@ export default function SearchResult({
       <div className="flex min-w-[32px] flex-grow" />
       {!selected && (
         <label className="mr-4 min-w-[100px] text-gray-600">
-          {parseYYYYmmddFormat(happiness.timestamp).toLocaleDateString(
-            "en-us",
-            {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            },
-          )}
+          {dateFromStr(happiness.timestamp).toLocaleDateString("en-us", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </label>
       )}
       {selected && (

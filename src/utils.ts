@@ -13,18 +13,6 @@ export function formatDate(date: Date) {
 }
 
 /**
- * Parses a date string in the YYYY-MM-dd format while avoiding weird timezone issues.
- * Please use this function whenever trying to parse a date in this format!
- * @param dateString the string to be parsed
- * @returns date object containing the proper time
- */
-export function parseYYYYmmddFormat(dateString: string): Date {
-  // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
-  const values = dateString.split("-");
-  return new Date(`${values[1]}-${values[2]}-${values[0]}`);
-}
-
-/**
  * Gets the shortened form of a weekday from number, according to design.
  * For example:
  * 0 -> Sun
@@ -146,10 +134,10 @@ export function createSearchQuery(
     query.text = text;
   }
   if (!isNaN(new Date(start).getTime())) {
-    query.start = formatDate(parseYYYYmmddFormat(start));
+    query.start = formatDate(dateFromStr(start));
   }
   if (!isNaN(new Date(end).getTime())) {
-    query.end = formatDate(parseYYYYmmddFormat(end));
+    query.end = formatDate(dateFromStr(end));
   }
   if (query.start && !query.end) {
     query.end = formatDate(new Date());

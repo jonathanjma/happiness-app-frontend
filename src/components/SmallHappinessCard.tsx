@@ -1,5 +1,5 @@
 import { Happiness } from "../data/models/Happiness";
-import { parseYYYYmmddFormat } from "../utils";
+import { dateFromStr } from "../utils";
 import Card from "./Card";
 import Column from "./layout/Column";
 import Row from "./layout/Row";
@@ -26,7 +26,7 @@ export default function SmallHappinessCard({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const happinessDate = parseYYYYmmddFormat(happiness.timestamp);
+  const happinessDate = dateFromStr(happiness.timestamp);
 
   return (
     <Card className="p-4">

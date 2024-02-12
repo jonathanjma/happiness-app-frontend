@@ -3,14 +3,9 @@ import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
 import { useUser } from "../contexts/UserProvider";
 import { Happiness } from "../data/models/Happiness";
-import {
-  formatDate,
-  getWeekdayFromNumber,
-  parseYYYYmmddFormat,
-} from "../utils";
-import Row from "./layout/Row";
+import { dateFromStr, formatDate, getWeekdayFromNumber } from "../utils";
 import Spinner from "./Spinner";
-import React from "react";
+import Row from "./layout/Row";
 
 export default function HappinessCalendar({
   startDate,
@@ -152,9 +147,11 @@ const DayCell = ({
   showWeekday?: boolean;
 }) => {
   const happinessPercent = happiness.value * 10;
-  const cellNumber = parseYYYYmmddFormat(happiness.timestamp).getDate();
+  const cellNumber = dateFromStr(happiness.timestamp).getDate();
   const isToday = formatDate(new Date()) === happiness.timestamp;
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
+  console.log(`happiness timestamp: ${happiness.timestamp}`);
+  console.log(`parsed date: ${dateFromStr(happiness.timestamp)}`);
 
   return (
     <div
@@ -174,10 +171,9 @@ const DayCell = ({
             } font-semibold`}
           >
             {showWeekday
-              ? parseYYYYmmddFormat(happiness.timestamp).toLocaleDateString(
-                  "en-us",
-                  { weekday: "short" },
-                )
+              ? dateFromStr(happiness.timestamp).toLocaleDateString("en-us", {
+                  weekday: "short",
+                })
               : cellNumber}
           </p>
         </div>

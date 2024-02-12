@@ -62,7 +62,7 @@ export default function TextField({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderStyle =
-    `flex flex-grow focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 ` +
+    `flex flex-grow items-start focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 ` +
     (isFocused
       ? " shadow-form-selected border-yellow hover:border-yellow"
       : "") +
@@ -77,7 +77,7 @@ export default function TextField({
         {innerElements}
         {innerElements && <div className="mr-2"></div>}
         <input
-          className="flex flex-grow focus:outline-none"
+          className="flex max-w-full flex-grow focus:outline-none"
           ref={input}
           type={type}
           autoComplete={autocomplete}
@@ -100,6 +100,7 @@ export default function TextField({
           }}
           title={tooltip}
         />
+
         {innerIcon && <div className="flex flex-1" />}
         {innerIcon && <span className="my-0 h-6 py-0">{innerIcon}</span>}
       </Row>
