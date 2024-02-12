@@ -74,11 +74,19 @@ export default function GroupSettings({
       setLeaveError("Error leaving group, check your internet connection.");
     },
   });
+
+  const handleChangeGroupName = () => {
+    if (groupNameText.trim() === "") {
+      setChangeGroupNameError("Group name cannot be empty.");
+    } else {
+      saveGroupName();
+    }
+  };
   return (
     <>
       <Column className="mx-8 gap-6 pt-16">
         <Row
-          className="items-center"
+          className="items-center hover:cursor-pointer"
           onClick={() => {
             setShowGroupSettings(false);
           }}
@@ -92,14 +100,14 @@ export default function GroupSettings({
           hint={group.name}
           value={groupNameText}
           onChangeValue={setGroupNameText}
-          onEnterPressed={saveGroupName}
+          onEnterPressed={handleChangeGroupName}
           className="w-[250px]"
           hasError={changeGroupNameError.length > 0}
           errorText={changeGroupNameError}
         />
         <Button
           label="Save Group Name"
-          onClick={saveGroupName}
+          onClick={handleChangeGroupName}
           icon={putGroupNameLoading ? <Spinner variaton="SMALL" /> : undefined}
           variation="GRAY"
         />

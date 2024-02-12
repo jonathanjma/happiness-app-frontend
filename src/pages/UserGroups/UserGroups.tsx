@@ -1,12 +1,13 @@
-import { useApi } from "../../contexts/ApiProvider";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
-import { UserGroups } from "../../data/models/User";
-import Spinner from "../../components/Spinner";
-import GroupCard from "./GroupCard";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import Spinner from "../../components/Spinner";
 import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
-import { useNavigate } from "react-router-dom";
+import { useApi } from "../../contexts/ApiProvider";
+import { UserGroups } from "../../data/models/User";
+import GroupCard from "./GroupCard";
 
 export default function UserGroups() {
   const navigate = useNavigate();
@@ -15,6 +16,10 @@ export default function UserGroups() {
     [QueryKeys.FETCH_USER_GROUPS],
     () => api.get<UserGroups>("/group/user").then((res) => res.data),
   );
+
+  useEffect(() => {
+    data?.groups.sort((a, b) => a.id - b.id);
+  }, [data]);
 
   return (
     <div className="my-16 me-6 ms-10">
