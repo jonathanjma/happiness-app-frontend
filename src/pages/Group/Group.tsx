@@ -53,15 +53,14 @@ export default function GroupPage() {
           className="mb-6"
         />
         <Row className="mb-6 w-full justify-between">
-          <h2 className="m-0 self-center font-semibold">{data!.name}</h2>
-          <button className="rounded-xl border border-secondary px-3 py-2 shadow-md1">
-            <img
-              src={SettingsIcon}
-              className="max-w-[24px]"
-              onClick={() => {
-                setShowGroupSettings(true);
-              }}
-            />
+          <h2 className="m-0 self-center">{data!.name}</h2>
+          <button
+            className="rounded-xl border border-secondary px-3 py-2 shadow-md1"
+            onClick={() => {
+              setShowGroupSettings(true);
+            }}
+          >
+            <img src={SettingsIcon} className="max-w-[24px]" />
           </button>
         </Row>
         {/* Tab Buttons */}
