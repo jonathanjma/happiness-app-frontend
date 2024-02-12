@@ -10,11 +10,7 @@ import EntryTextSkeleton from "../../components/skeletons/EntryTextSkeleton";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, HappinessPagination } from "../../data/models/Happiness";
-import {
-  createSearchQuery,
-  formatDate,
-  parseYYYYmmddFormat,
-} from "../../utils";
+import { createSearchQuery, dateFromStr, formatDate } from "../../utils";
 import SearchBar from "../Statistics/SearchBar";
 export default function AllSearchResults() {
   const location = useLocation();
@@ -34,8 +30,8 @@ export default function AllSearchResults() {
     // Find the number of total matching results
     queryKey: [
       QueryKeys.FETCH_HAPPINESS_COUNT,
-      { start: formatDate(parseYYYYmmddFormat(startDate)) },
-      { end: formatDate(parseYYYYmmddFormat(endDate)) },
+      { start: formatDate(dateFromStr(startDate)) },
+      { end: formatDate(dateFromStr(endDate)) },
       { low: startValue },
       { high: endValue },
       { text: text },
@@ -79,8 +75,8 @@ export default function AllSearchResults() {
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
       QueryKeys.INFINITE,
-      { start: formatDate(parseYYYYmmddFormat(startDate)) },
-      { end: formatDate(parseYYYYmmddFormat(endDate)) },
+      { start: formatDate(dateFromStr(startDate)) },
+      { end: formatDate(dateFromStr(endDate)) },
       { low: startValue },
       { high: endValue },
       { count: 5 },
