@@ -23,7 +23,7 @@ export default function GroupPage() {
     [QueryKeys.FETCH_GROUP_INFO, groupID],
     () => api.get<Group>("/group/" + groupID).then((res) => res.data),
   );
-  const [showGroupSettings, setShowGroupSettings] = useState(false);
+  const [showGroupSettings, setShowGroupSettings] = useState(true);
 
   if (isLoading) {
     return <Spinner className="mx-8 mt-16" />;

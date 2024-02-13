@@ -15,6 +15,7 @@ import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
 import ClosableModal from "../../components/modals/ClosableModal";
 import { useUser } from "../../contexts/UserProvider";
+import { GroupMembers, InviteFriends } from "./EditMembers";
 
 export default function GroupSettings({
   group,
@@ -127,7 +128,11 @@ export default function GroupSettings({
           variation="GRAY"
         />
         <h4 className="text-gray-600">Manage Members</h4>
-        <Button label="View and Invite Members" variation="GRAY" />
+        <Button
+          label="View and Invite Members"
+          variation="GRAY"
+          associatedModalId="edit-members"
+        />
         <h4 className="text-gray-600">Leave Group</h4>
         <Button
           label="Leave Group"
@@ -141,7 +146,7 @@ export default function GroupSettings({
           associatedModalId={deleteId}
         />
       </Column>
-      <ClosableModal leftContent={<h4>Leave group</h4>} id={confirmLeaveId}>
+      <ClosableModal leftContent={<h4>Leave Group</h4>} id={confirmLeaveId}>
         <Column className="gap-6 sm:w-[200px] md:w-[400px] lg:w-[600px]">
           <div className="mt-4 h-[1px] w-full bg-gray-100" />
           <p>
@@ -165,7 +170,7 @@ export default function GroupSettings({
           </Row>
         </Column>
       </ClosableModal>
-      <ClosableModal leftContent={<h4>Delete group</h4>} id={deleteId}>
+      <ClosableModal leftContent={<h4>Delete Group</h4>} id={deleteId}>
         <Column className="gap-6 sm:w-[200px] md:w-[400px] lg:w-[600px]">
           <div className="mt-4 h-[1px] w-full bg-gray-100" />
           <p>
@@ -191,6 +196,8 @@ export default function GroupSettings({
           </Row>
         </Column>
       </ClosableModal>
+      <GroupMembers group={group} />
+      <InviteFriends />
     </>
   );
 }
