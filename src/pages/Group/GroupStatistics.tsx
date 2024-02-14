@@ -19,7 +19,7 @@ import { format } from "mathjs";
 import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 
 /**
- * The page for displaying statistics for the current user
+ * The page for displaying statistics for a group given group data
  */
 export default function GroupStatistics({
   groupData,
@@ -208,7 +208,6 @@ export default function GroupStatistics({
                           setViewingEntry(entry);
                         }
                       }}
-                      isGroup={true}
                       groupId={groupData.id}
                     />
                   </div>

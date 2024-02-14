@@ -14,14 +14,12 @@ export default function HappinessCalendar({
   variation,
   selectedEntry,
   onSelectEntry,
-  isGroup = false,
-  groupId = undefined,
+  groupId = undefined, // undefined if for individual user and not for group
 }: {
   startDate: Date;
   variation: "MONTHLY" | "WEEKLY";
   selectedEntry: Happiness[] | undefined;
   onSelectEntry: (selectedEntry: Happiness[]) => void;
-  isGroup?: boolean;
   groupId?: undefined | number;
 }) {
   const { api } = useApi();
@@ -63,36 +61,37 @@ export default function HappinessCalendar({
     finalEndDate.setDate(finalEndDate.getDate() + 7);
   }
 
-  const { isLoading, data, isError } = isGroup
-    ? useQuery<Happiness[]>(
-        [
-          QueryKeys.FETCH_GROUP_HAPPINESS,
-          `${formatDate(startDate)} to ${formatDate(endDate)}`,
-        ],
-        async () => {
-          const res = await api.get<Happiness[]>(
-            `/group/${groupId}/happiness`,
-            {
+  const { isLoading, data, isError } =
+    groupId !== undefined
+      ? useQuery<Happiness[]>(
+          [
+            QueryKeys.FETCH_GROUP_HAPPINESS,
+            `${formatDate(startDate)} to ${formatDate(endDate)}`,
+          ],
+          async () => {
+            const res = await api.get<Happiness[]>(
+              `/group/${groupId}/happiness`,
+              {
+                start: formatDate(finalStartDate),
+                end: formatDate(finalEndDate),
+              },
+            );
+            return res.data;
+          },
+        )
+      : useQuery<Happiness[]>(
+          [
+            QueryKeys.FETCH_HAPPINESS,
+            `${formatDate(startDate)} to ${formatDate(endDate)}`,
+          ],
+          async () => {
+            const res = await api.get<Happiness[]>("/happiness/", {
               start: formatDate(finalStartDate),
               end: formatDate(finalEndDate),
-            },
-          );
-          return res.data;
-        },
-      )
-    : useQuery<Happiness[]>(
-        [
-          QueryKeys.FETCH_HAPPINESS,
-          `${formatDate(startDate)} to ${formatDate(endDate)}`,
-        ],
-        async () => {
-          const res = await api.get<Happiness[]>("/happiness/", {
-            start: formatDate(finalStartDate),
-            end: formatDate(finalEndDate),
-          });
-          return res.data;
-        },
-      );
+            });
+            return res.data;
+          },
+        );
 
   return (
     <div
