@@ -28,7 +28,7 @@ export default function GroupPage() {
         return res.data;
       }),
   );
-  const [showGroupSettings, setShowGroupSettings] = useState(true);
+  const [showGroupSettings, setShowGroupSettings] = useState(false);
 
   if (isLoading) {
     return <Spinner className="mx-8 mt-16" />;
