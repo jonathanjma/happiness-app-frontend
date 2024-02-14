@@ -118,6 +118,7 @@ export default function UserSettings() {
   });
 
   // Changing username mutation
+  const usernameError = "Username already taken.";
   const { isLoading: usernameChangeLoading, mutate: changeUsername } =
     useMutation({
       mutationFn: (username: string) =>
@@ -127,7 +128,7 @@ export default function UserSettings() {
         }),
       onError: () => {
         setUsernameIsError(true);
-        setChangeUsernameState("Username already taken.");
+        setChangeUsernameState(usernameError);
       },
       onSuccess: () => {
         setChangeUsernameState("Username updated. Refresh to see changes.");
@@ -140,6 +141,7 @@ export default function UserSettings() {
   }, [username]);
 
   // Changing email mutation
+  const emailErrorText = "Email may already be taken.";
   const {
     isLoading: emailChangeLoading,
     mutate: changeEmail,
@@ -155,7 +157,7 @@ export default function UserSettings() {
       setChangeEmailState("Email successfully updated");
     },
     onError: () => {
-      setChangeEmailState("Email may already be taken.");
+      setChangeEmailState(emailErrorText);
     },
   });
 
@@ -246,6 +248,9 @@ export default function UserSettings() {
           type="username"
           errorText={changeUsernameState}
           hasError={usernameIsError}
+          supportingText={
+            changeUsernameState === usernameError ? "" : changeUsernameState
+          }
           className="w-[250px]"
         />
         <Button
@@ -270,6 +275,9 @@ export default function UserSettings() {
           type="email"
           errorText={changeEmailState}
           hasError={emailError}
+          supportingText={
+            changeEmailState === emailErrorText ? "" : changeEmailState
+          }
           className="w-[250px]"
         />
         <Button
