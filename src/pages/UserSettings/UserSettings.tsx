@@ -27,9 +27,11 @@ export default function UserSettings() {
       undefined,
   );
   // we only care about the time of this date
+  const userTime = user!.settings
+    .find((s) => s.key === "notify")
+    ?.value.split(" ")[0];
   const [emailTime, setEmailTime] = useState(
-    user!.settings.find((s) => s.key === "notify")?.value.split(" ")[0] ??
-      "09:00",
+    userTime ? convertToLocalTime(userTime) : "09:00",
   );
   const [email, setEmail] = useState("");
   const [changeEmailState, setChangeEmailState] = useState("");
@@ -81,11 +83,6 @@ export default function UserSettings() {
     if (isFirstRender) {
       setIsFirstRender(false);
     } else {
-      console.log(
-        `${get24HourTimeAsUTC(emailTime)} ${
-          Intl.DateTimeFormat().resolvedOptions().timeZone
-        }`,
-      );
       clearTimeout(updateEmailTimeout.current);
       // was getting weird TypeScript errors so I needed to prepend window.
       // see https://stackoverflow.com/a/55550147
@@ -114,8 +111,6 @@ export default function UserSettings() {
         })
         .then((res) => res.data),
     onSuccess: (data: SettingShort) => {
-      console.log(`data value: ${data.value}`);
-      console.log(`data value first: ${data.value.split(" ")[0]}`);
       updateUserSetting({
         ...data,
         value: convertToLocalTime(data.value.split(" ")[0]),

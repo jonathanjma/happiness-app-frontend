@@ -322,9 +322,7 @@ export default function SearchBar({
                 !count || count?.number === 0 ? "" : "underline"
               } text-sm text-gray-400 hover:cursor-pointer`}
               onClick={() => {
-                console.log(`executed`);
                 if (count && count.number !== 0) {
-                  console.log(`true`);
                   navigate("/search", {
                     state: {
                       startDate: startDate,
@@ -334,8 +332,6 @@ export default function SearchBar({
                       text: text,
                     },
                   });
-                } else {
-                  console.log(`false`);
                 }
               }}
             >
