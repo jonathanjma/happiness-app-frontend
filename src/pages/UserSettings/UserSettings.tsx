@@ -15,7 +15,7 @@ import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
-import { get24HourTimeAsUTC } from "../../utils";
+import { convertToLocalTime, get24HourTimeAsUTC } from "../../utils";
 import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
@@ -107,9 +107,9 @@ export default function UserSettings() {
         })
         .then((res) => res.data),
     onSuccess: (data: SettingShort) => {
-      updateUserSetting(data);
+      updateUserSetting({ ...data, value: convertToLocalTime(data.value) });
       setHasEmailAlerts(data.enabled);
-      setEmailTime(data.value.split(" ")[0]);
+      setEmailTime(convertToLocalTime(data.value).split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     },
     onError: () => {

@@ -247,3 +247,19 @@ export function get24HourTimeAsUTC(time: string): string {
     .toString()
     .padStart(2, "0")}`;
 }
+
+export function convertToLocalTime(timeStr: string): string {
+  // Create a new Date object with the current date and the provided UTC time
+  const date = new Date(
+    Date.UTC(1970, 0, 1, ...timeStr.split(":").map(Number)),
+  );
+
+  // Get the local hours and minutes
+  const localHours = date.getHours();
+  const localMinutes = date.getMinutes();
+
+  // Format the local time as a string and return it
+  return `${localHours.toString().padStart(2, "0")}:${localMinutes
+    .toString()
+    .padStart(2, "0")}`;
+}
