@@ -49,14 +49,10 @@ export default function GraphPanel({
     isLoading,
     data,
     isError,
-    refetch,
   }: {
     isLoading: boolean;
     data: Happiness[] | undefined;
     isError: boolean;
-    refetch: (
-      queryFnArgs?: undefined,
-    ) => Promise<Happiness[] | undefined | unknown>;
   } = useQuery({
     queryKey: [
       QueryKeys.FETCH_HAPPINESS,
