@@ -81,6 +81,11 @@ export default function UserSettings() {
     if (isFirstRender) {
       setIsFirstRender(false);
     } else {
+      console.log(
+        `${get24HourTimeAsUTC(emailTime)} ${
+          Intl.DateTimeFormat().resolvedOptions().timeZone
+        }`,
+      );
       clearTimeout(updateEmailTimeout.current);
       // was getting weird TypeScript errors so I needed to prepend window.
       // see https://stackoverflow.com/a/55550147
@@ -102,14 +107,21 @@ export default function UserSettings() {
       api
         .post<SettingShort>("/user/settings/", {
           key: "notify",
-          value: `${get24HourTimeAsUTC(emailTime)}`,
+          value: `${get24HourTimeAsUTC(emailTime)} ${
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+          }`,
           enabled: enabled,
         })
         .then((res) => res.data),
     onSuccess: (data: SettingShort) => {
-      updateUserSetting({ ...data, value: convertToLocalTime(data.value) });
+      console.log(`data value: ${data.value}`);
+      console.log(`data value first: ${data.value.split(" ")[0]}`);
+      updateUserSetting({
+        ...data,
+        value: convertToLocalTime(data.value.split(" ")[0]),
+      });
       setHasEmailAlerts(data.enabled);
-      setEmailTime(convertToLocalTime(data.value).split(" ")[0]);
+      setEmailTime(convertToLocalTime(data.value.split(" ")[0]).split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     },
     onError: () => {
