@@ -1,17 +1,17 @@
-import Row from "../../components/layout/Row";
-import Column from "../../components/layout/Column";
-import { Happiness } from "../../data/models/Happiness";
-import Card from "../../components/Card";
-import CommentIcon from "../../assets/comment.svg";
+import { useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { useQuery } from "react-query";
-import { Comment } from "../../data/models/Comment";
+import CommentIcon from "../../assets/comment.svg";
+import Card from "../../components/Card";
+import Spinner from "../../components/Spinner";
+import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
-import Spinner from "../../components/Spinner";
-import { dateOrTodayYesterday } from "./GroupFeed";
+import { Comment } from "../../data/models/Comment";
+import { Happiness } from "../../data/models/Happiness";
 import { dateFromStr } from "../../utils";
-import { useInView } from "react-intersection-observer";
-import { useState } from "react";
+import { dateOrTodayYesterday } from "./GroupFeed";
 
 // Card for happiness entries shown in group feed
 export default function FeedCard({
@@ -46,7 +46,6 @@ export default function FeedCard({
       // if going out of view and this is the first update, don't want to mark as read as it will either be:
       // off-screen (so not seen yet) or on-screen (doesn't matter since it's not off-screen yet)
       if (!status && !isFirstUpdate) {
-        // console.log(`${data.author.username} ${data.timestamp} read`);
         // then() not needed since if the request fails it won't matter since this has no visual effect
         api.post("/reads/", { happiness_id: data.id });
         setIsRead(true);

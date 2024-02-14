@@ -160,6 +160,10 @@ export default function SearchBar({
     };
   }, [data, selectedEntryIndex]);
 
+  const loseFocus = () => {
+    setIsFocused(false);
+  };
+
   return (
     <Column className="relative z-50 w-full gap-4">
       {/* Search bar */}
@@ -178,7 +182,7 @@ export default function SearchBar({
           placeholder="Search for keywords"
           className="my-3 w-auto flex-grow focus:outline-none"
           onBlur={() => {
-            setIsFocused(false);
+            setTimeout(loseFocus, 100);
           }}
           onFocus={() => {
             setIsFocused(true);
