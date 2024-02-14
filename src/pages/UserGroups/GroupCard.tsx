@@ -67,7 +67,7 @@ export default function GroupCard({
             </button>
             <button
               className={acceptDenyButtonClass + " text-error"}
-              onClick={onAccept}
+              onClick={onDecline}
             >
               {declineButtonIcon}
               {declineButtonIcon && <div className="w-4" />}
