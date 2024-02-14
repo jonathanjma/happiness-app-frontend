@@ -193,7 +193,6 @@ export default function Statistics() {
                   range={[start, end]}
                   onSelectEntry={(entry: Happiness[]) => {
                     if (viewingEntry && viewingEntry.id === entry[0].id) {
-                      // @ts-ignore
                       window.HSOverlay.open(
                         document.querySelector("#show-happiness-modal"),
                       );
