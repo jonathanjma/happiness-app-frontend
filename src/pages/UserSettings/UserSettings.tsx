@@ -15,7 +15,7 @@ import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
-import { getTimeZone } from "../../utils";
+import { get24HourTimeAsUTC } from "../../utils";
 import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
@@ -102,7 +102,7 @@ export default function UserSettings() {
       api
         .post<SettingShort>("/user/settings/", {
           key: "notify",
-          value: `${emailTime} ${getTimeZone()}`,
+          value: `${get24HourTimeAsUTC(emailTime)}`,
           enabled: enabled,
         })
         .then((res) => res.data),
