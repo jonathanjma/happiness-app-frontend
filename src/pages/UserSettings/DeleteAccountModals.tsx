@@ -1,9 +1,11 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
+import ToastMessage from "../../components/ToastMessage";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ClosableModal from "../../components/modals/ClosableModal";
@@ -19,6 +21,9 @@ export default function DeleteAccountModals({ id }: { id: string }) {
     onSuccess: () => {
       deleteUser();
       window.HSOverlay.open(document.querySelector("#sadness-app"));
+    },
+    onError: () => {
+      toast.custom(<ToastMessage message="❌ Failed to delete account" />);
     },
   });
   const [password, setPassword] = useState("");
