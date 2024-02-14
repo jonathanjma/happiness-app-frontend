@@ -86,11 +86,12 @@ export default function HappinessCalendar({
             `${formatDate(startDate)} to ${formatDate(endDate)}`,
           ],
           async () => {
-            const res = await api.get<Happiness[]>("/happiness/", {
-              id: userId,
+            const query: Record<string, any> = {
               start: formatDate(finalStartDate),
               end: formatDate(finalEndDate),
-            });
+            };
+            if (userId) query.id = userId;
+            const res = await api.get<Happiness[]>("/happiness/", query);
             return res.data;
           },
         );
