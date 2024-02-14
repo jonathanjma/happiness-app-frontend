@@ -27,7 +27,7 @@ export default function HappinessViewerModal({
               <button onClick={onBackButtonPress}>
                 <Row>
                   <img src={LeftArrowIcon} className="h-full" />
-                  <div className="ml-2 font-normal text-gray-600">Back</div>
+                  <div className="ml-1 font-normal text-gray-600">Back</div>
                 </Row>
               </button>
               <div className="flex flex-1" />
