@@ -1,10 +1,12 @@
 import * as EmailValidator from "email-validator";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import NewPasswordInput from "../../components/NewPasswordInput";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
+import ToastMessage from "../../components/ToastMessage";
 import Toggle from "../../components/Toggle";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
@@ -18,7 +20,7 @@ import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
 export default function UserSettings() {
-  const { user } = useUser();
+  const { user, updateUserSetting } = useUser();
   const { api } = useApi();
   const [hasEmailAlerts, setHasEmailAlerts] = useState(
     user!.settings.find((s) => s.key === "notify" && s.enabled === true) !==
@@ -101,7 +103,8 @@ export default function UserSettings() {
           enabled: enabled,
         })
         .then((res) => res.data),
-    onSuccess: (data) => {
+    onSuccess: (data: SettingShort) => {
+      updateUserSetting(data);
       setHasEmailAlerts(data.enabled);
       setEmailTime(data.value.split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
@@ -169,6 +172,19 @@ export default function UserSettings() {
     },
     onSuccess: () => {
       setChangePasswordState("Password changed.");
+    },
+  });
+
+  // Export Happienss entries
+  const { isLoading: exportLoading, mutate: exportEntries } = useMutation({
+    mutationFn: () => api.get("/happiness/export").then((res) => res.data),
+    onSuccess: () => {
+      toast.custom(<ToastMessage message="📧 Export Sent" />);
+    },
+    onError: () => {
+      toast.custom(
+        <ToastMessage message="❌ Export Failed, Check Your Internet" />,
+      );
     },
   });
 
@@ -253,11 +269,23 @@ export default function UserSettings() {
           variation="GRAY"
         />
         <p className="font-normal text-gray-400">Change password:</p>
-        <Button label="Change Password" associatedModalId="change-password" />
+        <Button
+          label="Change Password"
+          variation="GRAY"
+          associatedModalId="change-password"
+        />
+        <h4 className="text-gray-600">Public Entries</h4>
+        <Button
+          label="Export Happiness Entries"
+          variation="GRAY"
+          onClick={exportEntries}
+          icon={exportLoading ? <Spinner variaton="SMALL" /> : undefined}
+        />
 
         <h4 className="text-gray-600">Private Journals</h4>
         <Button
           label="Set Up Recovery Key"
+          variation="GRAY"
           onClick={() => {
             window.HSOverlay.open(document.querySelector("#recovery"));
           }}
