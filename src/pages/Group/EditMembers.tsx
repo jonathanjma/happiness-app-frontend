@@ -156,13 +156,18 @@ export function InviteFriends() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
 
-  // TODO: add URL
   const inviteUsers = useMutation({
-    mutationFn: (email: string) => api.post("", {}),
+    mutationFn: (email: string) =>
+      api.post("/user/nudge/", {
+        email: email,
+      }),
     onSuccess: () => {
       toast.custom(<ToastMessage message="✉️ Invite Sent" />);
       setEmail("");
       setEmailError("");
+    },
+    onError: () => {
+      setEmailError("User with specified email already exists.");
     },
   });
 
@@ -172,7 +177,7 @@ export function InviteFriends() {
     } else if (!EmailValidator.validate(email)) {
       setEmailError("Invalid email.");
     } else {
-      inviteUsers.mutate(emailError);
+      inviteUsers.mutate(email);
     }
   };
 
