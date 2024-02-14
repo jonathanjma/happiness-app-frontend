@@ -87,18 +87,17 @@ export function GroupMembers({ group }: { group: Group }) {
         {/* List current members */}
         <p className="text-gray-600">Current Members:</p>
         <Row className="flex-wrap gap-y-1">
-          {groupData.users.map((member) =>
-            user!.id !== member.id ? (
-              <UserChip
-                key={member.id}
-                user={member}
-                onRemove={() => {
-                  setRemovingInvite(false);
-                  removeUser.mutate(member.username);
-                }}
-              />
-            ) : undefined,
-          )}
+          {groupData.users.map((member) => (
+            <UserChip
+              key={member.id}
+              user={member}
+              onRemove={() => {
+                setRemovingInvite(false);
+                removeUser.mutate(member.username);
+              }}
+              hideRemove={user!.id === member.id}
+            />
+          ))}
           {!removingInvite && removeUser.isLoading ? <Spinner /> : undefined}
         </Row>
         {/* List invited members */}
