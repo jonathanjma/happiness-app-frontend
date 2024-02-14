@@ -15,7 +15,7 @@ export default function DeleteAccountModals({ id }: { id: string }) {
   const { api } = useApi();
   // DANGEROUS delete account mutation
   const { isLoading, mutate } = useMutation({
-    mutationFn: () => api.delete("/user/"),
+    mutationFn: () => api.delete("/user/", { body: { password: password } }),
     onSuccess: () => {
       deleteUser();
       window.HSOverlay.open(document.querySelector("#sadness-app"));
@@ -39,7 +39,7 @@ export default function DeleteAccountModals({ id }: { id: string }) {
             type="password"
             value={password}
             onChangeValue={setPassword}
-            className="my-6"
+            className="my-6 w-[250px]"
           />
           <Row className="gap-4">
             <Button
