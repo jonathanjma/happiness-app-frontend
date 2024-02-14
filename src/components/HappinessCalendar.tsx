@@ -87,6 +87,7 @@ export default function HappinessCalendar({
           ],
           async () => {
             const res = await api.get<Happiness[]>("/happiness/", {
+              id: userId,
               start: formatDate(finalStartDate),
               end: formatDate(finalEndDate),
             });
