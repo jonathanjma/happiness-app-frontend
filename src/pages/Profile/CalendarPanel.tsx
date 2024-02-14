@@ -20,7 +20,7 @@ export default function CalendarPanel({
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
   const [selectedHappiness, setSelectedHappiness] = useState<
-    Happiness | undefined
+    Happiness[] | undefined
   >(undefined);
 
   const navigate = useNavigate();
@@ -61,14 +61,16 @@ export default function CalendarPanel({
         <div>
           <div className="h-8" />
           <SmallHappinessCard
-            happiness={selectedHappiness}
+            happiness={selectedHappiness[0]}
             actions={
               userId === user!.id
                 ? [
                     {
                       label: "Open In Entries",
                       onClick: () => {
-                        navigate(`/home?date=${selectedHappiness.timestamp}`);
+                        navigate(
+                          `/home?date=${selectedHappiness[0].timestamp}`,
+                        );
                       },
                     },
                   ]
@@ -77,7 +79,7 @@ export default function CalendarPanel({
                       label: "Expand",
                       modalId: "happiness-viewer",
                       onClick: () => {
-                        setEntry(selectedHappiness);
+                        setEntry(selectedHappiness[0]);
                       },
                     },
                   ]

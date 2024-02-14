@@ -6,23 +6,40 @@ import Row from "../layout/Row";
 import Modal from "./Modal";
 import { dateFromStr } from "../../utils";
 import { dateOrTodayYesterday } from "../../pages/Group/GroupFeed";
+import LeftArrowIcon from "../../assets/arrow_left.svg";
 
 export default function HappinessViewerModal({
   happiness,
   id,
+  onBackButtonPress,
 }: {
   happiness: Happiness;
   id: string;
+  onBackButtonPress?: () => void;
 }) {
   return (
     <Modal id={id}>
       <Column className="w-[600px] gap-6">
         {/* Top row for closing */}
         <Row>
-          <div className="flex flex-1" />
-          <button data-hs-overlay={`#${id}`}>
-            <CloseIcon color="#575F68" />
-          </button>
+          {onBackButtonPress ? (
+            <>
+              <button onClick={onBackButtonPress}>
+                <Row>
+                  <img src={LeftArrowIcon} className="h-full" />
+                  <div className="ml-1 font-normal text-gray-600">Back</div>
+                </Row>
+              </button>
+              <div className="flex flex-1" />
+            </>
+          ) : (
+            <>
+              <div className="flex flex-1" />
+              <button data-hs-overlay={`#${id}`}>
+                <CloseIcon color="#575F68" />
+              </button>
+            </>
+          )}
         </Row>
 
         {/* Profile and score row */}
