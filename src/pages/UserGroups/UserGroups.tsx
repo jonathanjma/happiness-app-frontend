@@ -5,16 +5,16 @@ import Spinner from "../../components/Spinner";
 import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
-import { UserGroups } from "../../data/models/User";
+import { AllGroups } from "../../data/models/Group";
 import GroupCard from "./GroupCard";
 
 export default function UserGroups() {
   const navigate = useNavigate();
   const { api } = useApi();
 
-  const { isLoading, data, isError } = useQuery<UserGroups>(
+  const { isLoading, data, isError } = useQuery<AllGroups>(
     [QueryKeys.FETCH_USER_GROUPS],
-    () => api.get<UserGroups>("/group/user").then((res) => res.data),
+    () => api.get<AllGroups>("/group/user").then((res) => res.data),
   );
   return (
     <div className="my-16 me-6 ms-10">
@@ -28,7 +28,11 @@ export default function UserGroups() {
             onClick={() => navigate("/groups/create")}
           />
           <Button
-            label="Invites (0)"
+            label={`Invites ${
+              data?.group_invites?.length
+                ? `(${data.group_invites.length})`
+                : ""
+            }`}
             onClick={() => {
               navigate("/groups/invites");
             }}
