@@ -1,10 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { Group } from "../../data/models/Group";
 import Card from "../../components/Card";
 import Row from "../../components/layout/Row";
+import { Group } from "../../data/models/Group";
 
-export default function GroupCard({ groupData }: { groupData: Group }) {
+export default function GroupCard({
+  groupData,
+  onAccept,
+  onDecline,
+  acceptButtonIcon,
+  declineButtonIcon,
+}: {
+  groupData: Group;
+  onAccept?: () => void;
+  onDecline?: () => void;
+  acceptButtonIcon?: React.ReactElement;
+  declineButtonIcon?: React.ReactElement;
+}) {
   const navigate = useNavigate();
+  const acceptDenyButtonClass =
+    "flex justify-center flex-grow rounded-lg border border-gray-100 bg-brand_off_white py-3 text-sm font-semibold shadow-md2";
 
   return (
     <Card className="border-yellow bg-light_yellow">
@@ -33,12 +47,34 @@ export default function GroupCard({ groupData }: { groupData: Group }) {
           </div>
         </Row>
         {/* Open group button */}
-        <button
-          className="w-full rounded-lg border border-gray-100 bg-brand_off_white py-3 text-sm font-semibold text-secondary shadow-md2"
-          onClick={() => navigate("/groups/" + groupData.id)}
-        >
-          Open
-        </button>
+        {!onAccept && (
+          <button
+            className="w-full rounded-lg border border-gray-100 bg-brand_off_white py-3 text-sm font-semibold text-secondary shadow-md2"
+            onClick={() => navigate("/groups/" + groupData.id)}
+          >
+            Open
+          </button>
+        )}
+        {onAccept && (
+          <Row className="w-full justify-stretch gap-4">
+            <button
+              className={acceptDenyButtonClass + " text-secondary"}
+              onClick={onAccept}
+            >
+              {acceptButtonIcon}
+              {acceptButtonIcon && <div className="w-4" />}
+              Accept
+            </button>
+            <button
+              className={acceptDenyButtonClass + " text-error"}
+              onClick={onDecline}
+            >
+              {declineButtonIcon}
+              {declineButtonIcon && <div className="w-4" />}
+              Decline
+            </button>
+          </Row>
+        )}
       </div>
     </Card>
   );

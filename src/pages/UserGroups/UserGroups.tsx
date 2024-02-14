@@ -5,27 +5,39 @@ import Spinner from "../../components/Spinner";
 import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
-import { UserGroups } from "../../data/models/User";
+import { AllGroups } from "../../data/models/Group";
 import GroupCard from "./GroupCard";
 
 export default function UserGroups() {
   const navigate = useNavigate();
   const { api } = useApi();
-  const { isLoading, data, isError } = useQuery<UserGroups>(
-    [QueryKeys.FETCH_USER_GROUPS],
-    () => api.get<UserGroups>("/group/user").then((res) => res.data),
-  );
 
+  const { isLoading, data, isError } = useQuery<AllGroups>(
+    [QueryKeys.FETCH_USER_GROUPS],
+    () => api.get<AllGroups>("/group/user").then((res) => res.data),
+  );
   return (
     <div className="my-16 me-6 ms-10">
       {/* Header */}
       <Row className="mb-8 w-full justify-between">
         <h2 className="self-center font-semibold">Your Groups</h2>
-        <Button
-          label="New Group"
-          variation="FILLED"
-          onClick={() => navigate("/groups/create")}
-        />
+        <Row className="gap-4">
+          <Button
+            label="New Group"
+            variation="FILLED"
+            onClick={() => navigate("/groups/create")}
+          />
+          <Button
+            label={`Invites ${
+              data?.group_invites?.length
+                ? `(${data.group_invites.length})`
+                : ""
+            }`}
+            onClick={() => {
+              navigate("/groups/invites");
+            }}
+          />
+        </Row>
       </Row>
       {/* Group cards */}
       {isLoading ? (

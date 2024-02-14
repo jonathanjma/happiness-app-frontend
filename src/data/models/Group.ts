@@ -6,3 +6,7 @@ export interface Group {
   users: SimpleUser[];
   invited_users: SimpleUser[];
 }
+export interface AllGroups {
+  groups: Group[];
+  group_invites: Group[];
+}
