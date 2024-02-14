@@ -63,13 +63,16 @@ export default function UserSettings() {
   // for recovery phrase modal
   const [triedSubmit, setTriedSubmit] = useState(false);
 
-  const [emailTimeNetworkingState, setEmailTimeNetworkingState] = useState(
-    Constants.FINISHED_MUTATION_TEXT,
-  );
+  const [emailTimeNetworkingState, setEmailTimeNetworkingState] =
+    useState<string>(Constants.FINISHED_MUTATION_TEXT);
   // For email updating based on timeout
   const updateEmailTimeout = useRef<number | undefined>();
   const updateEmailHandler = () => {
-    updateEmailAlerts.mutate(hasEmailAlerts);
+    if (hasEmailAlerts && parseInt(emailTime.split(":")[1]) % 30 !== 0) {
+      setEmailTimeNetworkingState("Error: Time must be on 30 minute increment");
+    } else {
+      updateEmailAlerts.mutate(hasEmailAlerts);
+    }
   };
 
   // update time when time is updated
@@ -108,6 +111,9 @@ export default function UserSettings() {
       setHasEmailAlerts(data.enabled);
       setEmailTime(data.value.split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+    },
+    onError: () => {
+      setEmailTimeNetworkingState("Error: Cannot update time");
     },
   });
 
@@ -214,10 +220,20 @@ export default function UserSettings() {
               label="Reminder Time"
               type="time"
               className="w-[250px]"
+              supportingText={
+                emailTimeNetworkingState.toLowerCase().includes("error")
+                  ? ""
+                  : emailTimeNetworkingState
+              }
+              errorText={
+                emailTimeNetworkingState.toLowerCase().includes("error")
+                  ? emailTimeNetworkingState
+                  : ""
+              }
+              hasError={emailTimeNetworkingState
+                .toLowerCase()
+                .includes("error")}
             />
-            <label className="font-normal text-gray-600">
-              {emailTimeNetworkingState}
-            </label>
           </>
         )}
 
