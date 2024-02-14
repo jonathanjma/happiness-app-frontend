@@ -1,16 +1,16 @@
-import Row from "../../components/layout/Row";
 import HappinessAppText from "../../assets/happiness_app.svg";
 import JournalImg from "../../assets/journals_image.png";
+import Row from "../../components/layout/Row";
 // import GroupImg from "../../assets/groups_image.png";
 import WelcomeImg from "../../assets/welcome_image.png";
 import WelcomeJournal from "../../assets/welcome_journal.svg";
-import WelcomeTrack from "../../assets/welcome_track.svg";
 import WelcomeShare from "../../assets/welcome_share.svg";
-import Column from "../../components/layout/Column";
+import WelcomeTrack from "../../assets/welcome_track.svg";
 import Button from "../../components/Button";
+import Column from "../../components/layout/Column";
 import ForgotPasswordModal from "./ForgotPasswordModal";
-import SignUpModal from "./SignUpModal";
 import LoginModal from "./LoginModal";
+import SignUpModal from "./SignUpModal";
 
 function FeatureCard({
   title,
@@ -97,7 +97,7 @@ export default function Welcome() {
           </Column>
           <img
             src={WelcomeImg}
-            className="hidden max-h-[400px] max-w-[400px] basis-1/2 sm:block"
+            className=" mr-32 hidden max-h-[400px] max-w-[400px] basis-1/2 sm:block"
           />
         </Row>
       </div>
