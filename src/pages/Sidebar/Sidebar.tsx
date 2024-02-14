@@ -100,7 +100,7 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                           className={
                             "mt-2 hover:bg-medium_yellow hover:shadow-md1 " +
                             (entry.title === "Settings" && height >= 750
-                              ? " absolute bottom-0 w-[256px]"
+                              ? "absolute bottom-0 w-[256px] "
                               : "")
                           }
                         />

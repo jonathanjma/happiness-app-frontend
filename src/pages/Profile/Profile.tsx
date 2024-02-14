@@ -1,23 +1,23 @@
-import Row from "../../components/layout/Row";
-import { useUser } from "../../contexts/UserProvider";
-import Column from "../../components/layout/Column";
-import Button from "../../components/Button";
-import { TabButton, TabPanel } from "../../components/Tabs";
-import PostIcon from "../../assets/post.svg";
-import GraphIcon from "../../assets/graph.svg";
-import TableIcon from "../../assets/table.svg";
-import TimelinePanel from "./TimelinePanel";
 import React, { useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { useApi } from "../../contexts/ApiProvider";
 import toast from "react-hot-toast";
-import ToastMessage from "../../components/ToastMessage";
-import Spinner from "../../components/Spinner";
-import CalendarPanel from "./CalendarPanel";
+import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { User, UserStats } from "../../data/models/User";
+import PostIcon from "../../assets/post.svg";
+import TableIcon from "../../assets/table.svg";
+import Button from "../../components/Button";
+import Spinner from "../../components/Spinner";
+import { TabButton, TabPanel } from "../../components/Tabs";
+import ToastMessage from "../../components/ToastMessage";
+import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
 import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
+import { useApi } from "../../contexts/ApiProvider";
+import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
+import { User } from "../../data/models/User";
+import CalendarPanel from "./CalendarPanel";
+import TimelinePanel from "./TimelinePanel";
 
 export default function Profile() {
   const { api } = useApi();
@@ -137,7 +137,10 @@ export default function Profile() {
                     <nav aria-label="Tabs" role="tablist">
                       <TabButton index={1} icon={PostIcon} title="TIMELINE" />
                       <TabButton index={2} icon={TableIcon} title="CALENDAR" />
-                      <TabButton index={3} icon={GraphIcon} title="GRAPH" />
+                      {/* 
+                      TODO for Alex
+                      <TabButton index={3} icon={GraphIcon} title="GRAPH" /> 
+                      */}
                     </nav>
                   </div>
                 </div>

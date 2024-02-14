@@ -13,12 +13,14 @@ export default function HappinessCalendar({
   selectedEntry,
   onSelectEntry,
   userId,
+  groupId = undefined, // undefined if for individual user and not for group
 }: {
   startDate: Date;
   variation: "MONTHLY" | "WEEKLY";
-  selectedEntry: Happiness | undefined;
-  onSelectEntry: (selectedEntry: Happiness) => void;
+  selectedEntry: Happiness[] | undefined;
+  onSelectEntry: (selectedEntry: Happiness[]) => void;
   userId?: number;
+  groupId?: undefined | number;
 }) {
   const { api } = useApi();
   const { user } = useUser();
@@ -60,20 +62,37 @@ export default function HappinessCalendar({
     finalEndDate.setDate(finalEndDate.getDate() + 7);
   }
 
-  const { isLoading, data, isError } = useQuery<Happiness[]>(
-    [
-      QueryKeys.FETCH_HAPPINESS,
-      `${formatDate(startDate)} to ${formatDate(endDate)}`,
-    ],
-    async () => {
-      const res = await api.get<Happiness[]>("/happiness/", {
-        start: formatDate(finalStartDate),
-        end: formatDate(finalEndDate),
-        id: userId ?? user!.id,
-      });
-      return res.data;
-    },
-  );
+  const { isLoading, data, isError } =
+    groupId !== undefined
+      ? useQuery<Happiness[]>(
+          [
+            QueryKeys.FETCH_GROUP_HAPPINESS,
+            `${formatDate(startDate)} to ${formatDate(endDate)}`,
+          ],
+          async () => {
+            const res = await api.get<Happiness[]>(
+              `/group/${groupId}/happiness`,
+              {
+                start: formatDate(finalStartDate),
+                end: formatDate(finalEndDate),
+              },
+            );
+            return res.data;
+          },
+        )
+      : useQuery<Happiness[]>(
+          [
+            QueryKeys.FETCH_HAPPINESS,
+            `${formatDate(startDate)} to ${formatDate(endDate)}`,
+          ],
+          async () => {
+            const res = await api.get<Happiness[]>("/happiness/", {
+              start: formatDate(finalStartDate),
+              end: formatDate(finalEndDate),
+            });
+            return res.data;
+          },
+        );
 
   return (
     <div
@@ -98,23 +117,29 @@ export default function HappinessCalendar({
         <p className="text-gray-400">Error: Could not load entries.</p>
       ) : (
         days.map((date, i) => {
-          const matchingHappiness = data?.find(
+          const matchingHappiness = data?.filter(
             (h) => h.timestamp === formatDate(date),
           );
-          if (matchingHappiness) {
+          // checks if matchingHappiness array exists and the first entry exists
+          if (matchingHappiness && matchingHappiness[0]) {
             return (
               <Row key={i} className="w-full justify-center">
                 <DayCell
-                  happiness={matchingHappiness}
+                  happinessValue={
+                    matchingHappiness
+                      .map((happiness) => happiness.value)
+                      .reduce((a, b) => a + b, 0) / matchingHappiness.length
+                  }
+                  happinessDate={dateFromStr(matchingHappiness[0].timestamp)}
                   isSelected={
                     selectedEntry !== undefined &&
                     selectedEntry &&
-                    formatDate(date) === selectedEntry.timestamp
+                    formatDate(date) === selectedEntry[0].timestamp
                   }
                   onClick={() => {
                     onSelectEntry(matchingHappiness);
                   }}
-                  key={matchingHappiness.id}
+                  key={matchingHappiness[0].id}
                   showWeekday={variation === "WEEKLY"}
                 />
               </Row>
@@ -136,21 +161,22 @@ export default function HappinessCalendar({
 }
 
 const DayCell = ({
-  happiness,
+  happinessValue,
+  happinessDate,
   isSelected,
   onClick,
   showWeekday = false,
 }: {
-  happiness: Happiness;
+  happinessValue: number;
+  happinessDate: Date;
   isSelected: boolean;
   onClick: () => void;
   showWeekday?: boolean;
 }) => {
-  const happinessPercent = happiness.value * 10;
-  const cellNumber = dateFromStr(happiness.timestamp).getDate();
-  const isToday = formatDate(new Date()) === happiness.timestamp;
+  const happinessPercent = happinessValue * 10;
+  const cellNumber = happinessDate.getDate();
+  const isToday = formatDate(new Date()) === formatDate(happinessDate);
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
-
   return (
     <div
       className={`h-10 w-10 rounded-lg border-[1.5px] ${
@@ -169,9 +195,7 @@ const DayCell = ({
             } font-semibold`}
           >
             {showWeekday
-              ? dateFromStr(happiness.timestamp).toLocaleDateString("en-us", {
-                  weekday: "short",
-                })
+              ? happinessDate.toLocaleDateString("en-us", { weekday: "short" })
               : cellNumber}
           </p>
         </div>
