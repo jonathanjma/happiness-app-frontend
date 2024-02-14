@@ -1,10 +1,12 @@
-import Row from "../../components/layout/Row";
+import { useNavigate } from "react-router-dom";
 import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
 import { Group } from "../../data/models/Group";
 import GroupFeed from "./GroupFeed";
 
 // Content for the feed tab panel on the groups page
 export default function FeedPanel({ groupData }: { groupData: Group }) {
+  const navigate = useNavigate();
   return (
     <Row className="h-full gap-x-8 py-4">
       {/* Entry Feed */}
@@ -21,7 +23,14 @@ export default function FeedPanel({ groupData }: { groupData: Group }) {
               className="max-w-[42px] rounded-full"
             />
             <Column className="justify-center">
-              <p className="text-gray-600">{user.username}</p>
+              <p
+                className="text-gray-600 hover:cursor-pointer hover:underline"
+                onClick={() => {
+                  navigate(`/profile/${user.id}`);
+                }}
+              >
+                {user.username}
+              </p>
             </Column>
           </Row>
         ))}
