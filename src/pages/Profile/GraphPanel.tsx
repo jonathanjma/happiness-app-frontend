@@ -12,6 +12,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { formatDate } from "../../utils";
+import DateArrow from "../../components/DateArrow";
 
 export default function GraphPanel({
   userId,
@@ -27,19 +28,13 @@ export default function GraphPanel({
   const navigate = useNavigate();
 
   const [start, setStart] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate() - 6,
-    ),
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
   const [end, setEnd] = useState(
-    new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    ),
+    new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   );
+
+  const [graphSubTitle, setGraphSubTitle] = useState("");
 
   const statNames = ["Show Average", "Show Median"];
 
@@ -79,6 +74,16 @@ export default function GraphPanel({
         .then((res) => res.data),
   });
 
+  // change subtitle when data changes
+  useEffect(() => {
+    setGraphSubTitle(
+      () =>
+        start.toLocaleString("default", { month: "long" }) +
+        " " +
+        start.getFullYear(),
+    );
+  }, [data]);
+
   return (
     <div className="scroll-hidden h-full overflow-auto py-4">
       {isLoading ? (
@@ -93,10 +98,26 @@ export default function GraphPanel({
                 <p className="text-gray-400">No data for selected period.</p>
               ) : (
                 <div className="mx-8">
+                  <Row className="mb-4 w-full space-x-1">
+                    <div className="flex flex-1" />
+                    <DateArrow
+                      dates={[start, end]}
+                      setCurDates={[setStart, setEnd]}
+                      change={1}
+                      variation={"MONTHLY"}
+                    />
+                    <DateArrow
+                      dates={[start, end]}
+                      setCurDates={[setStart, setEnd]}
+                      change={-1}
+                      variation={"MONTHLY"}
+                    />
+                  </Row>
                   <Column>
                     <Graph
                       entries={data}
-                      graphTitle="Recent Happiness"
+                      graphTitle="Monthly Happiness"
+                      graphSubTitle={graphSubTitle}
                       range={[start, end]}
                       onSelectEntry={(entry: Happiness[]) => {
                         if (selectedEntry && selectedEntry.id === entry[0].id) {
