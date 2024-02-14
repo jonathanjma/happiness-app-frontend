@@ -2,19 +2,18 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import RemoveIcon from "../../assets/close.svg";
 import BackButton from "../../components/BackButton";
 import Button from "../../components/Button";
 import TextField from "../../components/TextField";
 import ToastMessage from "../../components/ToastMessage";
 import Column from "../../components/layout/Column";
-import Row from "../../components/layout/Row";
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 import { MutationKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Group } from "../../data/models/Group";
 import { SimpleUser, User } from "../../data/models/User";
+import UserChip from "../../components/UserChip";
 
 export default function CreateGroup() {
   const { api } = useApi();
@@ -67,7 +66,7 @@ export default function CreateGroup() {
 
   // Adds user to invite list if input is non-empty, user is not already in group, and user is valid
   const addUser = () => {
-    if (!curUserAdd) {
+    if (curUserAdd.trim() === "") {
       setUserAddError("Username cannot be empty.");
     } else if (
       groupUsers.findIndex(
@@ -122,23 +121,11 @@ export default function CreateGroup() {
               <>
                 {/* User Chips */}
                 {groupUsers.map((user) => (
-                  <Row
+                  <UserChip
                     key={user.id}
-                    className="mb-1 mr-2 items-center gap-x-0.5 rounded-2xl bg-yellow px-[5px] py-[3px]"
-                  >
-                    <img
-                      src={user.profile_picture}
-                      className="max-h-[22px] rounded-full"
-                    />
-                    <p className="pb-0.5 font-normal text-secondary">
-                      {user.username}
-                    </p>
-                    <img
-                      src={RemoveIcon}
-                      className="max-h-[12px] hover:cursor-pointer"
-                      onClick={() => removeUser(user.username)}
-                    />
-                  </Row>
+                    user={user}
+                    onRemove={() => removeUser(user.username)}
+                  />
                 ))}
               </>
             ) : undefined

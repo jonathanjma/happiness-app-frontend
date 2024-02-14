@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
+import { User, UserStats } from "../../data/models/User";
 import PostIcon from "../../assets/post.svg";
 import TableIcon from "../../assets/table.svg";
 import Button from "../../components/Button";
@@ -14,7 +15,6 @@ import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { User } from "../../data/models/User";
 import CalendarPanel from "./CalendarPanel";
 import TimelinePanel from "./TimelinePanel";
 
@@ -32,6 +32,14 @@ export default function Profile() {
     queryKey: ["fetchUser", userId],
     queryFn: () => api.get<User>("/user/" + userId).then((res) => res.data),
     enabled: !loggedInUser,
+  });
+
+  const userStats = useQuery<UserStats>({
+    queryKey: ["fetchUserStats", userId],
+    queryFn: () =>
+      api
+        .get<UserStats>("/user/count/?user_id=" + userId)
+        .then((res) => res.data),
   });
 
   const changePfp = useMutation({
@@ -82,9 +90,15 @@ export default function Profile() {
                     />
                     <Column className="gap-y-1">
                       <h2>{loggedInUser ? user!.username : data!.username}</h2>
-                      <p className="font-normal text-gray-600">
-                        {"Groups: 1 | Entries: 100"}
-                      </p>
+                      {userStats.isLoading ? (
+                        <Spinner variaton="SMALL" />
+                      ) : (
+                        <p className="font-normal text-gray-600">
+                          {`Groups: ${userStats.data!.groups} | Entries: ${
+                            userStats.data!.entries
+                          }`}
+                        </p>
+                      )}
                       <p className="font-normal text-gray-600">
                         {"Member Since: " +
                           new Date(

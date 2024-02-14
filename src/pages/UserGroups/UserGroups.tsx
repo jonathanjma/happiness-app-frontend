@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
@@ -43,9 +42,11 @@ export default function UserGroups() {
                 </p>
               ) : (
                 <div className="grid w-full grid-cols-2 gap-6">
-                  {data!.groups.sort((a, b) => a.id - b.id).map((group) => (
-                    <GroupCard key={group.id} groupData={group} />
-                  ))}
+                  {data!.groups
+                    .sort((a, b) => a.id - b.id)
+                    .map((group) => (
+                      <GroupCard key={group.id} groupData={group} />
+                    ))}
                 </div>
               )}
             </>

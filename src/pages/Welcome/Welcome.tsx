@@ -1,6 +1,8 @@
 import Row from "../../components/layout/Row";
 import HappinessAppText from "../../assets/happiness_app.svg";
-import WelcomeImg from "../../assets/welcome_placeholder.png";
+import JournalImg from "../../assets/journals_image.png";
+// import GroupImg from "../../assets/groups_image.png";
+import WelcomeImg from "../../assets/welcome_image.png";
 import WelcomeJournal from "../../assets/welcome_journal.svg";
 import WelcomeTrack from "../../assets/welcome_track.svg";
 import WelcomeShare from "../../assets/welcome_share.svg";
@@ -79,7 +81,7 @@ export default function Welcome() {
 
       {/* Fixed Div */}
       <div className="radial fixed top-0 h-full w-full bg-light_yellow">
-        <Row className="items-center justify-between py-32 pl-12 pr-12 md:pl-28">
+        <Row className="items-center justify-between py-32 pl-12 pr-28 md:pl-28">
           <Column className="basis-1/2 pr-14">
             <p className="mb-12 text-5xl font-extrabold text-secondary">
               Begin Your <br /> Happiness Journey.
@@ -95,7 +97,7 @@ export default function Welcome() {
           </Column>
           <img
             src={WelcomeImg}
-            className="hidden max-h-[450px] max-w-[450px] basis-1/2 rounded-3xl sm:block"
+            className="hidden max-h-[400px] max-w-[400px] basis-1/2 sm:block"
           />
         </Row>
       </div>
@@ -107,12 +109,16 @@ export default function Welcome() {
             <p className="mb-4 text-5xl font-extrabold text-secondary">
               Our Key Features
             </p>
-            <h2 className="font-normal text-gray-600">
+            <h2 className="mb-8 font-normal text-gray-600">
               <span className="font-bold text-secondary">
                 Elevating mindfulness and community
               </span>{" "}
               are the key of our app.
             </h2>
+            {/*<img*/}
+            {/*  src={GroupImg}*/}
+            {/*  className="hidden max-w-[300px] basis-1/2 sm:block"*/}
+            {/*/>*/}
           </Column>
           <Column className="basis-1/2 gap-y-16">
             {features.map((feature, i) => (
@@ -125,7 +131,7 @@ export default function Welcome() {
             ))}
           </Column>
         </Row>
-        <Row className="flex-wrap items-center justify-between bg-white pb-32 pl-12 pr-12 md:pl-28">
+        <Row className="items-center justify-between bg-white pb-32 pl-12 pr-28 md:pl-28">
           <Column className="basis-1/2 pr-14">
             <h2 className="mb-4 font-normal text-secondary">
               Introducing
@@ -139,6 +145,10 @@ export default function Welcome() {
               Enjoy the best privacy with Happiness App.
             </h4>
           </Column>
+          <img
+            src={JournalImg}
+            className="hidden max-h-[300px] max-w-[300px] basis-1/2 sm:block"
+          />
         </Row>
       </div>
       <ForgotPasswordModal id="forgot-pass-modal" onLoginClick={openLogin} />
