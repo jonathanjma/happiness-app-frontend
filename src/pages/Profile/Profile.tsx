@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { User, UserStats } from "../../data/models/User";
 import PostIcon from "../../assets/post.svg";
 import TableIcon from "../../assets/table.svg";
+import GraphIcon from "../../assets/graph.svg";
 import Button from "../../components/Button";
 import Spinner from "../../components/Spinner";
 import { TabButton, TabPanel } from "../../components/Tabs";
@@ -17,6 +18,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
 import CalendarPanel from "./CalendarPanel";
 import TimelinePanel from "./TimelinePanel";
+import GraphPanel from "./GraphPanel";
 
 export default function Profile() {
   const { api } = useApi();
@@ -136,10 +138,7 @@ export default function Profile() {
                     <nav aria-label="Tabs" role="tablist">
                       <TabButton index={1} icon={PostIcon} title="TIMELINE" />
                       <TabButton index={2} icon={TableIcon} title="CALENDAR" />
-                      {/* 
-                      TODO for Alex
-                      <TabButton index={3} icon={GraphIcon} title="GRAPH" /> 
-                      */}
+                      <TabButton index={3} icon={GraphIcon} title="GRAPH" />
                     </nav>
                   </div>
                 </div>
@@ -157,14 +156,18 @@ export default function Profile() {
                     />
                   </TabPanel>
                   <TabPanel index={3}>
-                    <p>Graph View</p>
+                    <GraphPanel
+                      userId={userId}
+                      selectedEntry={selectedEntry}
+                      setEntry={setSelectedEntry}
+                    />
                   </TabPanel>
                 </div>
               </>
             )}
           </>
         )}
-        {!loggedInUser && selectedEntry && (
+        {selectedEntry && (
           <HappinessViewerModal
             happiness={selectedEntry}
             id="happiness-viewer"
