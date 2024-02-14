@@ -15,7 +15,6 @@ import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness } from "../../data/models/Happiness";
-import { User } from "../../data/models/User";
 import CalendarPanel from "./CalendarPanel";
 import TimelinePanel from "./TimelinePanel";
 
