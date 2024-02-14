@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
@@ -12,21 +11,29 @@ import GroupCard from "./GroupCard";
 export default function UserGroups() {
   const navigate = useNavigate();
   const { api } = useApi();
+
   const { isLoading, data, isError } = useQuery<UserGroups>(
     [QueryKeys.FETCH_USER_GROUPS],
     () => api.get<UserGroups>("/group/user").then((res) => res.data),
   );
-
   return (
     <div className="my-16 me-6 ms-10">
       {/* Header */}
       <Row className="mb-8 w-full justify-between">
         <h2 className="self-center font-semibold">Your Groups</h2>
-        <Button
-          label="New Group"
-          variation="FILLED"
-          onClick={() => navigate("/groups/create")}
-        />
+        <Row className="gap-4">
+          <Button
+            label="New Group"
+            variation="FILLED"
+            onClick={() => navigate("/groups/create")}
+          />
+          <Button
+            label="Invites (0)"
+            onClick={() => {
+              navigate("/groups/invites");
+            }}
+          />
+        </Row>
       </Row>
       {/* Group cards */}
       {isLoading ? (
@@ -43,9 +50,11 @@ export default function UserGroups() {
                 </p>
               ) : (
                 <div className="grid w-full grid-cols-2 gap-6">
-                  {data!.groups.sort((a, b) => a.id - b.id).map((group) => (
-                    <GroupCard key={group.id} groupData={group} />
-                  ))}
+                  {data!.groups
+                    .sort((a, b) => a.id - b.id)
+                    .map((group) => (
+                      <GroupCard key={group.id} groupData={group} />
+                    ))}
                 </div>
               )}
             </>

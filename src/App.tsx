@@ -8,14 +8,15 @@ import AllSearchResults from "./pages/AllSearchResults/AllSearchResults";
 import CreateGroup from "./pages/CreateGroup/CreateGroup";
 import Entries from "./pages/Entries/Entries";
 import Group from "./pages/Group/Group";
+import GroupInvites from "./pages/GroupInvites/GroupInvites";
 import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
+import Profile from "./pages/Profile/Profile";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import UserSettings from "./pages/UserSettings/UserSettings";
 import Welcome from "./pages/Welcome/Welcome";
-import Profile from "./pages/Profile/Profile";
-import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 export default function App() {
   return (
@@ -53,6 +54,10 @@ export default function App() {
                         <Route
                           path="/groups/create"
                           element={<CreateGroup />}
+                        />
+                        <Route
+                          path="/groups/invites"
+                          element={<GroupInvites />}
                         />
                         <Route path="/journal" element={<PrivateEntries />} />
                         <Route path="/statistics" element={<Statistics />} />
