@@ -14,7 +14,7 @@
     }
 
     h2 {
-        @apply text-3xl font-medium;
+        @apply text-3xl font-semibold;
     }
 
     h3 {
@@ -72,6 +72,10 @@ input[type=number] {
     height: calc(100vh - 220px) !important;
 }
 
+.feed_height2 {
+    height: calc(100vh - 230px) !important;
+}
+
 label:hover {
     cursor: unset;
 }
@@ -85,11 +89,15 @@ label:hover {
 }
 
 .hs-overlay-backdrop {
-    z-index: unset;
+    position: unset;
 }
 
 .transition-bg-500 {
     -webkit-transition: background-color 500ms linear;
     -ms-transition: background-color 500ms linear;
     transition: background-color 500ms linear;
+}
+
+.radial {
+    background: radial-gradient(50% 50% at 50% 50%, rgba(240, 207, 120, 0.30) 0%, rgba(255, 255, 255, 0.00) 100%), #F7EFD7;
 }

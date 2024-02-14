@@ -74,7 +74,7 @@ export default function LoginModal({
         onChangeValue={setUsername}
         type="email"
         autocomplete="username"
-        inputID="user-text-field"
+        className="w-[250px]"
       />
       <div className="h-4" />
       <TextField
@@ -83,7 +83,7 @@ export default function LoginModal({
         onChangeValue={setPassword}
         type="password"
         autocomplete="current-password"
-        inputID="password-text-field"
+        className="w-[250px]"
         onEnterPressed={handleLogin}
       />
       {hasError ? (

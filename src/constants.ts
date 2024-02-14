@@ -5,6 +5,8 @@ export enum Constants {
   FINISHED_MUTATION_TEXT = "Updated",
   ERROR_MUTATION_TEXT = "Failed to apply changes, please try again later",
   NO_HAPPINESS_NUMBER = "You need to select a happiness value to save your entry",
+  LEAVE_WITHOUT_SAVING = "Still saving entry, are you sure you want to leave?",
+  CONFIRM_PASSWORD_ERROR = "Confirm password doesn't match new password",
 }
 
 export enum QueryKeys {

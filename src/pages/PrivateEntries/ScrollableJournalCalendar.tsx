@@ -8,12 +8,7 @@ import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Journal, JournalPagination } from "../../data/models/Journal";
-import {
-  dateFromStr,
-  formatDate,
-  modifyDateDay,
-  parseYYYYmmddFormat,
-} from "../../utils";
+import { dateFromStr, formatDate, modifyDateDay } from "../../utils";
 import PrivateEntryPreviewCard from "./PrivateEntryPreviewCard";
 
 export default function ScrollableJournalCalendar({
@@ -100,7 +95,7 @@ export default function ScrollableJournalCalendar({
 
     // ensure all dates are before today
     const relevantJournals = journalData.filter(
-      (x) => parseYYYYmmddFormat(x.timestamp) <= today,
+      (x) => dateFromStr(x.timestamp) <= today,
     );
 
     // add page attribute so page number is remembered
@@ -161,16 +156,18 @@ export default function ScrollableJournalCalendar({
 
   // remain scrolled to same day in calendar when new content prepended
   useEffect(() => {
-    // remember div scroll height before previous page fetch
-    if (isFetchingPreviousPage) {
-      setPrevScrollHeight(scrollRef.current!.scrollHeight);
-    }
-    // new scroll height is simply: current - previous
-    if (!isFetchingPreviousPage && data) {
-      scrollRef.current!.scrollTo({
-        top: scrollRef.current!.scrollHeight - prevScrollHeight,
-        behavior: "instant",
-      });
+    if (startDateStr) {
+      // remember div scroll height before previous page fetch
+      if (isFetchingPreviousPage) {
+        setPrevScrollHeight(scrollRef.current!.scrollHeight);
+      }
+      // new scroll height is simply: current - previous
+      else if (data) {
+        scrollRef.current!.scrollTo({
+          top: scrollRef.current!.scrollHeight - prevScrollHeight,
+          behavior: "instant",
+        });
+      }
     }
   }, [isFetchingPreviousPage]);
 

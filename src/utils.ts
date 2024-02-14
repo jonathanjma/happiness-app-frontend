@@ -13,18 +13,6 @@ export function formatDate(date: Date) {
 }
 
 /**
- * Parses a date string in the YYYY-MM-dd format while avoiding weird timezone issues.
- * Please use this function whenever trying to parse a date in this format!
- * @param dateString the string to be parsed
- * @returns date object containing the proper time
- */
-export function parseYYYYmmddFormat(dateString: string): Date {
-  // using the most upvoted solution on stack overflow https://stackoverflow.com/a/31732581
-  const values = dateString.split("-");
-  return new Date(`${values[1]}-${values[2]}-${values[0]}`);
-}
-
-/**
  * Gets the shortened form of a weekday from number, according to design.
  * For example:
  * 0 -> Sun
@@ -146,10 +134,10 @@ export function createSearchQuery(
     query.text = text;
   }
   if (!isNaN(new Date(start).getTime())) {
-    query.start = formatDate(parseYYYYmmddFormat(start));
+    query.start = formatDate(dateFromStr(start));
   }
   if (!isNaN(new Date(end).getTime())) {
-    query.end = formatDate(parseYYYYmmddFormat(end));
+    query.end = formatDate(dateFromStr(end));
   }
   if (query.start && !query.end) {
     query.end = formatDate(new Date());
@@ -180,21 +168,62 @@ export function getDaysArray(start: Date, end: Date) {
  * 0 goes to yellow-50, 0.5 goes to yellow-100, etc. up to 10
  */
 export function floatToColor(float: number): string {
-  if (float === -1) return `rgba(255,255,255,1)`;
-  const rgb: number[] = [246, 226, 174];
-  let difference = float - 5;
-  if (difference === 0) return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
-  if (difference > 0) {
-    difference += 10;
-  } else {
-    difference = 10 - difference * -1;
+  switch (float) {
+    case -1:
+      return `rgba(234, 235, 234,1)`;
+    case 0:
+      return `rgba(239, 69, 56,1)`;
+    case 0.5:
+      return `rgba(241, 95, 84,1)`;
+    case 1:
+      return `rgba(246, 118, 108,1)`;
+    case 1.5:
+      return `rgba(245, 136, 128,1)`;
+    case 2:
+      return `rgba(247, 154, 148,1)`;
+    case 2.5:
+      return `rgba(249, 169, 163,1)`;
+    case 3:
+      return `rgba(249, 202, 198,1)`;
+    case 3.5:
+      return `rgba(250, 209, 206,1)`;
+    case 4:
+      return `rgba(252, 231, 229,1)`;
+    case 4.5:
+      return `rgba(251, 238, 237,1)`;
+    case 5:
+      return `rgba(255,255,255,1)`;
+    case 5.5:
+      return `rgba(240, 248, 240,1)`;
+    case 6:
+      return `rgba(222, 239, 223,1)`;
+    case 6.5:
+      return `rgba(203, 231, 204,1)`;
+    case 7:
+      return `rgba(181, 221, 183,1)`;
+    case 7.5:
+      return `rgba(160, 211, 162,1)`;
+    case 8:
+      return `rgba(138, 201, 141,1)`;
+    case 8.5:
+      return `rgba(112, 190, 115,1)`;
+    case 9:
+      return `rgba(94, 181, 97,1)`;
+    case 9.5:
+      return `rgba(76, 173, 80,1)`;
+    case 10:
+      return `rgba(64, 148, 68,1)`;
+    default:
+      return "rgba(234, 235, 234,1)";
   }
-  const modifiedColor = rgb.map((n) => (difference * n) / 10);
-
-  return `rgba(${modifiedColor[0]},${modifiedColor[1]},${modifiedColor[2]},1)`;
 }
 
-export function getTimeZone() {
+/**
+ * Gets the user's local timezone offset in the form of + or -, and then a 24-hour time
+ * for example: -05:00
+ * @returns the desired timezone string
+ */
+export function getTimeZone(): string {
   const offset = new Date().getTimezoneOffset();
   const o = Math.abs(offset);
   return (
@@ -203,4 +232,20 @@ export function getTimeZone() {
     ":" +
     ("00" + (o % 60)).slice(-2)
   );
+}
+
+/**
+ * Get default date returns today if the user's local time is past 5am, and returns yesterday otherwise.
+ * @returns date object for today or yesterday depending on user's time.
+ */
+export function getDefaultDate(): Date {
+  const date = new Date();
+  const hours = date.getHours();
+
+  if (hours >= 5) {
+    return date;
+  } else {
+    date.setDate(date.getDate() - 1);
+    return date;
+  }
 }

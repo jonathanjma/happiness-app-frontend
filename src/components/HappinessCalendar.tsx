@@ -1,12 +1,10 @@
 import { useQuery } from "react-query";
 import { QueryKeys } from "../constants";
 import { useApi } from "../contexts/ApiProvider";
+import { useUser } from "../contexts/UserProvider";
 import { Happiness } from "../data/models/Happiness";
-import {
-  formatDate,
-  getWeekdayFromNumber,
-  parseYYYYmmddFormat,
-} from "../utils";
+import { dateFromStr, formatDate, getWeekdayFromNumber } from "../utils";
+import Spinner from "./Spinner";
 import Row from "./layout/Row";
 
 export default function HappinessCalendar({
@@ -14,15 +12,18 @@ export default function HappinessCalendar({
   variation,
   selectedEntry,
   onSelectEntry,
+  userId,
   groupId = undefined, // undefined if for individual user and not for group
 }: {
   startDate: Date;
   variation: "MONTHLY" | "WEEKLY";
   selectedEntry: Happiness[] | undefined;
   onSelectEntry: (selectedEntry: Happiness[]) => void;
+  userId?: number;
   groupId?: undefined | number;
 }) {
   const { api } = useApi();
+  const { user } = useUser();
   let endDate = new Date(startDate);
   const days = [];
   // Check the variation to format the query to send to the backend
@@ -103,7 +104,7 @@ export default function HappinessCalendar({
         Array(7)
           .fill(0)
           .map((_, i) => (
-            <Row className="w-full justify-center">
+            <Row key={i} className="w-full justify-center">
               <label className="text-xs text-gray-400">
                 {getWeekdayFromNumber(i)}
               </label>
@@ -111,27 +112,25 @@ export default function HappinessCalendar({
           ))}
 
       {isLoading ? (
-        <p>loading</p>
+        <Spinner className="ml-8" />
       ) : isError ? (
-        <p>error</p>
+        <p className="text-gray-400">Error: Could not load entries.</p>
       ) : (
-        days.map((date) => {
+        days.map((date, i) => {
           const matchingHappiness = data?.filter(
             (h) => h.timestamp === formatDate(date),
           );
           // checks if matchingHappiness array exists and the first entry exists
           if (matchingHappiness && matchingHappiness[0]) {
             return (
-              <Row className="w-full justify-center">
+              <Row key={i} className="w-full justify-center">
                 <DayCell
                   happinessValue={
                     matchingHappiness
                       .map((happiness) => happiness.value)
                       .reduce((a, b) => a + b, 0) / matchingHappiness.length
                   }
-                  happinessDate={parseYYYYmmddFormat(
-                    matchingHappiness[0].timestamp,
-                  )}
+                  happinessDate={dateFromStr(matchingHappiness[0].timestamp)}
                   isSelected={
                     selectedEntry !== undefined &&
                     selectedEntry &&
@@ -147,7 +146,7 @@ export default function HappinessCalendar({
             );
           }
           return (
-            <Row className="w-full justify-center">
+            <Row key={i} className="w-full justify-center">
               <EmptyCell
                 showWeekday={variation === "WEEKLY"}
                 key={date.getDate() + date.getMonth() * 1000}
@@ -178,29 +177,33 @@ const DayCell = ({
   const cellNumber = happinessDate.getDate();
   const isToday = formatDate(new Date()) === formatDate(happinessDate);
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
-
   return (
     <div
       className={`h-10 w-10 rounded-lg border-[1.5px] ${
         isSelected || isToday ? "border-yellow" : "border-light_yellow"
-      }  flex flex-col items-center justify-center p-1`}
+      }  flex flex-col items-center justify-center`}
       style={{
         background: `linear-gradient(to top, ${fillColor} 0%, ${fillColor} ${happinessPercent}%, transparent ${happinessPercent}%, transparent 100%)`,
       }}
       onClick={onClick}
     >
-      <p
-        className={`text-xs ${
-          isToday ? "text-secondary" : "text-gray-600"
-        } font-semibold`}
-      >
-        {showWeekday
-          ? happinessDate.toLocaleDateString("en-us", { weekday: "short" })
-          : cellNumber}
-      </p>
-      {isToday && (
-        <div className="absolute left-1/2 h-3 w-16 -translate-x-1/2 translate-y-full transform rounded-[18px] bg-yellow" />
-      )}
+      <div className="relative h-full w-full">
+        <div className="flex h-full w-full items-center justify-center">
+          <p
+            className={`text-xs ${
+              isToday ? "text-secondary" : "text-gray-600"
+            } font-semibold`}
+          >
+            {showWeekday
+              ? happinessDate.toLocaleDateString("en-us", { weekday: "short" })
+              : cellNumber}
+          </p>
+        </div>
+
+        {isToday && (
+          <div className="absolute bottom-0 left-0 right-0 mx-auto h-[3px] w-4 rounded-[18px] bg-yellow" />
+        )}
+      </div>
     </div>
   );
 };

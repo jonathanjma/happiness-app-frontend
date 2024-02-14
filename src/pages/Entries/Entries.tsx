@@ -7,6 +7,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
+import { formatDate } from "../../utils";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -83,6 +84,13 @@ export default function Entries() {
     });
   }, [numStillMutating]);
 
+  // add leave without saving popup
+  window.onbeforeunload = () => {
+    if (networkingState === Constants.LOADING_MUTATION_TEXT) {
+      return Constants.LEAVE_WITHOUT_SAVING;
+    }
+  };
+
   return (
     <Row className="h-screen bg-[#FAFAFA]">
       <div className="pt-8">
@@ -99,7 +107,7 @@ export default function Entries() {
               id: -1,
               value: -1,
               comment: "",
-              timestamp: Date.now().toString(),
+              timestamp: formatDate(new Date()),
               author: user!,
             }
           }

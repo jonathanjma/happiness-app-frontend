@@ -11,11 +11,7 @@ import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness } from "../../data/models/Happiness";
-import {
-  createSearchQuery,
-  formatDate,
-  parseYYYYmmddFormat,
-} from "../../utils";
+import { createSearchQuery, dateFromStr, formatDate } from "../../utils";
 import SearchResult from "./SearchResult";
 
 export default function SearchBar({
@@ -83,8 +79,8 @@ export default function SearchBar({
       // Query first 5 search results
       queryKey: [
         QueryKeys.FETCH_HAPPINESS,
-        { start: formatDate(parseYYYYmmddFormat(startDate)) },
-        { end: formatDate(parseYYYYmmddFormat(endDate)) },
+        { start: formatDate(dateFromStr(startDate)) },
+        { end: formatDate(dateFromStr(endDate)) },
         { low: startValue },
         { high: endValue },
         { count: 5 },
@@ -108,8 +104,8 @@ export default function SearchBar({
       // Find the number of total matching results
       queryKey: [
         QueryKeys.FETCH_HAPPINESS_COUNT,
-        { start: formatDate(parseYYYYmmddFormat(startDate)) },
-        { end: formatDate(parseYYYYmmddFormat(endDate)) },
+        { start: formatDate(dateFromStr(startDate)) },
+        { end: formatDate(dateFromStr(endDate)) },
         { low: startValue },
         { high: endValue },
         { text: text },

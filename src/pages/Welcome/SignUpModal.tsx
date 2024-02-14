@@ -37,14 +37,13 @@ export default function SignUpModal({
   // email requirements
   const [validEmail, setValidEmail] = useState(true);
   // password requirements
-  const [isLongEnough, setIsLongEnough] = useState(false);
-  const [hasNumber, setHasNumber] = useState(false);
-  const [hasUppercase, setHasUppercase] = useState(false);
   const [matchesConfirmPassword, setMatchesConfirmPassword] = useState(true);
   // networking errors:
   const [netorkingError, setNetworkingError] = useState("");
   // username error:
   const [usernameError, setUsernameError] = useState("");
+  // email error:
+  const [emailError, setEmailError] = useState("");
   // if the user tried submit we need to show errors:
   const [triedSubmit, setTriedSubmit] = useState(false);
 
@@ -54,6 +53,7 @@ export default function SignUpModal({
   // make it so error doesn't persist when user begins to edit
   useEffect(() => {
     setValidEmail(true);
+    setEmailError("");
   }, [email]);
   useEffect(() => {
     setUsernameError("");
@@ -101,23 +101,32 @@ export default function SignUpModal({
     mutationKey: [MutationKeys.CREATE_ACCOUNT, username, password, email],
     mutationFn: async () => {
       setPasswordSnapshot(password);
-      return (
-        await api.post<User>("/user/", {
+      return api
+        .post<User>("/user/", {
           username: username,
           password: password,
           email: email,
         })
-      ).data;
+        .then((res) => res.data);
     },
     onSuccess: () => {
       loginMutation.mutate();
     },
-    onError: () => {
-      if (!isOnline) {
-        setNetworkingError("Check your internet connection.");
-      } else {
-        setUsernameError("The username is already taken.");
-        setNetworkingError("");
+    onError: (error: any) => {
+      if (error.response) {
+        const parser = new DOMParser();
+        const resDoc = parser.parseFromString(error.response.data, "text/html");
+        const errorMessage = resDoc.querySelector("p")?.textContent;
+        if (errorMessage?.includes("username")) {
+          setUsernameError(errorMessage);
+        } else if (errorMessage?.includes("email")) {
+          setEmailError(errorMessage);
+        } else {
+          setNetworkingError(
+            errorMessage ??
+              "Unknown error occurred, please check your internet connection.",
+          );
+        }
       }
     },
   });
@@ -170,13 +179,15 @@ export default function SignUpModal({
           onChangeValue={setUsername}
           errorText={usernameError}
           hasError={usernameError !== ""}
+          className="w-[250px]"
         />
         <TextField
           label="Email Address"
           value={email}
           onChangeValue={setEmail}
-          hasError={!validEmail}
-          errorText="Email address is invalid."
+          hasError={!validEmail || emailError.length > 0}
+          errorText={emailError ?? "Email address is invalid."}
+          className="w-[250px]"
         />
         <NewPasswordInput
           password={password}
@@ -193,6 +204,7 @@ export default function SignUpModal({
           type="password"
           hasError={!matchesConfirmPassword}
           errorText="Passwords are not matching."
+          className="w-[250px]"
         />
       </Column>
       <Button

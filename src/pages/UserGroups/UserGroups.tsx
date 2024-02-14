@@ -1,12 +1,13 @@
-import { useApi } from "../../contexts/ApiProvider";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
-import { UserGroups } from "../../data/models/User";
-import Spinner from "../../components/Spinner";
-import GroupCard from "./GroupCard";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import Spinner from "../../components/Spinner";
 import Row from "../../components/layout/Row";
 import { QueryKeys } from "../../constants";
-import { useNavigate } from "react-router-dom";
+import { useApi } from "../../contexts/ApiProvider";
+import { UserGroups } from "../../data/models/User";
+import GroupCard from "./GroupCard";
 
 export default function UserGroups() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function UserGroups() {
                 </p>
               ) : (
                 <div className="grid w-full grid-cols-2 gap-6">
-                  {data!.groups.map((group) => (
+                  {data!.groups.sort((a, b) => a.id - b.id).map((group) => (
                     <GroupCard key={group.id} groupData={group} />
                   ))}
                 </div>
