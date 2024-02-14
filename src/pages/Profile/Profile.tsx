@@ -15,7 +15,7 @@ import ToastMessage from "../../components/ToastMessage";
 import Spinner from "../../components/Spinner";
 import CalendarPanel from "./CalendarPanel";
 import { useParams } from "react-router-dom";
-import { User } from "../../data/models/User";
+import { User, UserStats } from "../../data/models/User";
 import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 import { Happiness } from "../../data/models/Happiness";
 
@@ -33,6 +33,14 @@ export default function Profile() {
     queryKey: ["fetchUser", userId],
     queryFn: () => api.get<User>("/user/" + userId).then((res) => res.data),
     enabled: !loggedInUser,
+  });
+
+  const userStats = useQuery<UserStats>({
+    queryKey: ["fetchUserStats", userId],
+    queryFn: () =>
+      api
+        .get<UserStats>("/user/count/?user_id=" + userId)
+        .then((res) => res.data),
   });
 
   const changePfp = useMutation({
@@ -83,9 +91,15 @@ export default function Profile() {
                     />
                     <Column className="gap-y-1">
                       <h2>{loggedInUser ? user!.username : data!.username}</h2>
-                      <p className="font-normal text-gray-600">
-                        {"Groups: 1 | Entries: 100"}
-                      </p>
+                      {userStats.isLoading ? (
+                        <Spinner variaton="SMALL" />
+                      ) : (
+                        <p className="font-normal text-gray-600">
+                          {`Groups: ${userStats.data!.groups} | Entries: ${
+                            userStats.data!.entries
+                          }`}
+                        </p>
+                      )}
                       <p className="font-normal text-gray-600">
                         {"Member Since: " +
                           new Date(

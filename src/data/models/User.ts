@@ -19,3 +19,8 @@ export interface SimpleUser {
 export interface UserGroups {
   groups: Group[];
 }
+
+export interface UserStats {
+  entries: number;
+  groups: number;
+}

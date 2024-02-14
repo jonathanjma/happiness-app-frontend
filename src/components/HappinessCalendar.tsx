@@ -150,8 +150,6 @@ const DayCell = ({
   const cellNumber = dateFromStr(happiness.timestamp).getDate();
   const isToday = formatDate(new Date()) === happiness.timestamp;
   const fillColor = isSelected ? "#F0CF78" : "#F7EFD7";
-  console.log(`happiness timestamp: ${happiness.timestamp}`);
-  console.log(`parsed date: ${dateFromStr(happiness.timestamp)}`);
 
   return (
     <div
