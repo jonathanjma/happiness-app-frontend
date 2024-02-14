@@ -219,22 +219,6 @@ export function floatToColor(float: number): string {
 }
 
 /**
- * Gets the user's local timezone offset in the form of + or -, and then a 24-hour time
- * for example: -05:00
- * @returns the desired timezone string
- */
-export function getTimeZone(): string {
-  const offset = new Date().getTimezoneOffset();
-  const o = Math.abs(offset);
-  return (
-    (offset < 0 ? "+" : "-") +
-    ("00" + Math.floor(o / 60)).slice(-2) +
-    ":" +
-    ("00" + (o % 60)).slice(-2)
-  );
-}
-
-/**
  * Get default date returns today if the user's local time is past 5am, and returns yesterday otherwise.
  * @returns date object for today or yesterday depending on user's time.
  */
@@ -248,4 +232,34 @@ export function getDefaultDate(): Date {
     date.setDate(date.getDate() - 1);
     return date;
   }
+}
+
+export function get24HourTimeAsUTC(time: string): string {
+  // attempt to convert to UTC
+  const date = new Date();
+  const [hours, minutes] = time.split(":");
+  date.setHours(parseInt(hours));
+  date.setMinutes(parseInt(minutes));
+  // Get the UTC hours and minutes
+  const utcHours = date.getUTCHours();
+  const utcMinutes = date.getUTCMinutes();
+  return `${utcHours.toString().padStart(2, "0")}:${utcMinutes
+    .toString()
+    .padStart(2, "0")}`;
+}
+
+export function convertToLocalTime(timeStr: string): string {
+  // Create a new Date object with the current date and the provided UTC time
+  const date = new Date(
+    Date.UTC(1970, 0, 1, ...timeStr.split(":").map(Number)),
+  );
+
+  // Get the local hours and minutes
+  const localHours = date.getHours();
+  const localMinutes = date.getMinutes();
+
+  // Format the local time as a string and return it
+  return `${localHours.toString().padStart(2, "0")}:${localMinutes
+    .toString()
+    .padStart(2, "0")}`;
 }

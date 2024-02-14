@@ -1,10 +1,12 @@
 import * as EmailValidator from "email-validator";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import Button from "../../components/Button";
 import NewPasswordInput from "../../components/NewPasswordInput";
 import Spinner from "../../components/Spinner";
 import TextField from "../../components/TextField";
+import ToastMessage from "../../components/ToastMessage";
 import Toggle from "../../components/Toggle";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
@@ -13,12 +15,12 @@ import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
-import { getTimeZone } from "../../utils";
+import { convertToLocalTime, get24HourTimeAsUTC } from "../../utils";
 import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
 export default function UserSettings() {
-  const { user } = useUser();
+  const { user, updateUserSetting } = useUser();
   const { api } = useApi();
   const [hasEmailAlerts, setHasEmailAlerts] = useState(
     user!.settings.find((s) => s.key === "notify" && s.enabled === true) !==
@@ -61,13 +63,16 @@ export default function UserSettings() {
   // for recovery phrase modal
   const [triedSubmit, setTriedSubmit] = useState(false);
 
-  const [emailTimeNetworkingState, setEmailTimeNetworkingState] = useState(
-    Constants.FINISHED_MUTATION_TEXT,
-  );
+  const [emailTimeNetworkingState, setEmailTimeNetworkingState] =
+    useState<string>(Constants.FINISHED_MUTATION_TEXT);
   // For email updating based on timeout
   const updateEmailTimeout = useRef<number | undefined>();
   const updateEmailHandler = () => {
-    updateEmailAlerts.mutate(hasEmailAlerts);
+    if (hasEmailAlerts && parseInt(emailTime.split(":")[1]) % 30 !== 0) {
+      setEmailTimeNetworkingState("Error: Time must be on 30 minute increment");
+    } else {
+      updateEmailAlerts.mutate(hasEmailAlerts);
+    }
   };
 
   // update time when time is updated
@@ -76,6 +81,11 @@ export default function UserSettings() {
     if (isFirstRender) {
       setIsFirstRender(false);
     } else {
+      console.log(
+        `${get24HourTimeAsUTC(emailTime)} ${
+          Intl.DateTimeFormat().resolvedOptions().timeZone
+        }`,
+      );
       clearTimeout(updateEmailTimeout.current);
       // was getting weird TypeScript errors so I needed to prepend window.
       // see https://stackoverflow.com/a/55550147
@@ -97,18 +107,30 @@ export default function UserSettings() {
       api
         .post<SettingShort>("/user/settings/", {
           key: "notify",
-          value: `${emailTime} ${getTimeZone()}`,
+          value: `${get24HourTimeAsUTC(emailTime)} ${
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+          }`,
           enabled: enabled,
         })
         .then((res) => res.data),
-    onSuccess: (data) => {
+    onSuccess: (data: SettingShort) => {
+      console.log(`data value: ${data.value}`);
+      console.log(`data value first: ${data.value.split(" ")[0]}`);
+      updateUserSetting({
+        ...data,
+        value: convertToLocalTime(data.value.split(" ")[0]),
+      });
       setHasEmailAlerts(data.enabled);
-      setEmailTime(data.value.split(" ")[0]);
+      setEmailTime(convertToLocalTime(data.value.split(" ")[0]).split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+    },
+    onError: () => {
+      setEmailTimeNetworkingState("Error: Cannot update time");
     },
   });
 
   // Changing username mutation
+  const usernameError = "Username already taken.";
   const { isLoading: usernameChangeLoading, mutate: changeUsername } =
     useMutation({
       mutationFn: (username: string) =>
@@ -118,7 +140,7 @@ export default function UserSettings() {
         }),
       onError: () => {
         setUsernameIsError(true);
-        setChangeUsernameState("Username already taken.");
+        setChangeUsernameState(usernameError);
       },
       onSuccess: () => {
         setChangeUsernameState("Username updated. Refresh to see changes.");
@@ -131,6 +153,7 @@ export default function UserSettings() {
   }, [username]);
 
   // Changing email mutation
+  const emailErrorText = "Email may already be taken.";
   const {
     isLoading: emailChangeLoading,
     mutate: changeEmail,
@@ -146,7 +169,7 @@ export default function UserSettings() {
       setChangeEmailState("Email successfully updated");
     },
     onError: () => {
-      setChangeEmailState("Email may already be taken.");
+      setChangeEmailState(emailErrorText);
     },
   });
 
@@ -169,6 +192,19 @@ export default function UserSettings() {
     },
     onSuccess: () => {
       setChangePasswordState("Password changed.");
+    },
+  });
+
+  // Export Happienss entries
+  const { isLoading: exportLoading, mutate: exportEntries } = useMutation({
+    mutationFn: () => api.get("/happiness/export").then((res) => res.data),
+    onSuccess: () => {
+      toast.custom(<ToastMessage message="📧 Export Sent" />);
+    },
+    onError: () => {
+      toast.custom(
+        <ToastMessage message="❌ Export Failed, Check Your Internet" />,
+      );
     },
   });
 
@@ -198,10 +234,20 @@ export default function UserSettings() {
               label="Reminder Time"
               type="time"
               className="w-[250px]"
+              supportingText={
+                emailTimeNetworkingState.toLowerCase().includes("error")
+                  ? ""
+                  : emailTimeNetworkingState
+              }
+              errorText={
+                emailTimeNetworkingState.toLowerCase().includes("error")
+                  ? emailTimeNetworkingState
+                  : ""
+              }
+              hasError={emailTimeNetworkingState
+                .toLowerCase()
+                .includes("error")}
             />
-            <label className="font-normal text-gray-600">
-              {emailTimeNetworkingState}
-            </label>
           </>
         )}
 
@@ -214,6 +260,9 @@ export default function UserSettings() {
           type="username"
           errorText={changeUsernameState}
           hasError={usernameIsError}
+          supportingText={
+            changeUsernameState === usernameError ? "" : changeUsernameState
+          }
           className="w-[250px]"
         />
         <Button
@@ -238,6 +287,9 @@ export default function UserSettings() {
           type="email"
           errorText={changeEmailState}
           hasError={emailError}
+          supportingText={
+            changeEmailState === emailErrorText ? "" : changeEmailState
+          }
           className="w-[250px]"
         />
         <Button
@@ -253,11 +305,23 @@ export default function UserSettings() {
           variation="GRAY"
         />
         <p className="font-normal text-gray-400">Change password:</p>
-        <Button label="Change Password" associatedModalId="change-password" />
+        <Button
+          label="Change Password"
+          variation="GRAY"
+          associatedModalId="change-password"
+        />
+        <h4 className="text-gray-600">Public Entries</h4>
+        <Button
+          label="Export Happiness Entries"
+          variation="GRAY"
+          onClick={exportEntries}
+          icon={exportLoading ? <Spinner variaton="SMALL" /> : undefined}
+        />
 
         <h4 className="text-gray-600">Private Journals</h4>
         <Button
           label="Set Up Recovery Key"
+          variation="GRAY"
           onClick={() => {
             window.HSOverlay.open(document.querySelector("#recovery"));
           }}

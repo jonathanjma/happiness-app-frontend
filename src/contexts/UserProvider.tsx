@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Constants } from "../constants";
+import { SettingShort } from "../data/models/Setting";
 import { Token } from "../data/models/Token";
 import { User } from "../data/models/User";
 import { useApi } from "./ApiProvider";
@@ -17,6 +18,7 @@ interface ContextUser {
   loginUser: (username: string, password: string) => void;
   logoutUser: () => void;
   deleteUser: () => void;
+  updateUserSetting: (setting: SettingShort) => void;
   getUserFromToken: () => void;
 }
 
@@ -28,6 +30,7 @@ const UserContext = createContext<ContextUser>({
   logoutUser: () => {},
   deleteUser: () => {},
   getUserFromToken: () => {},
+  updateUserSetting: (setting: SettingShort) => {},
 });
 
 /**
@@ -110,6 +113,30 @@ export default function UserProvider({
     localStorage.removeItem(Constants.TOKEN);
   };
 
+  const updateUserSetting = (setting: SettingShort) => {
+    setUser((currentUser) => {
+      if (!currentUser) return undefined;
+      return {
+        id: currentUser.id,
+        settings: currentUser.settings.map((s) =>
+          s.key === setting.key
+            ? {
+                key: setting.key,
+                value: setting.value,
+                enabled: setting.enabled,
+                id: s.id,
+                userId: s.userId,
+              }
+            : s,
+        ),
+        created: currentUser.created,
+        profile_picture: currentUser.profile_picture,
+        email: currentUser.email,
+        username: currentUser.username,
+      };
+    });
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -120,6 +147,7 @@ export default function UserProvider({
         createUser,
         deleteUser,
         getUserFromToken,
+        updateUserSetting,
       }}
     >
       {children}
