@@ -23,7 +23,7 @@ export default function TimelinePanel({
   const [bottomRef, bottomInView] = useInView();
 
   // infinite query for fetching happiness
-  const { isLoading, data, isError, fetchNextPage } =
+  const { isLoading, data, isError, fetchNextPage, hasNextPage } =
     useInfiniteQuery<HappinessPagination>({
       queryKey: [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE],
       queryFn: ({ pageParam = 1 }) =>
@@ -57,7 +57,7 @@ export default function TimelinePanel({
 
   // load more entries when bottom reached
   useEffect(() => {
-    if (bottomInView) fetchNextPage();
+    if (bottomInView && hasNextPage) fetchNextPage();
   }, [bottomInView]);
 
   return (
@@ -99,11 +99,12 @@ export default function TimelinePanel({
                     />
                   ))}
               </Column>
-              <div ref={bottomRef}>
-                <Spinner
-                  className="m-4 min-h-[100px]"
-                  text="Loading entries..."
-                />
+              <div ref={bottomRef} className="m-4">
+                {hasNextPage ? (
+                  <Spinner text="Loading entries..." />
+                ) : (
+                  <p>No more entries!</p>
+                )}
               </div>
             </div>
           )}
