@@ -66,7 +66,7 @@ export default function CreateGroup() {
 
   // Adds user to invite list if input is non-empty, user is not already in group, and user is valid
   const addUser = () => {
-    if (!curUserAdd) {
+    if (curUserAdd.trim() === "") {
       setUserAddError("Username cannot be empty.");
     } else if (
       groupUsers.findIndex(

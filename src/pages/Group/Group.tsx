@@ -21,7 +21,12 @@ export default function GroupPage() {
   const { api } = useApi();
   const { isLoading, data, isError } = useQuery<Group>(
     [QueryKeys.FETCH_GROUP_INFO, groupID],
-    () => api.get<Group>("/group/" + groupID).then((res) => res.data),
+    () =>
+      api.get<Group>("/group/" + groupID).then((res) => {
+        res.data.users.sort((a, b) => a.id - b.id);
+        res.data.invited_users.sort((a, b) => a.id - b.id);
+        return res.data;
+      }),
   );
   const [showGroupSettings, setShowGroupSettings] = useState(true);
 

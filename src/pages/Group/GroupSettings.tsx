@@ -44,7 +44,7 @@ export default function GroupSettings({
         .put<Group>(`/group/${group.id}`, { name: groupNameText })
         .then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries([QueryKeys.FETCH_GROUP_INFO]);
+      queryClient.invalidateQueries([QueryKeys.FETCH_GROUP_INFO, group.id]);
       toast.custom(<ToastMessage message="✅ Group Name Changed" />);
     },
     onError: () => {
@@ -68,7 +68,7 @@ export default function GroupSettings({
     mutationFn: () =>
       api.put<Group>(`/group/${group.id}`, { remove_users: [user!.username] }),
     onSuccess: () => {
-      queryClient.invalidateQueries([QueryKeys.FETCH_GROUP_INFO]);
+      queryClient.invalidateQueries([QueryKeys.FETCH_USER_GROUPS]);
       toast.custom(<ToastMessage message="🚪 Left The Group" />);
       navigate("/groups");
     },
@@ -80,7 +80,7 @@ export default function GroupSettings({
   const deleteGroup = useMutation({
     mutationFn: () => api.delete<Group>(`/group/${group.id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries([QueryKeys.FETCH_GROUP_INFO]);
+      queryClient.invalidateQueries([QueryKeys.FETCH_USER_GROUPS]);
       toast.custom(<ToastMessage message="🗑️ Group Deleted" />);
       navigate("/groups");
     },
