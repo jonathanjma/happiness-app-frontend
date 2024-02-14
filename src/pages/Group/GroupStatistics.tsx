@@ -43,6 +43,9 @@ export default function GroupStatistics({
   const [viewingEntry, setViewingEntry] = useState<Happiness[] | undefined>(
     undefined,
   );
+  const [singleEntry, setSingleEntry] = useState<Happiness | undefined>(
+    undefined,
+  );
   const [calCollapsed, setCalCollapsed] = useState<boolean>(false);
 
   useEffect(() => {
@@ -216,8 +219,20 @@ export default function GroupStatistics({
               {viewingEntry && (
                 // add group modal here
                 <GroupHappinessModal
+                  setEntry={setSingleEntry}
                   entries={viewingEntry}
                   id="group-happiness-modal"
+                />
+              )}
+              {singleEntry && (
+                <HappinessViewerModal
+                  happiness={singleEntry}
+                  id="single-happiness-modal"
+                  onBackButtonPress={() =>
+                    window.HSOverlay.open(
+                      document.querySelector("#group-happiness-modal"),
+                    )
+                  }
                 />
               )}
             </Row>

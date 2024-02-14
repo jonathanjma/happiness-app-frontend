@@ -18,9 +18,11 @@ import Button from "../Button";
 
 export default function GroupHappinessModal({
   entries,
+  setEntry,
   id,
 }: {
   entries: Happiness[];
+  setEntry: React.Dispatch<React.SetStateAction<Happiness | undefined>>;
   id: string;
 }) {
   const { user } = useUser();
@@ -49,7 +51,7 @@ export default function GroupHappinessModal({
           </div>
         </Card>
         <Column className="scroll-hidden relative max-h-[69vh] space-y-3 overflow-auto">
-          {entries.map((happiness) => (
+          {entries.map((happiness, idx) => (
             <div className="bg-[rgba(247,239,215,0.75)] md:w-[600px]">
               <SmallHappinessCard
                 happiness={happiness}
@@ -63,7 +65,15 @@ export default function GroupHappinessModal({
                           },
                         },
                       ]
-                    : []
+                    : [
+                        {
+                          label: "Expand",
+                          modalId: "single-happiness-modal",
+                          onClick: () => {
+                            setEntry(entries[idx]);
+                          },
+                        },
+                      ]
                 }
               />
             </div>
@@ -72,9 +82,8 @@ export default function GroupHappinessModal({
         </Column>
         <Row className="z-[10] mt-3 w-full justify-center">
           <Button
+            variation="GRAY"
             label="Close"
-            classNameBtn="bg-white border-gray-300"
-            classNameText="text-gray-400 -text-secondary"
             associatedModalId={id}
           ></Button>
         </Row>
