@@ -69,7 +69,7 @@ export default function LoginModal({
       <div className="h-[1px] w-full bg-gray-100" />
       <div className="h-6" />
       <TextField
-        label="Username"
+        label="Username or Email"
         value={username}
         onChangeValue={setUsername}
         type="email"
