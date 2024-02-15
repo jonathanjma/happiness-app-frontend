@@ -31,9 +31,6 @@ export default function UserSettings() {
     .find((s) => s.key === "notify")
     ?.value.split(" ")[0];
 
-  useEffect(() => {
-    console.log(`userTime: ${userTime}`);
-  }, [userTime]);
   const [emailTime, setEmailTime] = useState(
     userTime ? convertToLocalTime(userTime) : "09:00",
   );
