@@ -30,6 +30,10 @@ export default function UserSettings() {
   const userTime = user!.settings
     .find((s) => s.key === "notify")
     ?.value.split(" ")[0];
+
+  useEffect(() => {
+    console.log(`userTime: ${userTime}`);
+  }, [userTime]);
   const [emailTime, setEmailTime] = useState(
     userTime ? convertToLocalTime(userTime) : "09:00",
   );
@@ -113,7 +117,7 @@ export default function UserSettings() {
     onSuccess: (data: SettingShort) => {
       updateUserSetting({
         ...data,
-        value: convertToLocalTime(data.value.split(" ")[0]),
+        value: data.value,
       });
       setHasEmailAlerts(data.enabled);
       setEmailTime(convertToLocalTime(data.value.split(" ")[0]).split(" ")[0]);
