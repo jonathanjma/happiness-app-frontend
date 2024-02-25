@@ -15,7 +15,6 @@ import { Constants } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { SettingShort } from "../../data/models/Setting";
-import { convertToLocalTime, get24HourTimeAsUTC } from "../../utils";
 import DeleteAccountModals from "./DeleteAccountModals";
 import RecoveryPhraseModal from "./RecoveryPhraseModal";
 
@@ -31,9 +30,7 @@ export default function UserSettings() {
     .find((s) => s.key === "notify")
     ?.value.split(" ")[0];
 
-  const [emailTime, setEmailTime] = useState(
-    userTime ? convertToLocalTime(userTime) : "09:00",
-  );
+  const [emailTime, setEmailTime] = useState(userTime ?? "09:00");
   const [email, setEmail] = useState("");
   const [changeEmailState, setChangeEmailState] = useState("");
 
@@ -85,9 +82,7 @@ export default function UserSettings() {
       setIsFirstRender(false);
     } else {
       clearTimeout(updateEmailTimeout.current);
-      // was getting weird TypeScript errors so I needed to prepend window.
-      // see https://stackoverflow.com/a/55550147
-      updateEmailTimeout.current = window.setTimeout(updateEmailHandler, 500);
+      updateEmailTimeout.current = setTimeout(updateEmailHandler, 500);
     }
   }, [emailTime]);
 
@@ -99,13 +94,11 @@ export default function UserSettings() {
 
   // Updating email alerts setting
   const updateEmailAlerts = useMutation({
-    // Only way to have optional parameters for mutationFn
-    // https://github.com/TanStack/query/issues/4264#issuecomment-1268054812
     mutationFn: (enabled: boolean) =>
       api
         .post<SettingShort>("/user/settings/", {
           key: "notify",
-          value: `${get24HourTimeAsUTC(emailTime)} ${
+          value: `${emailTime} ${
             Intl.DateTimeFormat().resolvedOptions().timeZone
           }`,
           enabled: enabled,
@@ -117,7 +110,7 @@ export default function UserSettings() {
         value: data.value,
       });
       setHasEmailAlerts(data.enabled);
-      setEmailTime(convertToLocalTime(data.value.split(" ")[0]).split(" ")[0]);
+      setEmailTime(data.value.split(" ")[0]);
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
     },
     onError: () => {
