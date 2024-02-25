@@ -24,7 +24,7 @@ export default function UserSettings() {
   const { api } = useApi();
   const [hasEmailAlerts, setHasEmailAlerts] = useState(
     user!.settings.find((s) => s.key === "notify" && s.enabled === true) !==
-    undefined,
+      undefined,
   );
   // we only care about the time of this date
   const userTime = user!.settings
@@ -99,8 +99,9 @@ export default function UserSettings() {
       api
         .post<SettingShort>("/user/settings/", {
           key: "notify",
-          value: `${get24HourTimeAsUTC(emailTime)} ${Intl.DateTimeFormat().resolvedOptions().timeZone
-            }`,
+          value: `${get24HourTimeAsUTC(emailTime)} ${
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+          }`,
           enabled: enabled,
         })
         .then((res) => res.data),
@@ -362,8 +363,9 @@ export default function UserSettings() {
           {changePasswordState &&
             changePasswordState !== Constants.CONFIRM_PASSWORD_ERROR && (
               <label
-                className={`font-normal ${changePasswordError ? "text-error" : "text-gray-400"
-                  }`}
+                className={`font-normal ${
+                  changePasswordError ? "text-error" : "text-gray-400"
+                }`}
               >
                 {changePasswordState}
               </label>
