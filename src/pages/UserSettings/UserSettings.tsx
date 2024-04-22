@@ -31,7 +31,9 @@ export default function UserSettings() {
     .find((s) => s.key === "notify")
     ?.value.split(" ")[0];
 
-  const [emailTime, setEmailTime] = useState(userTime ? convertToLocalTime(userTime) : "09:00");
+  const [emailTime, setEmailTime] = useState(
+    userTime ? convertToLocalTime(userTime) : "09:00",
+  );
   const [email, setEmail] = useState("");
   const [changeEmailState, setChangeEmailState] = useState("");
 

@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 /**
@@ -248,18 +249,19 @@ export function get24HourTimeAsUTC(time: string): string {
     .padStart(2, "0")}`;
 }
 
+/**
+ * @param timeStr A UTC time in the form of HH:mm
+ * @returns The time as a local time in the HH:mm form
+ */
 export function convertToLocalTime(timeStr: string): string {
-  // Create a new Date object with the current date and the provided UTC time
-  const date = new Date(
-    Date.UTC(1970, 0, 1, ...timeStr.split(":").map(Number)),
-  );
+  const date = new Date();
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setMinutes(date.getMinutes() + dayjs().utcOffset());
 
-  // Get the local hours and minutes
-  const localHours = date.getHours();
-  const localMinutes = date.getMinutes();
-
-  // Format the local time as a string and return it
-  return `${localHours.toString().padStart(2, "0")}:${localMinutes
+  return `${date.getHours().toString().padStart(2, "0")}:${date
+    .getMinutes()
     .toString()
     .padStart(2, "0")}`;
 }
