@@ -112,7 +112,6 @@ export default function UserSettings() {
         ...data,
         value: data.value,
       });
-      console.log(`data.value: ${data.value}`);
       setHasEmailAlerts(data.enabled);
       setEmailTime(convertToLocalTime(data.value.split(" ")[0]));
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
