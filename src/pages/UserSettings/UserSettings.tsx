@@ -31,7 +31,9 @@ export default function UserSettings() {
     .find((s) => s.key === "notify")
     ?.value.split(" ")[0];
 
-  const [emailTime, setEmailTime] = useState(userTime ? convertToLocalTime(userTime) : "09:00");
+  const [emailTime, setEmailTime] = useState(
+    userTime ? convertToLocalTime(userTime) : "09:00",
+  );
   const [email, setEmail] = useState("");
   const [changeEmailState, setChangeEmailState] = useState("");
 
@@ -110,6 +112,7 @@ export default function UserSettings() {
         ...data,
         value: data.value,
       });
+      console.log(`data.value: ${data.value}`);
       setHasEmailAlerts(data.enabled);
       setEmailTime(convertToLocalTime(data.value.split(" ")[0]));
       setEmailTimeNetworkingState(Constants.FINISHED_MUTATION_TEXT);
