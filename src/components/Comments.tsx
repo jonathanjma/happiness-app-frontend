@@ -5,7 +5,7 @@ import { useApi } from "../contexts/ApiProvider";
 import { useUser } from "../contexts/UserProvider";
 import { Comment } from "../data/models/Comment";
 import CommentCard from "./CommentCard";
-import TextField from "./TextField";
+import TextFieldAutosize from "./TextFieldAutosize";
 import Row from "./layout/Row";
 import CommentCardSkeleton from "./skeletons/CommentCardSkeleton";
 
@@ -126,12 +126,12 @@ export default function Comments({
       {canAddComment && user && (
         <Row className="gap-4 px-6 py-4">
           <img className="h-10 w-10 rounded-full" src={user.profile_picture} />
-          <TextField
+          <TextFieldAutosize
             className="flex flex-grow"
             value={comment}
-            onChangeValue={setComment}
-            hint="Write a comment"
-            onEnterPressed={postComment}
+            onChange={(e) => { setComment(e.target.value); }}
+            placeholder="Write a comment"
+            onEnterKeyPressed={postComment}
             innerIcon={
               <button className="h-6" onClick={postComment}>
                 <svg
