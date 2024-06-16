@@ -48,12 +48,13 @@ export default function TextFieldAutosize({
   isEnabled,
   className,
   onEnterKeyPressed,
+  innerIcon,
   ...rest
 }: TextFieldAutosizeProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const borderStyle =
-    `flex flex-grow items-start focus:shadow-form-selected flex-wrap items-center rounded-lg border-1 px-4 py-1 ` +
+    `flex flex-grow justify-between items-start focus:shadow-form-selected flex-wrap rounded-lg border-1 px-4 py-1 ` +
     (isFocused
       ? " shadow-form-selected border-yellow hover:border-yellow"
       : "") +
@@ -68,7 +69,7 @@ export default function TextFieldAutosize({
         {innerElements}
         {innerElements && <div className="mr-2" />}
         <TextareaAutosize
-          className={"flex flex-grow max-w-full focus:outline-none " + className}
+          className={"flex flex-grow max-w-full focus:outline-none resize-none " + className}
           {...rest}
           onFocus={(e) => {
             setIsFocused(true);
@@ -85,9 +86,8 @@ export default function TextFieldAutosize({
             rest.onKeyDown?.(e);
           }}
         />
+        {innerIcon}
       </Row>
-
     </Column>
-
   );
 }
