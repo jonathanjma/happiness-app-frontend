@@ -5,9 +5,9 @@ import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
+import { formatDate } from "../../utils";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
-import { formatDate } from "../../utils";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -30,11 +30,6 @@ export default function Entries() {
   );
 
   const updateHappinessTimeout = useRef<number | undefined>(undefined);
-  const updateHappiness = () => {
-    //@ts-ignore TODO get rid of user_id field once backend is actually updated
-    const { id, author, user_id, ...happinessToPost } = selectedEntry;
-    updateEntryMutation.mutate(happinessToPost);
-  };
 
   useEffect(() => {
     if (selectedEntry) {
@@ -43,8 +38,6 @@ export default function Entries() {
       } else {
         setNetworkingState(Constants.LOADING_MUTATION_TEXT);
         prevSelectedEntryId.current = selectedEntry.id;
-        clearTimeout(updateHappinessTimeout.current);
-        updateHappinessTimeout.current = setTimeout(updateHappiness, 1000);
       }
     }
   }, [selectedEntry]);
@@ -55,6 +48,11 @@ export default function Entries() {
       return api.post<Happiness>("/happiness/", newHappiness);
     },
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.FETCH_HAPPINESS + " sidebar query"],
+      });
+    },
   });
 
   const deleteHappinessMutation = useMutation({
@@ -77,11 +75,6 @@ export default function Entries() {
       return;
     }
     setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
-      },
-    });
   }, [numStillMutating]);
 
   // add leave without saving popup
@@ -117,11 +110,31 @@ export default function Entries() {
             setSelectedEntry((selected) =>
               selected ? { ...selected, value: value } : undefined,
             );
+            clearTimeout(updateHappinessTimeout.current);
+            if (selectedEntry) {
+              updateHappinessTimeout.current = setTimeout(() => {
+                updateEntryMutation.mutate({
+                  comment: selectedEntry.comment,
+                  value: value,
+                  timestamp: selectedEntry.timestamp,
+                });
+              }, 1000);
+            }
           }}
           onChangeCommentText={(text: string) => {
             setSelectedEntry((selected) =>
               selected ? { ...selected, comment: text } : undefined,
             );
+            clearTimeout(updateHappinessTimeout.current);
+            if (selectedEntry) {
+              updateHappinessTimeout.current = setTimeout(() => {
+                updateEntryMutation.mutate({
+                  comment: text,
+                  value: selectedEntry.value,
+                  timestamp: selectedEntry.timestamp,
+                });
+              }, 1000);
+            }
           }}
           setEditing={setEditing}
           networkingState={networkingState}

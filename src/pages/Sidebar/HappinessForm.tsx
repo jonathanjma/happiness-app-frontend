@@ -25,9 +25,16 @@ export default function HappinessForm({ height }: { height: number }) {
   const [selDate, setSelDate] = useState(getDefaultDate());
   const [happiness, setHappiness] = useState(-1);
 
-  const postHappinessMutation = useMutation((newHappiness: NewHappiness) =>
-    api.post("/happiness/", newHappiness),
-  );
+  const postHappinessMutation = useMutation({
+    mutationFn: (newHappiness: NewHappiness) =>
+      api.post("/happiness/", newHappiness),
+    onSuccess: () => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE],
+      });
+    },
+  });
 
   // add leave without saving popup
   window.onbeforeunload = () => {
@@ -35,36 +42,6 @@ export default function HappinessForm({ height }: { height: number }) {
       return Constants.LEAVE_WITHOUT_SAVING;
     }
   };
-
-  // Updates comment and happiness when comment or happiness value changes.
-  // If happiness value is not entered, does not submit anything.
-  useEffect(() => {
-    if (happiness === -1) {
-      setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
-    } else {
-      setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-      clearTimeout(postHappinessTimeout.current);
-      postHappinessTimeout.current = setTimeout(() => {
-        postHappinessMutation.mutate({
-          value: happiness,
-          comment: comment,
-          timestamp: formatDate(selDate),
-        });
-      }, 1000);
-    }
-  }, [comment, happiness]);
-
-  // Changes submission status if happiness value is updated successfully and refetches data.
-  useEffect(() => {
-    if (postHappinessMutation.isSuccess && happiness !== -1) {
-      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey.includes(QueryKeys.FETCH_HAPPINESS),
-      });
-    }
-  }, [postHappinessMutation.isSuccess]);
-
   // Changes selected date between today and yesterday when radioValue variable changes.
   useEffect(() => {
     setSelDate(() => {
@@ -158,6 +135,15 @@ export default function HappinessForm({ height }: { height: number }) {
               if (parseFloat(val) >= 0) {
                 setHappiness(parseFloat(val));
               }
+              setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+              clearTimeout(postHappinessTimeout.current);
+              postHappinessTimeout.current = setTimeout(() => {
+                postHappinessMutation.mutate({
+                  value: n,
+                  comment: comment,
+                  timestamp: formatDate(selDate),
+                });
+              }, 1000);
             }}
             editable={true}
             sidebarStyle={true}
@@ -175,6 +161,15 @@ export default function HappinessForm({ height }: { height: number }) {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
               setComment(value);
+              setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+              clearTimeout(postHappinessTimeout.current);
+              postHappinessTimeout.current = setTimeout(() => {
+                postHappinessMutation.mutate({
+                  value: happiness,
+                  comment: value,
+                  timestamp: formatDate(selDate),
+                });
+              }, 1000);
             }}
           />
         </div>
