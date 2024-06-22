@@ -60,7 +60,6 @@ export default function HappinessNumber({
    */
   useEffect(() => {
     clearTimeout(updateHappinessTimeout.current);
-    console.log(`7`);
     setNetworkingState(Constants.LOADING_MUTATION_TEXT);
     updateHappinessTimeout.current = setTimeout(updateHappiness, 500);
   }, [currentHappiness]);
@@ -81,7 +80,6 @@ export default function HappinessNumber({
       onClick={() => {
         if (editable) {
           setCurrentHappiness((current) => {
-            console.log(`6`);
             setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             let newHappiness = current + change;
             newHappiness = Math.max(newHappiness, 0);

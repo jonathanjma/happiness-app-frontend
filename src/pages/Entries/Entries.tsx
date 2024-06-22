@@ -66,7 +66,6 @@ export default function Entries() {
       return;
     }
     if (numStillMutating > 0) {
-      console.log(`2`);
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       return;
     }
