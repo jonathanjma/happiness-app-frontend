@@ -34,6 +34,9 @@ export default function HappinessForm({ height }: { height: number }) {
         queryKey: [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE],
       });
     },
+    onError: () => {
+      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+    },
   });
 
   // add leave without saving popup
@@ -131,6 +134,7 @@ export default function HappinessForm({ height }: { height: number }) {
           <HappinessNumber
             value={happiness}
             onChangeValue={(n: number) => {
+              console.log(`number changed`);
               const val: string = n.toString();
               if (parseFloat(val) >= 0) {
                 setHappiness(parseFloat(val));
@@ -158,6 +162,7 @@ export default function HappinessForm({ height }: { height: number }) {
             maxRows={Math.max(3, Math.floor((height - 662) / 24))}
             className={`scroll-hidden mt-2 min-h-[112px] w-full resize-none rounded-lg p-2 text-left text-sm font-medium text-gray-600 outline-none outline-1 outline-gray-100`}
             onChange={(e: React.FormEvent<HTMLTextAreaElement>) => {
+              console.log(`comment changed`);
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
               setComment(value);
