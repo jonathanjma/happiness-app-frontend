@@ -36,6 +36,9 @@ export default function Entries() {
       if (selectedEntry.value === -1) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
       } else {
+        if (prevSelectedEntryId.current !== selectedEntry.id) {
+          setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+        }
         prevSelectedEntryId.current = selectedEntry.id;
       }
     }
@@ -57,6 +60,12 @@ export default function Entries() {
   const deleteHappinessMutation = useMutation({
     mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
+    onSuccess: () => {
+      queryClient.invalidateQueries([QueryKeys.FETCH_HAPPINESS]);
+      queryClient.invalidateQueries([
+        QueryKeys.FETCH_HAPPINESS + " sidebar query",
+      ]);
+    },
   });
 
   // Update the networking state displayed to the user based on updateEntryMutation result
