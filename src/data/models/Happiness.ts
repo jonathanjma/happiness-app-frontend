@@ -29,3 +29,8 @@ export interface HappinessPost {
   comment: string;
   timestamp: string;
 }
+export interface HappinessPaginationResults {
+  pages: HappinessPagination[];
+  // below is not actually used, I just consume it with any
+  pageParams: any;
+}

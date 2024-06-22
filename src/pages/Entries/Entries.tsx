@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
+import ToastMessage from "../../components/ToastMessage";
 import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
+import {
+  storeHappinessComment,
+  storeHappinessId,
+  storeHappinessNumber,
+} from "../../data/models/stateUtils";
 import { formatDate } from "../../utils";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
@@ -18,6 +25,7 @@ export default function Entries() {
     undefined,
   );
   const [editing, setEditing] = useState(false);
+  const abortController = useRef<AbortController>(new AbortController());
   const prevSelectedEntryId = useRef<number | undefined>(undefined);
   const { user } = useUser();
   const { api } = useApi();
@@ -28,6 +36,9 @@ export default function Entries() {
   const [networkingState, setNetworkingState] = useState(
     Constants.LOADING_MUTATION_TEXT.toString(),
   );
+  const getAbortSignal = () => {
+    return abortController.current.signal;
+  };
 
   const updateHappinessTimeout = useRef<number | undefined>(undefined);
 
@@ -47,13 +58,40 @@ export default function Entries() {
   // General mutation function for updating Happiness entries
   const updateEntryMutation = useMutation({
     mutationFn: (newHappiness: HappinessPost) => {
-      return api.post<Happiness>("/happiness/", newHappiness);
+      return api.post<Happiness>("/happiness/", newHappiness, {
+        signal: getAbortSignal(),
+      });
     },
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
-    onSuccess: () => {
+    onSuccess: (response) => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.FETCH_HAPPINESS + " sidebar query"],
       });
+      storeHappinessId(queryClient, response.data.id, response.data.timestamp);
+      storeHappinessNumber(
+        queryClient,
+        response.data.value,
+        response.data.timestamp,
+      );
+      if (selectedEntry?.timestamp === response.data.timestamp) {
+        storeHappinessComment(
+          queryClient,
+          selectedEntry.comment,
+          response.data.timestamp,
+        );
+      } else {
+        storeHappinessComment(
+          queryClient,
+          response.data.comment,
+          response.data.timestamp,
+        );
+      }
+    },
+    onError: (error: any) => {
+      if (error.message !== "canceled") {
+        setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+      }
     },
   });
 
@@ -65,6 +103,9 @@ export default function Entries() {
       queryClient.invalidateQueries([
         QueryKeys.FETCH_HAPPINESS + " sidebar query",
       ]);
+    },
+    onError: () => {
+      toast.custom(<ToastMessage message="❌ Failed to delete entry" />);
     },
   });
 
@@ -78,11 +119,6 @@ export default function Entries() {
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       return;
     }
-    if (updateEntryMutation.isError || deleteHappinessMutation.isError) {
-      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
-      return;
-    }
-    setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
   }, [numStillMutating]);
 
   // add leave without saving popup
@@ -115,6 +151,9 @@ export default function Entries() {
           className="h-full"
           editing={editing}
           onChangeHappinessNumber={(value: number) => {
+            abortController.current.abort();
+            abortController.current = new AbortController();
+
             setSelectedEntry((selected) =>
               selected ? { ...selected, value: value } : undefined,
             );
@@ -131,10 +170,12 @@ export default function Entries() {
             }
           }}
           onChangeCommentText={(text: string) => {
+            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+            abortController.current.abort();
+            abortController.current = new AbortController();
             setSelectedEntry((selected) =>
               selected ? { ...selected, comment: text } : undefined,
             );
-            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             clearTimeout(updateHappinessTimeout.current);
             if (selectedEntry) {
               updateHappinessTimeout.current = setTimeout(() => {

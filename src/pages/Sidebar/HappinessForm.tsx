@@ -6,6 +6,7 @@ import RadioButton from "../../components/RadioButton";
 import { Constants, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { Happiness, NewHappiness } from "../../data/models/Happiness";
+import { storeHappinessId } from "../../data/models/stateUtils";
 import { formatDate, getDefaultDate } from "../../utils";
 
 export default function HappinessForm({ height }: { height: number }) {
@@ -27,12 +28,20 @@ export default function HappinessForm({ height }: { height: number }) {
 
   const postHappinessMutation = useMutation({
     mutationFn: (newHappiness: NewHappiness) =>
-      api.post("/happiness/", newHappiness),
-    onSuccess: () => {
+      api.post<Happiness>("/happiness/", newHappiness),
+    onSuccess: (response) => {
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE],
-      });
+      queryClient
+        .invalidateQueries({
+          queryKey: [QueryKeys.FETCH_HAPPINESS, QueryKeys.INFINITE],
+        })
+        .then(() => {
+          storeHappinessId(
+            queryClient,
+            response.data.id,
+            response.data.timestamp,
+          );
+        });
     },
     onError: () => {
       setNetworkingState(Constants.ERROR_MUTATION_TEXT);
