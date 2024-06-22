@@ -41,8 +41,11 @@ export default function HappinessNumber({
    * `currentHappiness` if it is not in the bounds.
    */
   const updateHappiness = (value: number) => {
-    let validHappiness = Math.min(value, 10);
+    let validHappiness = value;
     validHappiness = Math.max(validHappiness, 0);
+    while (validHappiness > 10) {
+      validHappiness /= 10;
+    }
     validHappiness = Math.round(validHappiness * 2) / 2;
 
     /*
