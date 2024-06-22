@@ -7,11 +7,7 @@ import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
-import {
-  storeHappinessComment,
-  storeHappinessId,
-  storeHappinessNumber,
-} from "../../data/models/stateUtils";
+import { addNewHappiness } from "../../data/models/stateUtils";
 import { formatDate } from "../../utils";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
@@ -68,25 +64,7 @@ export default function Entries() {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.FETCH_HAPPINESS + " sidebar query"],
       });
-      storeHappinessId(queryClient, response.data.id, response.data.timestamp);
-      storeHappinessNumber(
-        queryClient,
-        response.data.value,
-        response.data.timestamp,
-      );
-      if (selectedEntry?.timestamp === response.data.timestamp) {
-        storeHappinessComment(
-          queryClient,
-          selectedEntry.comment,
-          response.data.timestamp,
-        );
-      } else {
-        storeHappinessComment(
-          queryClient,
-          response.data.comment,
-          response.data.timestamp,
-        );
-      }
+      addNewHappiness(queryClient, response.data);
     },
     onError: (error: any) => {
       if (error.message !== "canceled") {
