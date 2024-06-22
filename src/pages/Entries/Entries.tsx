@@ -36,7 +36,6 @@ export default function Entries() {
       if (selectedEntry.value === -1) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
       } else {
-        setNetworkingState(Constants.LOADING_MUTATION_TEXT);
         prevSelectedEntryId.current = selectedEntry.id;
       }
     }
@@ -67,6 +66,7 @@ export default function Entries() {
       return;
     }
     if (numStillMutating > 0) {
+      console.log(`2`);
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       return;
     }
@@ -110,6 +110,7 @@ export default function Entries() {
             setSelectedEntry((selected) =>
               selected ? { ...selected, value: value } : undefined,
             );
+            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             clearTimeout(updateHappinessTimeout.current);
             if (selectedEntry) {
               updateHappinessTimeout.current = setTimeout(() => {
@@ -125,6 +126,7 @@ export default function Entries() {
             setSelectedEntry((selected) =>
               selected ? { ...selected, comment: text } : undefined,
             );
+            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             clearTimeout(updateHappinessTimeout.current);
             if (selectedEntry) {
               updateHappinessTimeout.current = setTimeout(() => {
