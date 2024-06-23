@@ -40,8 +40,14 @@ export default function HappinessNumber({
    * This is always satisfied because the user's input will never reach
    * `currentHappiness` if it is not in the bounds.
    */
-  const updateHappiness = () => {
-    const validHappiness = Math.round(currentHappiness * 2) / 2;
+  const updateHappiness = (value: number) => {
+    let validHappiness = value;
+    validHappiness = Math.max(validHappiness, 0);
+    while (validHappiness > 10) {
+      validHappiness /= 10;
+    }
+    validHappiness = Math.round(validHappiness * 2) / 2;
+
     /*
     onChangeValue is what allows the current happiness to propogate up the 
     components, but this is only called on happiness rounded to the nearest 0.5
@@ -53,21 +59,29 @@ export default function HappinessNumber({
     );
   };
 
-  /**
-   * Whenever the happiness value that the user interacts with changes, we start
-   * a timer to validate and format their happiness after .2 seconds.
-   * This allows the input to be responsive but still validates the happiness.
-   */
-  useEffect(() => {
+  const startTimer = (value: number) => {
+    setHappinessDisplay(value.toString());
     clearTimeout(updateHappinessTimeout.current);
     setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-    updateHappinessTimeout.current = setTimeout(updateHappiness, 500);
-  }, [currentHappiness]);
+    updateHappinessTimeout.current = setTimeout(() => {
+      updateHappiness(value);
+    }, 500);
+  };
 
   useEffect(() => {
     setCurrentHappiness(value);
     setHappinessDisplay(value === -1 ? "--" : value.toFixed(1));
   }, [value]);
+
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let processedNum = parseFloat(e.target.value.replaceAll("-", ""));
+    if (!isNaN(processedNum)) {
+      while (processedNum > 10) {
+        processedNum /= 10;
+      }
+      startTimer(processedNum);
+    }
+  };
 
   const Changer = ({ change }: { change: number }) => (
     <div
@@ -80,12 +94,16 @@ export default function HappinessNumber({
       onClick={() => {
         if (editable) {
           setCurrentHappiness((current) => {
-            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-            let newHappiness = current + change;
-            newHappiness = Math.max(newHappiness, 0);
-            newHappiness = Math.min(newHappiness, 10);
-            setHappinessDisplay(newHappiness.toFixed(1));
-            return newHappiness;
+            if (current === -1) {
+              const newHappiness = change > 0 ? 0.5 : 9.5;
+              startTimer(newHappiness);
+              return newHappiness;
+            }
+            if (current + change <= 10 && current + change >= 0) {
+              startTimer(current + change);
+              return current + change;
+            }
+            return current;
           });
         }
       }}
@@ -93,25 +111,6 @@ export default function HappinessNumber({
       {change > 0 ? <ArrowUpIcon /> : <ArrowDownIcon />}
     </div>
   );
-
-  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    clearTimeout(updateHappinessTimeout.current);
-    let happinessNum = 0;
-    if (e.target.value !== "") {
-      happinessNum = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
-      if (happinessNum < 0) {
-        happinessNum *= -1;
-      }
-      // While loop is unncessary but does make absolutley sure it is in range
-      while (happinessNum > 10) {
-        happinessNum /= 10;
-      }
-    }
-    // We don't change the current happiness until we know for sure
-    // it's a valid range
-    setCurrentHappiness(happinessNum);
-    setHappinessDisplay(happinessNum.toString());
-  };
 
   return sidebarStyle ? (
     <div className="flex">
@@ -129,7 +128,7 @@ export default function HappinessNumber({
               ? " h-[36px] max-w-[55px] text-xl"
               : " h-auto max-w-[80px] text-4xl")
           }
-          onChange={changeHandler}
+          onChange={inputChangeHandler}
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
@@ -157,7 +156,7 @@ export default function HappinessNumber({
               ? " h-[36px] max-w-[55px] text-xl"
               : " h-auto max-w-[80px] text-4xl")
           }
-          onChange={changeHandler}
+          onChange={inputChangeHandler}
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}

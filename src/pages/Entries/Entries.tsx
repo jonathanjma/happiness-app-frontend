@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
+import ToastMessage from "../../components/ToastMessage";
 import Row from "../../components/layout/Row";
 import { Constants, MutationKeys, QueryKeys } from "../../constants";
 import { useApi } from "../../contexts/ApiProvider";
 import { useUser } from "../../contexts/UserProvider";
 import { Happiness, HappinessPost } from "../../data/models/Happiness";
+import { addNewHappiness } from "../../data/models/stateUtils";
+import { formatDate } from "../../utils";
 import EntryCard from "./EntryCard";
 import ScrollableCalendar from "./ScrollableCalendar";
-import { formatDate } from "../../utils";
 
 /**
  * The page for displaying entries with the scrollable calendar
@@ -18,6 +21,7 @@ export default function Entries() {
     undefined,
   );
   const [editing, setEditing] = useState(false);
+  const abortController = useRef<AbortController>(new AbortController());
   const prevSelectedEntryId = useRef<number | undefined>(undefined);
   const { user } = useUser();
   const { api } = useApi();
@@ -28,23 +32,21 @@ export default function Entries() {
   const [networkingState, setNetworkingState] = useState(
     Constants.LOADING_MUTATION_TEXT.toString(),
   );
+  const getAbortSignal = () => {
+    return abortController.current.signal;
+  };
 
   const updateHappinessTimeout = useRef<number | undefined>(undefined);
-  const updateHappiness = () => {
-    //@ts-ignore TODO get rid of user_id field once backend is actually updated
-    const { id, author, user_id, ...happinessToPost } = selectedEntry;
-    updateEntryMutation.mutate(happinessToPost);
-  };
 
   useEffect(() => {
     if (selectedEntry) {
       if (selectedEntry.value === -1) {
         setNetworkingState(Constants.NO_HAPPINESS_NUMBER);
       } else {
-        setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+        if (prevSelectedEntryId.current !== selectedEntry.id) {
+          setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+        }
         prevSelectedEntryId.current = selectedEntry.id;
-        clearTimeout(updateHappinessTimeout.current);
-        updateHappinessTimeout.current = setTimeout(updateHappiness, 1000);
       }
     }
   }, [selectedEntry]);
@@ -52,14 +54,37 @@ export default function Entries() {
   // General mutation function for updating Happiness entries
   const updateEntryMutation = useMutation({
     mutationFn: (newHappiness: HappinessPost) => {
-      return api.post<Happiness>("/happiness/", newHappiness);
+      return api.post<Happiness>("/happiness/", newHappiness, {
+        signal: getAbortSignal(),
+      });
     },
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
+    onSuccess: (response) => {
+      setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.FETCH_HAPPINESS + " sidebar query"],
+      });
+      addNewHappiness(queryClient, response.data);
+    },
+    onError: (error: any) => {
+      if (error.message !== "canceled") {
+        setNetworkingState(Constants.ERROR_MUTATION_TEXT);
+      }
+    },
   });
 
   const deleteHappinessMutation = useMutation({
     mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
+    onSuccess: () => {
+      queryClient.invalidateQueries([QueryKeys.FETCH_HAPPINESS]);
+      queryClient.invalidateQueries([
+        QueryKeys.FETCH_HAPPINESS + " sidebar query",
+      ]);
+    },
+    onError: () => {
+      toast.custom(<ToastMessage message="❌ Failed to delete entry" />);
+    },
   });
 
   // Update the networking state displayed to the user based on updateEntryMutation result
@@ -72,16 +97,6 @@ export default function Entries() {
       setNetworkingState(Constants.LOADING_MUTATION_TEXT);
       return;
     }
-    if (updateEntryMutation.isError || deleteHappinessMutation.isError) {
-      setNetworkingState(Constants.ERROR_MUTATION_TEXT);
-      return;
-    }
-    setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        return query.queryKey.includes(QueryKeys.FETCH_HAPPINESS);
-      },
-    });
   }, [numStillMutating]);
 
   // add leave without saving popup
@@ -114,14 +129,41 @@ export default function Entries() {
           className="h-full"
           editing={editing}
           onChangeHappinessNumber={(value: number) => {
+            abortController.current.abort();
+            abortController.current = new AbortController();
+
             setSelectedEntry((selected) =>
               selected ? { ...selected, value: value } : undefined,
             );
+            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+            clearTimeout(updateHappinessTimeout.current);
+            if (selectedEntry) {
+              updateHappinessTimeout.current = setTimeout(() => {
+                updateEntryMutation.mutate({
+                  comment: selectedEntry.comment,
+                  value: value,
+                  timestamp: selectedEntry.timestamp,
+                });
+              }, 1000);
+            }
           }}
           onChangeCommentText={(text: string) => {
+            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+            abortController.current.abort();
+            abortController.current = new AbortController();
             setSelectedEntry((selected) =>
               selected ? { ...selected, comment: text } : undefined,
             );
+            clearTimeout(updateHappinessTimeout.current);
+            if (selectedEntry) {
+              updateHappinessTimeout.current = setTimeout(() => {
+                updateEntryMutation.mutate({
+                  comment: text,
+                  value: selectedEntry.value,
+                  timestamp: selectedEntry.timestamp,
+                });
+              }, 1000);
+            }
           }}
           setEditing={setEditing}
           networkingState={networkingState}

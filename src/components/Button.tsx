@@ -15,6 +15,7 @@ export interface ButtonProps {
   classNameText?: string;
   fileInput?: boolean;
   onFileChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  hoverTextEffect?: string;
 }
 
 /**
@@ -37,6 +38,7 @@ export default function Button({
   classNameText = "",
   fileInput,
   onFileChange,
+  hoverTextEffect = "cursor-pointer",
 }: ButtonProps) {
   let className =
     "flex flex-row items-center justify-center self-start rounded-lg min-w-[84px] py-3 text-secondary ";
@@ -87,7 +89,7 @@ export default function Button({
       )}
       <label
         {...labelProps}
-        className={` font-semibold hover:cursor-pointer ${classNameText} ${textColor}`}
+        className={` font-semibold hover:${hoverTextEffect} ${classNameText} ${textColor}`}
       >
         {label}
       </label>

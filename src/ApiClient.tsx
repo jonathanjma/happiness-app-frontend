@@ -16,6 +16,7 @@ export default class ApiClient {
         ...options.headers,
       },
       data: options.body,
+      signal: options.signal,
     });
   }
 
