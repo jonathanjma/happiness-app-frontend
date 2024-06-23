@@ -73,6 +73,16 @@ export default function HappinessNumber({
     setHappinessDisplay(value === -1 ? "--" : value.toFixed(1));
   }, [value]);
 
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let processedNum = parseFloat(e.target.value.replaceAll("-", ""));
+    if (!isNaN(processedNum)) {
+      while (processedNum > 10) {
+        processedNum /= 10;
+      }
+      startTimer(processedNum);
+    }
+  };
+
   const Changer = ({ change }: { change: number }) => (
     <div
       className={
@@ -118,9 +128,7 @@ export default function HappinessNumber({
               ? " h-[36px] max-w-[55px] text-xl"
               : " h-auto max-w-[80px] text-4xl")
           }
-          onChange={(e) => {
-            startTimer(parseFloat(e.target.value));
-          }}
+          onChange={inputChangeHandler}
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
@@ -148,9 +156,7 @@ export default function HappinessNumber({
               ? " h-[36px] max-w-[55px] text-xl"
               : " h-auto max-w-[80px] text-4xl")
           }
-          onChange={(e) => {
-            startTimer(parseFloat(e.target.value));
-          }}
+          onChange={inputChangeHandler}
           disabled={!editable}
         />
         {!sidebarStyle && <div className=" h-3" />}
