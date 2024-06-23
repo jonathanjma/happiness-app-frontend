@@ -118,7 +118,29 @@ export default function EntryCard({
                   <div className=" w-4" />
                 </>
               )}
-              <Button label="Done" onClick={() => setEditing(false)} />
+              <Button
+                label="Done"
+                onClick={() => {
+                  if (networkingState !== Constants.NO_HAPPINESS_NUMBER) {
+                    setEditing(false);
+                  }
+                }}
+                variation={
+                  networkingState === Constants.NO_HAPPINESS_NUMBER
+                    ? "GRAY"
+                    : "FILLED"
+                }
+                classNameBtn={
+                  networkingState === Constants.NO_HAPPINESS_NUMBER
+                    ? "hover:cursor-not-allowed"
+                    : ""
+                }
+                hoverTextEffect={
+                  networkingState === Constants.NO_HAPPINESS_NUMBER
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                }
+              />
             </>
           ) : (
             <Button
