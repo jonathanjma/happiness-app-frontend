@@ -172,15 +172,17 @@ export default function HappinessForm({ height }: { height: number }) {
               const target = e.target as HTMLTextAreaElement;
               const value = target.value as string;
               setComment(value);
-              setNetworkingState(Constants.LOADING_MUTATION_TEXT);
-              clearTimeout(postHappinessTimeout.current);
-              postHappinessTimeout.current = setTimeout(() => {
-                postHappinessMutation.mutate({
-                  value: happiness,
-                  comment: value,
-                  timestamp: formatDate(getSelDate()),
-                });
-              }, 1000);
+              if (networkingState !== Constants.NO_HAPPINESS_NUMBER) {
+                setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+                clearTimeout(postHappinessTimeout.current);
+                postHappinessTimeout.current = setTimeout(() => {
+                  postHappinessMutation.mutate({
+                    value: happiness,
+                    comment: value,
+                    timestamp: formatDate(getSelDate()),
+                  });
+                }, 1000);
+              }
             }}
           />
         </div>

@@ -83,7 +83,6 @@ export default function HappinessNumber({
       }
       onClick={() => {
         if (editable) {
-          console.log(`3set`);
           setCurrentHappiness((current) => {
             startTimer(current + change);
             return current + change;
