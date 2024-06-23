@@ -84,8 +84,16 @@ export default function HappinessNumber({
       onClick={() => {
         if (editable) {
           setCurrentHappiness((current) => {
-            startTimer(current + change);
-            return current + change;
+            if (current === -1) {
+              const newHappiness = change > 0 ? 0.5 : 9.5;
+              startTimer(newHappiness);
+              return newHappiness;
+            }
+            if (current + change <= 10 && current + change >= 0) {
+              startTimer(current + change);
+              return current + change;
+            }
+            return current;
           });
         }
       }}
