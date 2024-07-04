@@ -20,6 +20,7 @@ export default function Entries() {
   const [selectedEntry, setSelectedEntry] = useState<Happiness | undefined>(
     undefined,
   );
+  const [comment, setComment] = useState("");
   const [editing, setEditing] = useState(false);
   const abortController = useRef<AbortController>(new AbortController());
   const prevSelectedEntryId = useRef<number | undefined>(undefined);
@@ -45,6 +46,7 @@ export default function Entries() {
       } else {
         if (prevSelectedEntryId.current !== selectedEntry.id) {
           setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+          setComment(selectedEntry.comment);
         }
         prevSelectedEntryId.current = selectedEntry.id;
       }
@@ -64,7 +66,9 @@ export default function Entries() {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.FETCH_HAPPINESS + " sidebar query"],
       });
-      addNewHappiness(queryClient, response.data);
+      setTimeout(() => {
+        addNewHappiness(queryClient, response.data);
+      }, 500);
     },
     onError: (error: any) => {
       if (error.message !== "canceled") {
@@ -77,6 +81,7 @@ export default function Entries() {
     mutationFn: () => api.delete(`/happiness/?id=${selectedEntry?.id}`),
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
     onSuccess: () => {
+      setComment("");
       queryClient.invalidateQueries([QueryKeys.FETCH_HAPPINESS]);
       queryClient.invalidateQueries([
         QueryKeys.FETCH_HAPPINESS + " sidebar query",
@@ -148,6 +153,7 @@ export default function Entries() {
             }
           }}
           onChangeCommentText={(text: string) => {
+            setComment(text);
             setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             abortController.current.abort();
             abortController.current = new AbortController();
@@ -171,6 +177,7 @@ export default function Entries() {
           onDeleteHappiness={() => {
             deleteHappinessMutation.mutate();
           }}
+          comment={comment}
         />
       </div>
     </Row>

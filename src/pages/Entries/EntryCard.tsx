@@ -32,6 +32,7 @@ export default function EntryCard({
   setEditing,
   networkingState,
   setNetworkingState,
+  comment,
 }: {
   happiness: Happiness;
   className?: string;
@@ -42,6 +43,7 @@ export default function EntryCard({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   networkingState: string;
   setNetworkingState: React.Dispatch<React.SetStateAction<string>>;
+  comment: string;
 }) {
   const navigate = useNavigate();
   const { api } = useApi();
@@ -170,7 +172,7 @@ export default function EntryCard({
                 "h-full w-full resize-none rounded-lg bg-transparent focus:outline-none " +
                 (editing ? "border-1 border-solid border-gray-200 p-5" : "")
               }
-              value={happiness.comment}
+              value={comment}
               disabled={!editing}
               onChange={(e) => {
                 onChangeCommentText(e.target.value);
