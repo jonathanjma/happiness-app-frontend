@@ -46,10 +46,12 @@ export default function Entries() {
       } else {
         if (prevSelectedEntryId.current !== selectedEntry.id) {
           setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-          setComment(selectedEntry.comment);
         }
-        prevSelectedEntryId.current = selectedEntry.id;
       }
+      if (prevSelectedEntryId.current !== selectedEntry.id) {
+        setComment(selectedEntry.comment);
+      }
+      prevSelectedEntryId.current = selectedEntry.id;
     }
   }, [selectedEntry]);
 
