@@ -63,12 +63,10 @@ export default function Entries() {
     mutationKey: MutationKeys.MUTATE_HAPPINESS,
     onSuccess: (response) => {
       setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
+      addNewHappiness(queryClient, response.data);
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.FETCH_HAPPINESS + " sidebar query"],
       });
-      setTimeout(() => {
-        addNewHappiness(queryClient, response.data);
-      }, 500);
     },
     onError: (error: any) => {
       if (error.message !== "canceled") {
