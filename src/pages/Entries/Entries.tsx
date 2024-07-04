@@ -46,10 +46,12 @@ export default function Entries() {
       } else {
         if (prevSelectedEntryId.current !== selectedEntry.id) {
           setNetworkingState(Constants.FINISHED_MUTATION_TEXT);
-          setComment(selectedEntry.comment);
         }
-        prevSelectedEntryId.current = selectedEntry.id;
       }
+      if (prevSelectedEntryId.current !== selectedEntry.id) {
+        setComment(selectedEntry.comment);
+      }
+      prevSelectedEntryId.current = selectedEntry.id;
     }
   }, [selectedEntry]);
 
@@ -152,14 +154,14 @@ export default function Entries() {
           }}
           onChangeCommentText={(text: string) => {
             setComment(text);
-            setNetworkingState(Constants.LOADING_MUTATION_TEXT);
             abortController.current.abort();
             abortController.current = new AbortController();
             setSelectedEntry((selected) =>
               selected ? { ...selected, comment: text } : undefined,
             );
-            clearTimeout(updateHappinessTimeout.current);
-            if (selectedEntry) {
+            if (selectedEntry && selectedEntry.value >= 0) {
+              setNetworkingState(Constants.LOADING_MUTATION_TEXT);
+              clearTimeout(updateHappinessTimeout.current);
               updateHappinessTimeout.current = setTimeout(() => {
                 updateEntryMutation.mutate({
                   comment: text,
