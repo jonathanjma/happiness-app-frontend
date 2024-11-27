@@ -14,9 +14,12 @@ import ArrowRight from "../../assets/arrow_right.svg";
 
 export default function Sidebar({ element }: { element: React.ReactElement }) {
   const { user } = useUser();
+  const { width, height } = useWindowDimensions();
 
   const [dropdownState, setDropdownState] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  // hide sidebar automatically on small screens
+  const [sidebarVisible, setSidebarVisible] = useState(width >= 1024);
 
   const navConfig = [
     { title: "Entries", route: "/home", icon: EntriesIcon },
@@ -25,8 +28,6 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
     { title: "Groups", route: "/groups", icon: GroupsIcon },
     { title: "Settings", route: "/settings", icon: SettingsIcon },
   ];
-
-  const { height } = useWindowDimensions();
 
   return (
     <div className="flex w-full">
