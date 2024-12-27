@@ -140,16 +140,6 @@ export default function Statistics() {
     "Show Minimum Value",
     "Show Maximum Value",
   ];
-  // create stat names
-  const statNames = setNames.map((name) => {
-    if (settingsNames!.includes(name)) {
-      for (const e of user!.settings) {
-        if (name === e.key) {
-          return e.enabled;
-        }
-      }
-    } else return false;
-  });
 
   return (
     <>
@@ -205,7 +195,7 @@ export default function Statistics() {
                   {data.length === 0 ? (
                     <></>
                   ) : (
-                    statNames.map((val, t) => {
+                    setNames.map((val, t) => {
                       if (val) {
                         return (
                           <Stat
