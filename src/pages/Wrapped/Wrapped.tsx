@@ -1,4 +1,13 @@
 import Card from "../../components/Card";
+import Graph from "../../components/Graph";
+import { useQuery } from "react-query";
+import { QueryKeys } from "../../constants";
+import { Happiness } from "../../data/models/Happiness";
+import { useApi } from "../../contexts/ApiProvider";
+import { formatDate } from "../../utils";
+import Spinner from "../../components/Spinner";
+import React, { useEffect, useState } from "react";
+import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
 
 export default function Wrapped() {
   const data = {
@@ -40,8 +49,10 @@ export default function Wrapped() {
     ],
   };
 
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString();
+  const formatDateWrapped = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  };
 
   const getMonthName = (monthNumber: number) => {
     const date = new Date();
@@ -64,106 +75,241 @@ export default function Wrapped() {
     ).toFixed(2);
   };
 
+  const { api } = useApi();
+  const {
+    isLoading,
+    data: graphData,
+    isError,
+  } = useQuery<Happiness[]>([QueryKeys.FETCH_HAPPINESS, "wrapped year"], () =>
+    api
+      .get<Happiness[]>("/happiness/", {
+        start: formatDate(new Date("2024-01")),
+        end: formatDate(new Date("2025-01")),
+      })
+      .then((res) => res.data),
+  );
+
+  const [selectedEntry, setSelectedEntry] = useState<Happiness>();
+  useEffect(() => {
+    if (selectedEntry) {
+      window.HSOverlay.open(
+        document.querySelector("#wrapped-happiness-viewer"),
+      );
+    }
+  }, [selectedEntry]);
+
+  const [dateQuery, setDateQuery] = useState<string[]>(["", ""]);
+  const {} = useQuery<Happiness[]>(
+    [QueryKeys.FETCH_HAPPINESS, "wrapped", dateQuery],
+    () =>
+      api
+        .get<Happiness[]>("/happiness/", {
+          start: formatDate(new Date(dateQuery[0])),
+          end: formatDate(new Date(dateQuery[0])),
+        })
+        .then((res) => {
+          setSelectedEntry(res.data[0]);
+          return res.data;
+        }),
+    { enabled: dateQuery[0] !== "" },
+  );
+
   return (
-    <div className="text-gray-800">
-      <div className="container mx-auto py-10">
-        <h1 className="mb-6 text-center text-3xl font-bold">
-          {data.username}'s Happiness App Wrapped 2024
-        </h1>
-        <div className="grid grid-cols-1 gap-6 rounded-lg p-6 md:grid-cols-2">
-          <Card className="border-yellow bg-light_yellow p-6">
-            <h2 className="text-xl font-semibold">General Stats</h2>
-            <ul className="mt-2 space-y-1.5">
-              <li>
-                <strong>Total Entries:</strong> {data.entries}
-              </li>
-              <li>
-                <strong>Percentile:</strong> Top{" "}
-                {(data.top_pct * 100).toFixed(1)}% of active users
-              </li>
-              <li>
-                <strong>Average Score:</strong> {data.average_score.toFixed(2)}
-              </li>
-              <li>
-                <strong>Mode Score:</strong> {data.mode_score.score} (
-                {data.mode_score.count} occurrences)
-              </li>
-            </ul>
-          </Card>
+    <div className="px-6 py-10 text-gray-800">
+      <h1 className="mb-6 text-center text-3xl font-bold">
+        {data.username}'s Happiness App Wrapped 2024
+      </h1>
+      <div className="grid grid-cols-1 gap-6 rounded-lg  py-6 md:grid-cols-2 ">
+        <Card className="border-yellow bg-light_yellow p-6">
+          <h2 className="text-xl font-semibold">General Stats</h2>
+          <ul className="mt-2 space-y-1.5">
+            <li>
+              You made <strong>{data.entries} entries</strong> this year 📝
+            </li>
+            <li>
+              This puts you in the{" "}
+              <strong>top {(data.top_pct * 100).toFixed(1)}%</strong> of all
+              active users!
+            </li>
+            <li>
+              Your <strong>average</strong> happiness score was{" "}
+              {data.average_score.toFixed(2)}
+            </li>
+            <li>
+              And you ranked your day a {data.mode_score.score} the{" "}
+              <strong>most often</strong>, {data.mode_score.count} times
+            </li>
+          </ul>
+        </Card>
 
-          <Card className="border-yellow bg-light_yellow p-6">
-            <h2 className="text-xl font-semibold">Streaks and Extremes</h2>
-            <ul className="mt-2 space-y-1.5">
-              <li>
-                <strong>Longest Streak:</strong> {data.longest_streak.days} days
-                (from {formatDate(data.longest_streak.start)} to{" "}
-                {formatDate(data.longest_streak.end)})
-              </li>
-              <li>
-                <strong>Minimum Score:</strong> {data.min_score.score} (on{" "}
-                {formatDate(data.min_score.date)})
-              </li>
-              <li>
-                <strong>Maximum Score:</strong> {data.max_score.score} (on{" "}
-                {formatDate(data.max_score.date)})
-              </li>
-              <li>
-                <strong>Largest Score Difference:</strong>{" "}
-                {data.largest_diff.diff} (from{" "}
-                {formatDate(data.largest_diff.start)} to{" "}
-                {formatDate(data.largest_diff.end)})
-              </li>
-            </ul>
-          </Card>
+        <Card className="border-yellow bg-light_yellow p-6">
+          <h2 className="text-xl font-semibold">Streaks and Extremes</h2>
+          <ul className="mt-2 space-y-1.5">
+            <li>
+              Your <strong>longest logging streak</strong> lasted{" "}
+              {data.longest_streak.days} days, from{" "}
+              {formatDateWrapped(data.longest_streak.start)} to{" "}
+              {formatDateWrapped(data.longest_streak.end)}!
+            </li>
+            <li>
+              You felt the <strong>saddest</strong> on{" "}
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view date"
+                onClick={() =>
+                  // Math.random() needed to force react query fetch every time
+                  setDateQuery([data.min_score.date, Math.random().toString()])
+                }
+              >
+                {formatDateWrapped(data.min_score.date)}
+              </span>
+              , where you ranked your day a {data.min_score.score}
+            </li>
+            <li>
+              But you felt the <strong>happiest</strong> on{" "}
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view date"
+                onClick={() =>
+                  setDateQuery([data.max_score.date, Math.random().toString()])
+                }
+              >
+                {formatDateWrapped(data.max_score.date)}
+              </span>
+              , where you ranked your day a {data.max_score.score}
+            </li>
+            <li>
+              And{" "}
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view date"
+                onClick={() =>
+                  setDateQuery([
+                    data.largest_diff.end,
+                    Math.random().toString(),
+                  ])
+                }
+              >
+                {formatDateWrapped(data.largest_diff.end)}
+              </span>{" "}
+              was your <strong>largest jump</strong> in happiness score, which
+              changed by {data.largest_diff.diff}
+            </li>
+          </ul>
+        </Card>
 
-          <Card className="border-yellow bg-light_yellow p-6">
-            <h2 className="text-xl font-semibold">Monthly and Weekly Trends</h2>
-            <ul className="mt-2 space-y-1.5">
-              <li>
-                <strong>Highest Month Average:</strong>{" "}
-                {data.month_highest.avg_score.toFixed(2)} (Month:{" "}
-                {getMonthName(data.month_highest.month)})
-              </li>
-              <li>
-                <strong>Lowest Month Average:</strong>{" "}
-                {data.month_lowest.avg_score.toFixed(2)} (Month:{" "}
-                {getMonthName(data.month_lowest.month)})
-              </li>
-              <li>
-                <strong>Highest Week Average:</strong>{" "}
-                {data.week_highest.avg_score.toFixed(2)} (Week starting{" "}
-                {formatDate(data.week_highest.week_start)})
-              </li>
-              <li>
-                <strong>Lowest Week Average:</strong>{" "}
-                {data.week_lowest.avg_score.toFixed(2)} (Week starting{" "}
-                {formatDate(data.week_lowest.week_start)})
-              </li>
-            </ul>
-          </Card>
+        <Card className="border-yellow bg-light_yellow p-6">
+          <h2 className="text-xl font-semibold">Monthly and Weekly Trends</h2>
+          <ul className="mt-2 space-y-1.5">
+            <li>
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view entries"
+                onClick={() =>
+                  window.open(
+                    `/home?date=2024-${data.month_highest.month}-01`,
+                    "_blank",
+                  )
+                }
+              >
+                {getMonthName(data.month_highest.month)}
+              </span>{" "}
+              was your <strong>happiest month</strong>, with an average score of{" "}
+              {data.month_highest.avg_score.toFixed(2)}
+            </li>
+            <li>
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view entries"
+                onClick={() =>
+                  window.open(
+                    `/home?date=2024-${data.month_lowest.month}-01`,
+                    "_blank",
+                  )
+                }
+              >
+                {getMonthName(data.month_lowest.month)}
+              </span>{" "}
+              was your <strong>saddest month</strong>, with an average score of{" "}
+              {data.month_lowest.avg_score.toFixed(2)}
+            </li>
+            <li>
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view entries"
+                onClick={() =>
+                  window.open(
+                    "/home?date=" + data.week_highest.week_start.split("T")[0],
+                    "_blank",
+                  )
+                }
+              >
+                {formatDateWrapped(data.week_highest.week_start)}
+              </span>{" "}
+              was your <strong>happiest week</strong>, with an average score of{" "}
+              {data.week_highest.avg_score.toFixed(2)}
+            </li>
+            <li>
+              <span
+                className="border-black cursor-pointer border-b border-dotted"
+                title="Click to view entries"
+                onClick={() =>
+                  window.open(
+                    "/home?date=" + data.week_lowest.week_start.split("T")[0],
+                    "_blank",
+                  )
+                }
+              >
+                {formatDateWrapped(data.week_lowest.week_start)}
+              </span>{" "}
+              was your <strong>saddest week</strong>, with an average score of{" "}
+              {data.week_lowest.avg_score.toFixed(2)}
+            </li>
+          </ul>
+        </Card>
 
-          <Card className="border-yellow bg-light_yellow p-6">
-            <h2 className="text-xl font-semibold">Top Words</h2>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {data.top_words.map((wordData, index) => {
-                const [word, count] = wordData.split(",");
-                return (
-                  <span
-                    key={index}
-                    className="leading-9"
-                    title={count + " times"}
-                    style={{
-                      fontSize: `${calculateFontSize(parseInt(count))}px`,
-                    }}
-                  >
-                    {word}
-                  </span>
-                );
-              })}
-            </div>
-          </Card>
-        </div>
+        <Card className="border-yellow bg-light_yellow p-6">
+          <h2 className="mb-2 text-xl font-semibold">Top Words</h2>
+          <span>
+            The <strong>top 10</strong> words you used in your entries were:
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {data.top_words.map((wordData, index) => {
+              const [word, count] = wordData.split(",");
+              return (
+                <span
+                  key={index}
+                  className="leading-9"
+                  title={count + " times"}
+                  style={{
+                    fontSize: `${calculateFontSize(parseInt(count))}px`,
+                  }}
+                >
+                  {word}
+                </span>
+              );
+            })}
+          </div>
+        </Card>
       </div>
+      {isLoading || isError || graphData == undefined ? (
+        <Spinner className="ml-8" />
+      ) : (
+        <Graph
+          entries={graphData}
+          graphTitle="Your 2024 Happiness Graph"
+          range={[new Date(2024, 0, 1), new Date(2025, 0, 1)]}
+          onSelectEntry={(entry: Happiness[]) => {
+            setSelectedEntry(entry[0]);
+          }}
+        />
+      )}
+      {selectedEntry && (
+        <HappinessViewerModal
+          happiness={selectedEntry}
+          id="wrapped-happiness-viewer"
+        />
+      )}
     </div>
   );
 }
