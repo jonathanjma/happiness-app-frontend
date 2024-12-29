@@ -17,6 +17,7 @@ import Statistics from "./pages/Statistics/Statistics";
 import UserGroups from "./pages/UserGroups/UserGroups";
 import UserSettings from "./pages/UserSettings/UserSettings";
 import Welcome from "./pages/Welcome/Welcome";
+import Wrapped from "./pages/Wrapped/Wrapped";
 
 export default function App() {
   return (
@@ -64,6 +65,7 @@ export default function App() {
                         <Route path="/search" element={<AllSearchResults />} />
                         <Route path="/profile/:userID" element={<Profile />} />
                         <Route path="/settings" element={<UserSettings />} />
+                        <Route path="/wrapped" element={<Wrapped />} />
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>
                     }
