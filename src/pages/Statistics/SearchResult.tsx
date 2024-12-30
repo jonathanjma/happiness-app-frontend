@@ -18,8 +18,8 @@ export default function SearchResult({
   const highlightedKeyword = `<span class="text-gray-800 font-semibold text-md bg-yellow">${keyword}</span>`;
 
   const highlightedComment = comment
-    .replace(new RegExp(keyword, "g"), highlightedKeyword)
-    .substring(comment.indexOf(keyword) - 20);
+    .replace(new RegExp(keyword, "gi"), highlightedKeyword)
+    .substring(comment.toLowerCase().indexOf(keyword.toLowerCase()) - 20);
   const sanitizedContent = DOMPurify.sanitize(highlightedComment);
 
   const navigate = useNavigate();

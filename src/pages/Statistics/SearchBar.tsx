@@ -273,74 +273,83 @@ export default function SearchBar({
 
       {/* Results preview */}
       {showResultsPreview && resultsShowing && isFocused && (
-        <Card className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200 bg-white">
-          {data && data.length === 0 ? (
-            <p className="mx-4 my-3 text-gray-400">
-              {Object.keys(
-                createSearchQuery(
-                  text,
-                  startDate,
-                  endDate,
-                  startValue,
-                  endValue,
-                ),
-              ).length === 0
-                ? "Type to search, or apply filters"
-                : "No entries match the query"}
-            </p>
-          ) : (
-            <>
-              {data &&
-                data.map((h, index) => (
-                  <div
-                    onMouseEnter={() => {
-                      setSelectedEntryIndex(index);
-                    }}
-                    onMouseLeave={() => {
-                      setSelectedEntryIndex(-1);
-                    }}
-                  >
-                    <SearchResult
-                      happiness={h}
-                      keyword={text}
-                      key={h.id}
-                      selected={index === selectedEntryIndex}
-                    />
-                  </div>
-                ))}
-            </>
-          )}
-          {/* Footer */}
-          <Row className="w-full border-t-1 border-gray-200 bg-gray-50 px-4 py-3">
-            <label className="text-gray-400">
-              Press ↑ or ↓ to navigate. Press ENTER or press button to open in
-              Entries
-            </label>
-            <div className="flex flex-grow " />
-            <a
-              className={`${
-                !count || count?.number === 0 ? "" : "underline"
-              } text-sm text-gray-400 hover:cursor-pointer`}
-              onClick={() => {
-                if (count && count.number !== 0) {
-                  navigate("/search", {
-                    state: {
-                      startDate: startDate,
-                      endDate: endDate,
-                      startValue: startValue,
-                      endValue: endValue,
-                      text: text,
-                    },
-                  });
-                }
-              }}
-            >
-              {!count || count?.number === 0
-                ? "No search results"
-                : `View All${count ? ` ${count.number} ` : " "}Search Results`}
-            </a>
-          </Row>
-        </Card>
+        <div
+          onMouseDown={(e) => {
+            e.preventDefault();
+          }}
+          className="absolute left-0 right-0 z-50 translate-y-16 border-gray-200 bg-white"
+        >
+          <Card>
+            {data && data.length === 0 ? (
+              <p className="mx-4 my-3 text-gray-400">
+                {Object.keys(
+                  createSearchQuery(
+                    text,
+                    startDate,
+                    endDate,
+                    startValue,
+                    endValue,
+                  ),
+                ).length === 0
+                  ? "Type to search, or apply filters"
+                  : "No entries match the query"}
+              </p>
+            ) : (
+              <>
+                {data &&
+                  data.map((h, index) => (
+                    <div
+                      onMouseEnter={() => {
+                        setSelectedEntryIndex(index);
+                      }}
+                      onMouseLeave={() => {
+                        setSelectedEntryIndex(-1);
+                      }}
+                    >
+                      <SearchResult
+                        happiness={h}
+                        keyword={text}
+                        key={h.id}
+                        selected={index === selectedEntryIndex}
+                      />
+                    </div>
+                  ))}
+              </>
+            )}
+            {/* Footer */}
+            <Row className="w-full rounded-b-2xl border-t-1 border-gray-200 bg-gray-50 px-4 py-3">
+              <label className="text-gray-400">
+                Press ↑ or ↓ to navigate. Press ENTER or press button to open in
+                Entries
+              </label>
+              <div className="flex flex-grow " />
+              <a
+                className={`${
+                  !count || count?.number === 0 ? "" : "underline"
+                } text-sm text-gray-400 hover:cursor-pointer`}
+                onClick={() => {
+                  if (count && count.number !== 0) {
+                    navigate("/search", {
+                      state: {
+                        startDate: startDate,
+                        endDate: endDate,
+                        startValue: startValue,
+                        endValue: endValue,
+                        text: text,
+                      },
+                    });
+                  }
+                }}
+              >
+                {!count || count?.number === 0
+                  ? "No search results"
+                  : `View All${
+                      count ? ` ${count.number} ` : " "
+                    }Search Results`}
+              </a>
+            </Row>
+          </Card>
+        </div>
       )}
     </Column>
   );
