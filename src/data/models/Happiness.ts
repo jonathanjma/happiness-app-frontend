@@ -34,3 +34,20 @@ export interface HappinessPaginationResults {
   // below is not actually used, I just consume it with any
   pageParams: any;
 }
+
+export interface HappinessWrapped {
+  username: string;
+  entries: number;
+  top_pct: number;
+  average_score: number;
+  mode_score: { score: number; count: number };
+  longest_streak: { start: string; end: string; days: number };
+  min_score: { score: number; date: string };
+  max_score: { score: number; date: string };
+  largest_diff: { start: string; end: string; diff: string };
+  month_highest: { month: number; avg_score: number };
+  month_lowest: { month: number; avg_score: number };
+  week_highest: { week_start: string; avg_score: number };
+  week_lowest: { week_start: string; avg_score: number };
+  top_words: string[];
+}
