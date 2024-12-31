@@ -6,8 +6,11 @@ import { Happiness, HappinessWrapped } from "../../data/models/Happiness";
 import { useApi } from "../../contexts/ApiProvider";
 import { formatDate } from "../../utils";
 import Spinner from "../../components/Spinner";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HappinessViewerModal from "../../components/modals/HappinessViewerModal";
+import { createFileName, useScreenshot } from "use-react-screenshot";
+import ShareIcon from "../../assets/share.svg";
+import Row from "../../components/layout/Row";
 
 export default function Wrapped() {
   const { api } = useApi();
@@ -81,12 +84,26 @@ export default function Wrapped() {
     { enabled: dateQuery[0] !== "" },
   );
 
+  const wrappedRef = useRef<HTMLDivElement>(null);
+
+  const [image, takeScreenShot] = useScreenshot({
+    type: "image/jpeg",
+    quality: 1.0,
+  });
+
+  const downloadImage = (image: string | null) => {
+    const a = document.createElement("a");
+    a.href = image!;
+    a.download = createFileName("jpg", "happiness_app_wrapped_2024");
+    a.click();
+  };
+
   return (
-    <div className="px-6 py-10 text-gray-800">
+    <>
       {wrappedIsLoading ? (
-        <Spinner className="mb-8 ml-8" text="Loading..." />
+        <Spinner className="py-16 pl-14" text="Loading..." />
       ) : (
-        <>
+        <div ref={wrappedRef} className="px-6 py-10 text-gray-800">
           {wrappedIsError || wrappedData == undefined ? (
             <h5 className="mx-8">
               Unfortunately you didn't post enough entries this year to create a
@@ -94,10 +111,20 @@ export default function Wrapped() {
             </h5>
           ) : (
             <>
-              <h1 className="mb-6 text-center text-3xl font-semibold">
-                {wrappedData.username}'s Happiness App Wrapped 2024
-              </h1>
-              <div className="grid grid-cols-1 gap-6 rounded-lg  py-6 md:grid-cols-2 ">
+              <Row className="w-full items-center justify-between">
+                <h1 className="flex flex-1 justify-center text-center text-3xl font-semibold">
+                  {wrappedData.username}'s Happiness App Wrapped 2024
+                </h1>
+                <button
+                  className="flex rounded-lg border-1 border-secondary p-2 shadow-md1"
+                  onClick={() => {
+                    takeScreenShot(wrappedRef.current!).then(downloadImage);
+                  }}
+                >
+                  <img src={ShareIcon} className="max-w-[24px]" />
+                </button>
+              </Row>
+              <div className="grid grid-cols-1 gap-6 rounded-lg py-8 md:grid-cols-2">
                 <Card className="border-yellow bg-light_yellow p-6">
                   <h2 className="text-xl font-semibold">General Stats</h2>
                   <ul className="mt-2 space-y-1.5">
@@ -135,53 +162,49 @@ export default function Wrapped() {
                       {formatDateWrapped(wrappedData.longest_streak.start)} to{" "}
                       {formatDateWrapped(wrappedData.longest_streak.end)}!
                     </li>
-                    <li>
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entry"
+                      onClick={() =>
+                        // Math.random() needed to force react query fetch every time
+                        setDateQuery([
+                          wrappedData.min_score.date,
+                          Math.random().toString(),
+                        ])
+                      }
+                    >
                       You felt the <strong>saddest</strong> on{" "}
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view date"
-                        onClick={() =>
-                          // Math.random() needed to force react query fetch every time
-                          setDateQuery([
-                            wrappedData.min_score.date,
-                            Math.random().toString(),
-                          ])
-                        }
-                      >
-                        {formatDateWrapped(wrappedData.min_score.date)}
-                      </span>
-                      , ranking your day a {wrappedData.min_score.score}
+                      <i>{formatDateWrapped(wrappedData.min_score.date)}</i>,
+                      ranking your day a{" "}
+                      {wrappedData.min_score.score.toFixed(1)}
                     </li>
-                    <li>
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entry"
+                      onClick={() =>
+                        setDateQuery([
+                          wrappedData.max_score.date,
+                          Math.random().toString(),
+                        ])
+                      }
+                    >
                       But you felt the <strong>happiest</strong> on{" "}
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view date"
-                        onClick={() =>
-                          setDateQuery([
-                            wrappedData.max_score.date,
-                            Math.random().toString(),
-                          ])
-                        }
-                      >
-                        {formatDateWrapped(wrappedData.max_score.date)}
-                      </span>
-                      , ranking your day a {wrappedData.max_score.score}
+                      <i>{formatDateWrapped(wrappedData.max_score.date)}</i>,
+                      ranking your day a{" "}
+                      {wrappedData.max_score.score.toFixed(1)}
                     </li>
-                    <li>
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entry"
+                      onClick={() =>
+                        setDateQuery([
+                          wrappedData.largest_diff.end,
+                          Math.random().toString(),
+                        ])
+                      }
+                    >
                       And{" "}
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view date"
-                        onClick={() =>
-                          setDateQuery([
-                            wrappedData.largest_diff.end,
-                            Math.random().toString(),
-                          ])
-                        }
-                      >
-                        {formatDateWrapped(wrappedData.largest_diff.end)}
-                      </span>{" "}
+                      <i>{formatDateWrapped(wrappedData.largest_diff.end)}</i>{" "}
                       was your <strong>largest jump</strong> in happiness score,
                       which changed by {wrappedData.largest_diff.diff}
                     </li>
@@ -193,81 +216,77 @@ export default function Wrapped() {
                     Monthly and Weekly Trends
                   </h2>
                   <ul className="mt-2 space-y-1.5">
-                    <li>
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view entries"
-                        onClick={() =>
-                          window.open(
-                            "/home?date=" +
-                              formatDate(
-                                new Date(
-                                  2024,
-                                  wrappedData.month_highest.month - 1,
-                                ),
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entries"
+                      onClick={() =>
+                        window.open(
+                          "/home?date=" +
+                            formatDate(
+                              new Date(
+                                2024,
+                                wrappedData.month_highest.month - 1,
                               ),
-                            "_blank",
-                          )
-                        }
-                      >
-                        {getMonthName(wrappedData.month_highest.month)}
-                      </span>{" "}
-                      was your <strong>happiest month</strong>, with an average
+                            ),
+                          "_blank",
+                        )
+                      }
+                    >
+                      <i>{getMonthName(wrappedData.month_highest.month)}</i> was
+                      your <strong>happiest month</strong>, with an average
                       score of {wrappedData.month_highest.avg_score.toFixed(2)}
                     </li>
-                    <li>
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view entries"
-                        onClick={() =>
-                          window.open(
-                            "/home?date=" +
-                              formatDate(
-                                new Date(
-                                  2024,
-                                  wrappedData.month_lowest.month - 1,
-                                ),
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entries"
+                      onClick={() =>
+                        window.open(
+                          "/home?date=" +
+                            formatDate(
+                              new Date(
+                                2024,
+                                wrappedData.month_lowest.month - 1,
                               ),
-                            "_blank",
-                          )
-                        }
-                      >
-                        {getMonthName(wrappedData.month_lowest.month)}
-                      </span>{" "}
-                      was your <strong>saddest month</strong>, with an average
-                      score of {wrappedData.month_lowest.avg_score.toFixed(2)}
+                            ),
+                          "_blank",
+                        )
+                      }
+                    >
+                      <i>{getMonthName(wrappedData.month_lowest.month)}</i> was
+                      your <strong>saddest month</strong>, with an average score
+                      of {wrappedData.month_lowest.avg_score.toFixed(2)}
                     </li>
-                    <li>
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view entries"
-                        onClick={() =>
-                          window.open(
-                            "/home?date=" +
-                              wrappedData.week_highest.week_start.split("T")[0],
-                            "_blank",
-                          )
-                        }
-                      >
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entries"
+                      onClick={() =>
+                        window.open(
+                          "/home?date=" +
+                            wrappedData.week_highest.week_start.split("T")[0],
+                          "_blank",
+                        )
+                      }
+                    >
+                      <i>
                         {formatDateWrapped(wrappedData.week_highest.week_start)}
-                      </span>{" "}
+                      </i>{" "}
                       was your <strong>happiest week</strong>, with an average
                       score of {wrappedData.week_highest.avg_score.toFixed(2)}
                     </li>
-                    <li>
-                      <span
-                        className="border-black cursor-pointer border-b border-dotted"
-                        title="Click to view entries"
-                        onClick={() =>
-                          window.open(
-                            "/home?date=" +
-                              wrappedData.week_lowest.week_start.split("T")[0],
-                            "_blank",
-                          )
-                        }
-                      >
+                    <li
+                      className="cursor-pointer"
+                      title="Click to view entries"
+                      onClick={() =>
+                        window.open(
+                          "/home?date=" +
+                            wrappedData.week_lowest.week_start.split("T")[0],
+                          "_blank",
+                        )
+                      }
+                    >
+                      <i>
                         {formatDateWrapped(wrappedData.week_lowest.week_start)}
-                      </span>{" "}
+                      </i>{" "}
                       was your <strong>saddest week</strong>, with an average
                       score of {wrappedData.week_lowest.avg_score.toFixed(2)}
                     </li>
@@ -316,7 +335,7 @@ export default function Wrapped() {
               )}
             </>
           )}
-        </>
+        </div>
       )}
       {selectedEntry && (
         <HappinessViewerModal
@@ -324,6 +343,6 @@ export default function Wrapped() {
           id="wrapped-happiness-viewer"
         />
       )}
-    </div>
+    </>
   );
 }
