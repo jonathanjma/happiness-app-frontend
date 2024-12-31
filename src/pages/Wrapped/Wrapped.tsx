@@ -22,17 +22,17 @@ export default function Wrapped() {
     api.get<HappinessWrapped>("/happiness/wrapped").then((res) => res.data),
   );
 
+  // date utilities
   const formatDateWrapped = (dateString: string) => {
     const date = new Date(dateString);
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
+  const getMonthName = (date: Date) =>
+    date.toLocaleString("default", { month: "long" });
+  const dateWithMonth = (monthNumber: number) =>
+    new Date(2024, monthNumber - 1, 1);
 
-  const getMonthName = (monthNumber: number) => {
-    const date = new Date();
-    date.setMonth(monthNumber - 1);
-    return date.toLocaleString("default", { month: "long" });
-  };
-
+  // scale word fonts
   const calculateFontSize = (count: number, top_words: string[]) => {
     const [minFontSize, maxFontSize] = [12, 24]; // px
     const maxOccurrences = parseInt(top_words[0].split(",")[1]);
@@ -59,6 +59,7 @@ export default function Wrapped() {
       .then((res) => res.data),
   );
 
+  // happiness modal
   const [selectedEntry, setSelectedEntry] = useState<Happiness>();
   useEffect(() => {
     if (selectedEntry) {
@@ -68,6 +69,7 @@ export default function Wrapped() {
     }
   }, [selectedEntry]);
 
+  // fetching happiness for modal
   const [dateQuery, setDateQuery] = useState<string[]>(["", ""]);
   useQuery<Happiness[]>(
     [QueryKeys.FETCH_HAPPINESS, "wrapped", dateQuery],
@@ -84,13 +86,12 @@ export default function Wrapped() {
     { enabled: dateQuery[0] !== "" },
   );
 
+  // for exporting wrapped as image
   const wrappedRef = useRef<HTMLDivElement>(null);
-
   const [image, takeScreenShot] = useScreenshot({
     type: "image/jpeg",
     quality: 1.0,
   });
-
   const downloadImage = (image: string | null) => {
     const a = document.createElement("a");
     a.href = image!;
@@ -146,7 +147,7 @@ export default function Wrapped() {
                     <li>
                       And you ranked your day a {wrappedData.mode_score.score}{" "}
                       the <strong>most often</strong>,{" "}
-                      {wrappedData.mode_score.count} times
+                      {wrappedData.mode_score.count} times in total
                     </li>
                   </ul>
                 </Card>
@@ -223,17 +224,18 @@ export default function Wrapped() {
                         window.open(
                           "/home?date=" +
                             formatDate(
-                              new Date(
-                                2024,
-                                wrappedData.month_highest.month - 1,
-                              ),
+                              dateWithMonth(wrappedData.month_highest.month),
                             ),
                           "_blank",
                         )
                       }
                     >
-                      <i>{getMonthName(wrappedData.month_highest.month)}</i> was
-                      your <strong>happiest month</strong>, with an average
+                      <i>
+                        {getMonthName(
+                          dateWithMonth(wrappedData.month_highest.month),
+                        )}
+                      </i>{" "}
+                      was your <strong>happiest month</strong>, with an average
                       score of {wrappedData.month_highest.avg_score.toFixed(2)}
                     </li>
                     <li
@@ -243,18 +245,19 @@ export default function Wrapped() {
                         window.open(
                           "/home?date=" +
                             formatDate(
-                              new Date(
-                                2024,
-                                wrappedData.month_lowest.month - 1,
-                              ),
+                              dateWithMonth(wrappedData.month_lowest.month),
                             ),
                           "_blank",
                         )
                       }
                     >
-                      <i>{getMonthName(wrappedData.month_lowest.month)}</i> was
-                      your <strong>saddest month</strong>, with an average score
-                      of {wrappedData.month_lowest.avg_score.toFixed(2)}
+                      <i>
+                        {getMonthName(
+                          dateWithMonth(wrappedData.month_lowest.month),
+                        )}
+                      </i>{" "}
+                      was your <strong>saddest month</strong>, with an average
+                      score of {wrappedData.month_lowest.avg_score.toFixed(2)}
                     </li>
                     <li
                       className="cursor-pointer"
