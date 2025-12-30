@@ -213,7 +213,13 @@ export default function Wrapped() {
     );
   };
 
-  const Extremes = ({ data }: { data: HappinessWrapped }) => (
+  const Extremes = ({
+    data,
+    showActions = true,
+  }: {
+    data: HappinessWrapped;
+    showActions?: boolean;
+  }) => (
     <Card className="border-yellow bg-light_yellow p-6">
       <h2 className="text-3xl font-semibold">Extremes</h2>
       <div className="mt-3 text-base leading-7 text-gray-700">
@@ -233,17 +239,19 @@ export default function Wrapped() {
           <div className="mt-3 text-base leading-7 text-gray-800">
             {data.min_score.ai_summary}
           </div>
-          <div className="mt-3 flex gap-2">
-            <button
-              className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-              onClick={() =>
-                setDateQuery([data.min_score.date, Math.random().toString()])
-              }
-              title="View entry"
-            >
-              View entry
-            </button>
-          </div>
+          {showActions && (
+            <div className="mt-3 flex gap-2">
+              <button
+                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                onClick={() =>
+                  setDateQuery([data.min_score.date, Math.random().toString()])
+                }
+                title="View entry"
+              >
+                View entry
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="rounded-xl bg-white/60 p-4">
@@ -259,23 +267,31 @@ export default function Wrapped() {
           <div className="mt-3 text-base leading-7 text-gray-800">
             {data.max_score.ai_summary}
           </div>
-          <div className="mt-3 flex gap-2">
-            <button
-              className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-              onClick={() =>
-                setDateQuery([data.max_score.date, Math.random().toString()])
-              }
-              title="View entry"
-            >
-              View entry
-            </button>
-          </div>
+          {showActions && (
+            <div className="mt-3 flex gap-2">
+              <button
+                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                onClick={() =>
+                  setDateQuery([data.max_score.date, Math.random().toString()])
+                }
+                title="View entry"
+              >
+                View entry
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </Card>
   );
 
-  const BiggestSwing = ({ data }: { data: HappinessWrapped }) => (
+  const BiggestSwing = ({
+    data,
+    showActions = true,
+  }: {
+    data: HappinessWrapped;
+    showActions?: boolean;
+  }) => (
     <Card className="border-yellow bg-light_yellow p-6">
       <h2 className="text-3xl font-semibold">Biggest Swing</h2>
       <div className="mt-3 text-base leading-7 text-gray-700">
@@ -298,37 +314,45 @@ export default function Wrapped() {
         <div className="mt-3 text-base leading-7 text-gray-800">
           {data.largest_diff.ai_summary}
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-            onClick={() =>
-              setDateQuery([
-                data.largest_diff.start_date,
-                Math.random().toString(),
-              ])
-            }
-            title="View start day entry"
-          >
-            View start day
-          </button>
-          <button
-            className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-            onClick={() =>
-              setDateQuery([
-                data.largest_diff.end_date,
-                Math.random().toString(),
-              ])
-            }
-            title="View end day entry"
-          >
-            View end day
-          </button>
-        </div>
+        {showActions && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+              onClick={() =>
+                setDateQuery([
+                  data.largest_diff.start_date,
+                  Math.random().toString(),
+                ])
+              }
+              title="View start day entry"
+            >
+              View start day
+            </button>
+            <button
+              className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+              onClick={() =>
+                setDateQuery([
+                  data.largest_diff.end_date,
+                  Math.random().toString(),
+                ])
+              }
+              title="View end day entry"
+            >
+              View end day
+            </button>
+          </div>
+        )}
       </div>
     </Card>
   );
 
-  const Trends = ({ data }: { data: HappinessWrapped }) => (
+  const Trends = ({
+    data,
+    showActions = true,
+  }: {
+    data: HappinessWrapped;
+    showActions?: boolean;
+  }) => (
     <Card className="border-yellow bg-light_yellow p-6">
       <h2 className="text-3xl font-semibold">Trends</h2>
       <div className="mt-3 text-base leading-7 text-gray-700">
@@ -351,14 +375,18 @@ export default function Wrapped() {
             <div className="mt-3 text-base leading-7 text-gray-800">
               {data.week_highest.ai_summary}
             </div>
-            <div className="mt-2">
-              <button
-                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-                onClick={() => openEntriesForDate(data.week_highest.week_start)}
-              >
-                View week
-              </button>
-            </div>
+            {showActions && (
+              <div className="mt-2">
+                <button
+                  className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                  onClick={() =>
+                    openEntriesForDate(data.week_highest.week_start)
+                  }
+                >
+                  View week
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="mt-4">
@@ -376,14 +404,18 @@ export default function Wrapped() {
             <div className="mt-3 text-base leading-7 text-gray-800">
               {data.week_lowest.ai_summary}
             </div>
-            <div className="mt-2">
-              <button
-                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-                onClick={() => openEntriesForDate(data.week_lowest.week_start)}
-              >
-                View week
-              </button>
-            </div>
+            {showActions && (
+              <div className="mt-2">
+                <button
+                  className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                  onClick={() =>
+                    openEntriesForDate(data.week_lowest.week_start)
+                  }
+                >
+                  View week
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -403,14 +435,16 @@ export default function Wrapped() {
             <div className="mt-3 text-base leading-7 text-gray-800">
               {data.month_highest.ai_summary}
             </div>
-            <div className="mt-2">
-              <button
-                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-                onClick={() => openEntriesForMonth(data.month_highest.month)}
-              >
-                View month
-              </button>
-            </div>
+            {showActions && (
+              <div className="mt-2">
+                <button
+                  className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                  onClick={() => openEntriesForMonth(data.month_highest.month)}
+                >
+                  View month
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="mt-4">
@@ -428,14 +462,16 @@ export default function Wrapped() {
             <div className="mt-3 text-base leading-7 text-gray-800">
               {data.month_lowest.ai_summary}
             </div>
-            <div className="mt-2">
-              <button
-                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-                onClick={() => openEntriesForMonth(data.month_lowest.month)}
-              >
-                View month
-              </button>
-            </div>
+            {showActions && (
+              <div className="mt-2">
+                <button
+                  className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                  onClick={() => openEntriesForMonth(data.month_lowest.month)}
+                >
+                  View month
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -443,7 +479,13 @@ export default function Wrapped() {
     </Card>
   );
 
-  const Moments = ({ data }: { data: HappinessWrapped }) => {
+  const Moments = ({
+    data,
+    showActions = true,
+  }: {
+    data: HappinessWrapped;
+    showActions?: boolean;
+  }) => {
     const cards = [
       {
         title: "A Crazy Moment 🤯",
@@ -480,19 +522,21 @@ export default function Wrapped() {
               <div className="mt-3 text-base leading-7 text-gray-800">
                 {c.summary}
               </div>
-              <div className="mt-3">
-                <button
-                  className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
-                  onClick={() =>
-                    setDateQuery([
-                      normalizeDateForEntryLookup(c.date),
-                      Math.random().toString(),
-                    ])
-                  }
-                >
-                  View entry
-                </button>
-              </div>
+              {showActions && (
+                <div className="mt-3">
+                  <button
+                    className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                    onClick={() =>
+                      setDateQuery([
+                        normalizeDateForEntryLookup(c.date),
+                        Math.random().toString(),
+                      ])
+                    }
+                  >
+                    View entry
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -500,7 +544,7 @@ export default function Wrapped() {
     );
   };
 
-  const GraphSlide = () => (
+  const GraphSlide = ({ interactive = true }: { interactive?: boolean }) => (
     <Card className="border-yellow bg-light_yellow p-6">
       <h2 className="text-3xl font-semibold">Your Happiness Graph</h2>
       <div className="mt-3 text-base leading-7 text-gray-700">
@@ -514,13 +558,28 @@ export default function Wrapped() {
             entries={graphData!}
             graphTitle={`${wrappedYear} Happiness Graph`}
             range={[new Date(wrappedYear, 0, 1), new Date(wrappedYear + 1, 0, 1)]}
-            onSelectEntry={(entry: Happiness[]) => {
-              setSelectedEntry(entry[0]);
-            }}
+            onSelectEntry={
+              interactive
+                ? (entry: Happiness[]) => {
+                  setSelectedEntry(entry[0]);
+                }
+                : () => { }
+            }
           />
         )}
       </div>
     </Card>
+  );
+
+  const OverviewSlide = ({ data }: { data: HappinessWrapped }) => (
+    <div className="space-y-4">
+      <AtAGlance data={data} />
+      <Themes data={data} />
+      <Extremes data={data} showActions={false} />
+      <BiggestSwing data={data} showActions={false} />
+      <Trends data={data} showActions={false} />
+      <Moments data={data} showActions={false} />
+    </div>
   );
 
   const WrappedStory = ({
@@ -560,6 +619,10 @@ export default function Wrapped() {
       {
         title: "Graph",
         render: <GraphSlide />,
+      },
+      {
+        title: "Overview (share this page!)",
+        render: <OverviewSlide data={data} />,
       },
     ] as const;
     const current = steps[step];

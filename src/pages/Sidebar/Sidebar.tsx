@@ -75,6 +75,17 @@ export default function Sidebar({ element }: { element: React.ReactElement }) {
                           "rounded-b-none bg-white hover:bg-medium_yellow hover:shadow-md1"
                         }
                       />
+                      <LinkButton
+                        label={"Happiness App Wrapped"}
+                        href={"/wrapped/"}
+                        selectedClass={[
+                          "bg-yellow font-semibold text-secondary shadow-md1",
+                          "bg-white font-medium text-gray-600",
+                        ]}
+                        className={
+                          "rounded-t-none rounded-b-none bg-white hover:bg-medium_yellow hover:shadow-md1"
+                        }
+                      />
                       <button
                         className={
                           "flex w-full flex-row rounded-b-xl bg-white py-3 pl-3 pr-4.5 font-medium text-gray-600 outline-none hover:bg-medium_yellow hover:shadow-md1"
