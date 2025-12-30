@@ -1,5 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import PageViewTracker from "./components/PageViewTracker";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import ApiProvider from "./contexts/ApiProvider";
@@ -22,6 +23,7 @@ import Wrapped from "./pages/Wrapped/Wrapped";
 export default function App() {
   return (
     <BrowserRouter>
+      <PageViewTracker />
       <Toaster />
       <ApiProvider>
         <UserProvider>
