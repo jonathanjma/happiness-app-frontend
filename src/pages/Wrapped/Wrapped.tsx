@@ -33,7 +33,7 @@ export default function Wrapped() {
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
-  const wrappedYear = new Date().getFullYear();
+  const wrappedYear = 2025;
 
   const normalizeDateForEntryLookup = (dateString: string) => {
     // Backend timestamps typically include a time; keep this robust for YYYY-MM-DD.
@@ -122,63 +122,64 @@ export default function Wrapped() {
     value: React.ReactNode;
     hint?: React.ReactNode;
   }) => (
-    <div className="rounded-xl border border-secondary/30 bg-white/60 px-3 py-2 shadow-sm">
-      <div className="text-xs font-medium uppercase tracking-wide text-gray-500">
-        {label}
-      </div>
-      <div className="text-lg font-semibold text-gray-900">{value}</div>
+    <div className="rounded-xl border border-secondary/30 bg-white/60 px-4 py-3 shadow-sm">
+      <div className="text-lg font-medium text-gray-600">{label}</div>
+      <div className="mt-2 text-2xl font-bold text-gray-900">{value}</div>
       {hint != null && (
-        <div className="mt-0.5 text-xs text-gray-600">{hint}</div>
+        <div className="mt-1 text-base text-gray-600">{hint}</div>
       )}
     </div>
   );
 
   const AtAGlance = ({ data }: { data: HappinessWrapped }) => (
     <Card className="border-yellow bg-light_yellow p-6">
-      <h2 className="text-xl font-semibold">At a glance</h2>
+      <h2 className="text-3xl font-semibold">At a Glance</h2>
+      <div className="mt-3 text-base leading-7 text-gray-700">
+        A quick snapshot of your year before we dive into your highlights!
+      </div>
       <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
-        <StatPill label="Entries" value={data.entries} />
-        <StatPill label="Top %" value={`${(data.top_pct * 100).toFixed(1)}%`} />
+        <StatPill label="Entries Created" value={data.entries} />
+        <StatPill label="Top % of Active Users" value={`${(data.top_pct * 100).toFixed(1)}%`} />
         <StatPill
-          label="Words"
-          value={data.total_words != null ? data.total_words : "—"}
+          label="Words Written"
+          value={data.total_words.toLocaleString('en-US')}
         />
-        <StatPill label="Avg score" value={data.average_score.toFixed(2)} />
+        <StatPill label="Average Score" value={data.average_score.toFixed(2)} />
         <StatPill
-          label="Most common score"
+          label="Most Common Score"
           value={data.mode_score.score.toFixed(1)}
           hint={`${data.mode_score.count} times`}
         />
         <StatPill
-          label="Longest streak"
+          label="Longest Logging Streak"
           value={`${data.longest_streak.days} days`}
-          hint={`${formatDateWrapped(data.longest_streak.start)} – ${formatDateWrapped(data.longest_streak.end)}`}
+          hint={`${formatDateWrapped(data.longest_streak.start)} - ${formatDateWrapped(data.longest_streak.end)}`}
         />
-      </div>
-      <div className="mt-4 text-sm text-gray-700">
-        A quick snapshot of your year before we dive into the highlights.
       </div>
     </Card>
   );
 
   const Themes = ({ data }: { data: HappinessWrapped }) => {
-    const themes = data.yearly?.top_3_themes ?? [];
-    const happy = data.score_bands?.theme_8_10 ?? [];
-    const sad = data.score_bands?.theme_0_4 ?? [];
+    const themes = data.yearly.top_3_themes;
+    const happy = data.score_bands.theme_8_10;
+    const sad = data.score_bands.theme_0_4;
 
     return (
       <Card className="border-yellow bg-light_yellow p-6">
-        <h2 className="text-xl font-semibold">Themes</h2>
+        <h2 className="text-3xl font-semibold">Themes</h2>
+        <div className="mt-3 text-base leading-7 text-gray-700">
+          A quick look at what defined your year and affected your happiness.
+        </div>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            <div className="text-sm font-semibold text-gray-800">
-              3 phrases for your year
+            <div className="text-lg font-semibold text-gray-900">
+              Your Year in 3 Phrases
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-3">
               {themes.map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-secondary/40 bg-white px-3 py-1 text-sm"
+                  className="rounded-full border border-secondary/40 bg-white px-4 py-2 text-base"
                 >
                   {t}
                 </span>
@@ -187,10 +188,10 @@ export default function Wrapped() {
           </div>
 
           <div>
-            <div className="text-sm font-semibold text-gray-800">
-              Things that made you happy
+            <div className="text-lg font-semibold text-gray-900">
+              What Made You Happy
             </div>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-800">
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-gray-800">
               {happy.slice(0, 3).map((x) => (
                 <li key={x}>{x}</li>
               ))}
@@ -198,10 +199,10 @@ export default function Wrapped() {
           </div>
 
           <div>
-            <div className="text-sm font-semibold text-gray-800">
-              Things that made you sad
+            <div className="text-lg font-semibold text-gray-900">
+              What Made You Sad
             </div>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-800">
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-gray-800">
               {sad.slice(0, 3).map((x) => (
                 <li key={x}>{x}</li>
               ))}
@@ -214,24 +215,27 @@ export default function Wrapped() {
 
   const Extremes = ({ data }: { data: HappinessWrapped }) => (
     <Card className="border-yellow bg-light_yellow p-6">
-      <h2 className="text-xl font-semibold">Extremes</h2>
+      <h2 className="text-3xl font-semibold">Extremes</h2>
+      <div className="mt-3 text-base leading-7 text-gray-700">
+        Your happiest and saddest days of the year, summarized in a couple sentences.
+      </div>
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-xl bg-white/60 p-4">
-          <div className="text-sm font-semibold text-gray-800">
-            Lowest day
-          </div>
-          <div className="mt-1 text-sm text-gray-700">
-            <span className="font-medium">
+          <div className="text-xl font-semibold text-gray-900">Saddest Day</div>
+          <div className="mt-3 flex items-baseline justify-between gap-4">
+            <div className="text-2xl font-semibold text-gray-800">
               {formatDateWrapped(data.min_score.date)}
-            </span>{" "}
-            · {data.min_score.score.toFixed(1)}
+            </div>
+            <div className="text-5xl font-bold text-secondary">
+              {data.min_score.score.toFixed(1)}
+            </div>
           </div>
-          <div className="mt-2 text-sm text-gray-700">
-            {data.min_score.ai_summary ?? ""}
+          <div className="mt-3 text-base leading-7 text-gray-800">
+            {data.min_score.ai_summary}
           </div>
           <div className="mt-3 flex gap-2">
             <button
-              className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+              className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
               onClick={() =>
                 setDateQuery([data.min_score.date, Math.random().toString()])
               }
@@ -243,21 +247,21 @@ export default function Wrapped() {
         </div>
 
         <div className="rounded-xl bg-white/60 p-4">
-          <div className="text-sm font-semibold text-gray-800">
-            Highest day
-          </div>
-          <div className="mt-1 text-sm text-gray-700">
-            <span className="font-medium">
+          <div className="text-xl font-semibold text-gray-900">Happiest Day</div>
+          <div className="mt-3 flex items-baseline justify-between gap-4">
+            <div className="text-2xl font-semibold text-gray-800">
               {formatDateWrapped(data.max_score.date)}
-            </span>{" "}
-            · {data.max_score.score.toFixed(1)}
+            </div>
+            <div className="text-5xl font-bold text-secondary">
+              {data.max_score.score.toFixed(1)}
+            </div>
           </div>
-          <div className="mt-2 text-sm text-gray-700">
-            {data.max_score.ai_summary ?? ""}
+          <div className="mt-3 text-base leading-7 text-gray-800">
+            {data.max_score.ai_summary}
           </div>
           <div className="mt-3 flex gap-2">
             <button
-              className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+              className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
               onClick={() =>
                 setDateQuery([data.max_score.date, Math.random().toString()])
               }
@@ -273,27 +277,30 @@ export default function Wrapped() {
 
   const BiggestSwing = ({ data }: { data: HappinessWrapped }) => (
     <Card className="border-yellow bg-light_yellow p-6">
-      <h2 className="text-xl font-semibold">Biggest swing</h2>
+      <h2 className="text-3xl font-semibold">Biggest Swing</h2>
+      <div className="mt-3 text-base leading-7 text-gray-700">
+        The biggest day-to-day change in your happiness score.
+      </div>
       <div className="mt-4 rounded-xl bg-white/60 p-4">
-        <div className="text-sm text-gray-700">
+        <div className="text-base text-gray-700">
           From{" "}
-          <span className="font-medium">
+          <span className="font-semibold text-gray-800">
             {formatDateWrapped(data.largest_diff.start_date)}
           </span>{" "}
           to{" "}
-          <span className="font-medium">
+          <span className="font-semibold text-gray-800">
             {formatDateWrapped(data.largest_diff.end_date)}
           </span>
         </div>
-        <div className="mt-1 text-2xl font-semibold text-gray-900">
+        <div className="mt-2 text-4xl font-bold text-secondary">
           {data.largest_diff.score_difference}
         </div>
-        <div className="mt-2 text-sm text-gray-700">
+        <div className="mt-3 text-base leading-7 text-gray-800">
           {data.largest_diff.ai_summary}
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           <button
-            className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+            className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
             onClick={() =>
               setDateQuery([
                 data.largest_diff.start_date,
@@ -305,7 +312,7 @@ export default function Wrapped() {
             View start day
           </button>
           <button
-            className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+            className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
             onClick={() =>
               setDateQuery([
                 data.largest_diff.end_date,
@@ -323,71 +330,30 @@ export default function Wrapped() {
 
   const Trends = ({ data }: { data: HappinessWrapped }) => (
     <Card className="border-yellow bg-light_yellow p-6">
-      <h2 className="text-xl font-semibold">Trends</h2>
+      <h2 className="text-3xl font-semibold">Trends</h2>
+      <div className="mt-3 text-base leading-7 text-gray-700">
+        Your best and worst weeks and months, summarized in a couple sentences.
+      </div>
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-xl bg-white/60 p-4">
-          <div className="text-sm font-semibold text-gray-800">Months</div>
-
           <div className="mt-3">
-            <div className="text-sm text-gray-700">
-              Happiest month:{" "}
-              <span className="font-medium">
-                {monthName(data.month_highest.month)}
-              </span>{" "}
-              · {data.month_highest.avg_score.toFixed(2)}
+            <div className="text-xl font-semibold text-gray-900">
+              Happiest Week
             </div>
-            <div className="mt-1 text-sm text-gray-700">
-              {data.month_highest.ai_summary}
-            </div>
-            <div className="mt-2">
-              <button
-                className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
-                onClick={() => openEntriesForMonth(data.month_highest.month)}
-              >
-                View month
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <div className="text-sm text-gray-700">
-              Saddest month:{" "}
-              <span className="font-medium">
-                {monthName(data.month_lowest.month)}
-              </span>{" "}
-              · {data.month_lowest.avg_score.toFixed(2)}
-            </div>
-            <div className="mt-1 text-sm text-gray-700">
-              {data.month_lowest.ai_summary}
-            </div>
-            <div className="mt-2">
-              <button
-                className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
-                onClick={() => openEntriesForMonth(data.month_lowest.month)}
-              >
-                View month
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-white/60 p-4">
-          <div className="text-sm font-semibold text-gray-800">Weeks</div>
-
-          <div className="mt-3">
-            <div className="text-sm text-gray-700">
-              Happiest week starting{" "}
-              <span className="font-medium">
+            <div className="mt-2 flex items-baseline justify-between gap-4">
+              <div className="text-2xl font-semibold text-gray-900">
                 {formatDateWrapped(data.week_highest.week_start)}
-              </span>{" "}
-              · {data.week_highest.avg_score.toFixed(2)}
+              </div>
+              <div className="text-4xl font-bold text-secondary">
+                {data.week_highest.avg_score.toFixed(2)}
+              </div>
             </div>
-            <div className="mt-1 text-sm text-gray-700">
+            <div className="mt-3 text-base leading-7 text-gray-800">
               {data.week_highest.ai_summary}
             </div>
             <div className="mt-2">
               <button
-                className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
                 onClick={() => openEntriesForDate(data.week_highest.week_start)}
               >
                 View week
@@ -396,19 +362,23 @@ export default function Wrapped() {
           </div>
 
           <div className="mt-4">
-            <div className="text-sm text-gray-700">
-              Saddest week starting{" "}
-              <span className="font-medium">
-                {formatDateWrapped(data.week_lowest.week_start)}
-              </span>{" "}
-              · {data.week_lowest.avg_score.toFixed(2)}
+            <div className="text-xl font-semibold text-gray-900">
+              Saddest Week
             </div>
-            <div className="mt-1 text-sm text-gray-700">
+            <div className="mt-2 flex items-baseline justify-between gap-4">
+              <div className="text-2xl font-semibold text-gray-900">
+                {formatDateWrapped(data.week_lowest.week_start)}
+              </div>
+              <div className="text-4xl font-bold text-secondary">
+                {data.week_lowest.avg_score.toFixed(2)}
+              </div>
+            </div>
+            <div className="mt-3 text-base leading-7 text-gray-800">
               {data.week_lowest.ai_summary}
             </div>
             <div className="mt-2">
               <button
-                className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
                 onClick={() => openEntriesForDate(data.week_lowest.week_start)}
               >
                 View week
@@ -416,6 +386,59 @@ export default function Wrapped() {
             </div>
           </div>
         </div>
+
+        <div className="rounded-xl bg-white/60 p-4">
+          <div className="mt-3">
+            <div className="text-xl font-semibold text-gray-900">
+              Happiest Month
+            </div>
+            <div className="mt-2 flex items-baseline justify-between gap-4">
+              <div className="text-2xl font-semibold text-gray-900">
+                {monthName(data.month_highest.month)}
+              </div>
+              <div className="text-4xl font-bold text-secondary">
+                {data.month_highest.avg_score.toFixed(2)}
+              </div>
+            </div>
+            <div className="mt-3 text-base leading-7 text-gray-800">
+              {data.month_highest.ai_summary}
+            </div>
+            <div className="mt-2">
+              <button
+                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                onClick={() => openEntriesForMonth(data.month_highest.month)}
+              >
+                View month
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="text-xl font-semibold text-gray-900">
+              Saddest Month
+            </div>
+            <div className="mt-2 flex items-baseline justify-between gap-4">
+              <div className="text-2xl font-semibold text-gray-900">
+                {monthName(data.month_lowest.month)}
+              </div>
+              <div className="text-4xl font-bold text-secondary">
+                {data.month_lowest.avg_score.toFixed(2)}
+              </div>
+            </div>
+            <div className="mt-3 text-base leading-7 text-gray-800">
+              {data.month_lowest.ai_summary}
+            </div>
+            <div className="mt-2">
+              <button
+                className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
+                onClick={() => openEntriesForMonth(data.month_lowest.month)}
+              >
+                View month
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </Card>
   );
@@ -423,17 +446,17 @@ export default function Wrapped() {
   const Moments = ({ data }: { data: HappinessWrapped }) => {
     const cards = [
       {
-        title: "Craziest moment",
+        title: "A Crazy Moment 🤯",
         date: data.yearly.strangest_entry.date,
         summary: data.yearly.strangest_entry.summary,
       },
       {
-        title: "Most overthinking",
+        title: "When You Were Overthinking 🤔",
         date: data.yearly.overthinking_entry.date,
         summary: data.yearly.overthinking_entry.summary,
       },
       {
-        title: "Most down bad",
+        title: "When You Were Feeling a Bit Down Bad 😳",
         date: data.yearly.down_bad_entry.date,
         summary: data.yearly.down_bad_entry.summary,
       },
@@ -441,22 +464,25 @@ export default function Wrapped() {
 
     return (
       <Card className="border-yellow bg-light_yellow p-6">
-        <h2 className="text-xl font-semibold">Moments</h2>
+        <h2 className="text-3xl font-semibold">Moments</h2>
+        <div className="mt-3 text-base leading-7 text-gray-700">
+          Three standout entries from throughout the year 👀
+        </div>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
           {cards.map((c) => (
             <div key={c.title} className="rounded-xl bg-white/60 p-4">
-              <div className="text-sm font-semibold text-gray-800">
+              <div className="text-xl font-semibold text-gray-900">
                 {c.title}
               </div>
-              <div className="mt-1 text-sm text-gray-700">
-                <span className="font-medium">
-                  {formatDateWrapped(c.date)}
-                </span>
+              <div className="mt-3 text-lg font-semibold text-secondary">
+                {formatDateWrapped(c.date)}
               </div>
-              <div className="mt-2 text-sm text-gray-700">{c.summary}</div>
+              <div className="mt-3 text-base leading-7 text-gray-800">
+                {c.summary}
+              </div>
               <div className="mt-3">
                 <button
-                  className="rounded-lg border border-secondary/50 bg-white px-3 py-1.5 text-sm shadow-sm"
+                  className="rounded-lg border border-secondary/50 bg-white px-4 py-2 text-base shadow-sm"
                   onClick={() =>
                     setDateQuery([
                       normalizeDateForEntryLookup(c.date),
@@ -476,7 +502,10 @@ export default function Wrapped() {
 
   const GraphSlide = () => (
     <Card className="border-yellow bg-light_yellow p-6">
-      <h2 className="text-xl font-semibold">Your happiness graph</h2>
+      <h2 className="text-3xl font-semibold">Your Happiness Graph</h2>
+      <div className="mt-3 text-base leading-7 text-gray-700">
+        Your happiness scores over time this year. Click a point to open the entry for that day!
+      </div>
       <div className="mt-4">
         {graphIsLoading || graphIsError ? (
           <Spinner className="ml-2" />
@@ -505,7 +534,7 @@ export default function Wrapped() {
   }) => {
     const steps = [
       {
-        title: "At a glance",
+        title: "At a Glance",
         render: <AtAGlance data={data} />,
       },
       {
@@ -517,7 +546,7 @@ export default function Wrapped() {
         render: <Extremes data={data} />,
       },
       {
-        title: "Biggest swing",
+        title: "Biggest Swing",
         render: <BiggestSwing data={data} />,
       },
       {
@@ -543,19 +572,19 @@ export default function Wrapped() {
     return (
       <div className="mt-6 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="text-sm font-semibold text-gray-800">
-            Story · Step {step + 1} of {steps.length}: {current.title}
+          <div className="text-base font-semibold text-gray-800">
+            Story {step + 1} of {steps.length}: {current.title}
           </div>
           <div className="flex gap-2">
             <button
-              className="rounded-lg border border-secondary/40 bg-white px-3 py-1.5 text-sm shadow-sm disabled:opacity-50"
+              className="rounded-lg border border-secondary/40 bg-white px-4 py-2 text-base shadow-sm disabled:opacity-50"
               onClick={() => setStep((s) => Math.max(0, s - 1))}
               disabled={step === 0}
             >
               Back
             </button>
             <button
-              className="rounded-lg border border-secondary/40 bg-white px-3 py-1.5 text-sm shadow-sm disabled:opacity-50"
+              className="rounded-lg border border-secondary/40 bg-white px-4 py-2 text-base shadow-sm disabled:opacity-50"
               onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}
               disabled={step === steps.length - 1}
             >
