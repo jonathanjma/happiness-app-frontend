@@ -12,6 +12,7 @@ import Group from "./pages/Group/Group";
 import GroupInvites from "./pages/GroupInvites/GroupInvites";
 import PrivateEntries from "./pages/PrivateEntries/PrivateEntries";
 import Profile from "./pages/Profile/Profile";
+import OAuthAuthorize from "./pages/OAuthAuthorize/OAuthAuthorize";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Sidebar from "./pages/Sidebar/Sidebar";
 import Statistics from "./pages/Statistics/Statistics";
@@ -43,6 +44,10 @@ export default function App() {
                   <ResetPassword />
                 </PublicRoute>
               }
+            />
+            <Route
+              path="/oauth/authorize"
+              element={<OAuthAuthorize />}
             />
             <Route
               path="*"
