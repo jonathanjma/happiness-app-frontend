@@ -12,6 +12,13 @@ export function addNewHappiness(
       return {
         pages:
           data?.pages?.map((happinessPagination) => {
+            const containsEntry = happinessPagination.data.some(
+              (entry) => entry.timestamp === happiness.timestamp,
+            );
+            if (!containsEntry) {
+              return happinessPagination;
+            }
+
             return {
               ...happinessPagination,
               data: updateArray(
