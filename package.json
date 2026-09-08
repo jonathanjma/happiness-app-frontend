@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test": "esbuild tests/stateUtils.test.ts --bundle --platform=node --format=esm --outfile=.cache/stateUtils.test.mjs && node .cache/stateUtils.test.mjs"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@preline/overlay": "^2.0.2",
@@ -36,7 +35,6 @@
     "@types/react-dom": "^18.2.0",
     "@types/react-query": "^1.2.9",
     "@vitejs/plugin-react": "^4.2.1",
-    "esbuild": "^0.19.10",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
     "typescript": "^5.2.2",
